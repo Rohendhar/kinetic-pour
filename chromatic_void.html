@@ -965,6 +965,394 @@
       transform: translateX(4px) !important;
       box-shadow: 0 4px 18px rgba(0, 240, 255, 0.28) !important;
     }
+
+    /* ==========================================================================
+       FLUTED OPTICAL GLASS & MULTI-LAYER TUBING HERO EXPERIENCE
+       ========================================================================== */
+    .hero-portal.fluted-hero-experience {
+      position: relative !important;
+      min-height: 94vh !important;
+      padding: 130px 2rem 60px !important;
+      background: radial-gradient(circle at 50% 15%, rgba(0, 240, 255, 0.08) 0%, #02050e 70%) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      overflow: hidden !important;
+      z-index: 1 !important;
+    }
+
+    .hero-fluted-glass-grid {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0px, rgba(255, 255, 255, 0.018) 1px, transparent 1px, transparent 24px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.7;
+    }
+
+    .hero-ambient-prism-glow {
+      position: absolute;
+      top: 20%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 85vw; max-width: 1200px; height: 380px;
+      background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.16) 0%, rgba(168, 85, 247, 0.09) 45%, transparent 75%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* LAYER 1: BACKGROUND TYPOGRAPHY (BEHIND THE TUBES) */
+    .hero-bg-text-layer {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      max-width: 1550px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem;
+      pointer-events: none;
+      z-index: 1;
+      user-select: none;
+    }
+
+    .hero-bg-text-layer .bg-char {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(5.5rem, 13.5vw, 15.5rem);
+      font-weight: 900;
+      line-height: 0.9;
+      color: rgba(255, 255, 255, 0.045);
+      -webkit-text-stroke: 1.5px rgba(0, 240, 255, 0.28);
+      text-shadow: 0 0 35px rgba(0, 240, 255, 0.12);
+      transition: all 0.3s ease;
+    }
+
+    /* LAYER 2: 3D TRANSLUCENT FLUIDIC TUBES (OVERLAYS THE BACKGROUND TEXT) */
+    .hero-tubes-stage {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-tubes-svg {
+      width: 100%;
+      max-width: 1600px;
+      height: 100%;
+      max-height: 850px;
+      overflow: visible;
+    }
+
+    .glass-tube-outer {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.26);
+      stroke-width: 28px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.85));
+    }
+
+    .fluid-core-stream {
+      fill: none;
+      stroke-width: 14px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 220 50;
+      animation: fluidTransit 5s linear infinite;
+    }
+
+    .fluid-core-stream.fluid-cyan {
+      stroke: url(#cyanFluidGrad);
+      filter: drop-shadow(0 0 16px #00f0ff);
+      animation-duration: 4.8s;
+    }
+    .fluid-core-stream.fluid-amber {
+      stroke: url(#amberFluidGrad);
+      filter: drop-shadow(0 0 16px #ffaa00);
+      animation-duration: 5.4s;
+    }
+    .fluid-core-stream.fluid-ruby {
+      stroke: url(#rubyFluidGrad);
+      filter: drop-shadow(0 0 16px #ff2a6d);
+      animation-duration: 4.2s;
+    }
+    .fluid-core-stream.fluid-violet {
+      stroke: url(#violetFluidGrad);
+      filter: drop-shadow(0 0 16px #c084fc);
+      animation-duration: 5.8s;
+    }
+
+    .glass-specular-highlight {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.75);
+      stroke-width: 3px;
+      stroke-linecap: round;
+      opacity: 0.85;
+    }
+
+    .droplet-pulse {
+      animation: dropGlow 1.8s infinite alternate ease-in-out;
+    }
+
+    @keyframes fluidTransit {
+      0% { stroke-dashoffset: 1600; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    @keyframes dropGlow {
+      0% { transform: scale(0.9); opacity: 0.8; filter: drop-shadow(0 0 8px #00f0ff); }
+      100% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 20px #00f0ff) drop-shadow(0 0 35px #00f0ff); }
+    }
+
+    /* LAYER 3: FOREGROUND TYPOGRAPHY & UI (SITS IN FRONT OF THE TUBES) */
+    .hero-foreground-content {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .hero-chip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.4rem 1.1rem;
+      border-radius: 999px;
+      background: rgba(8, 14, 28, 0.75);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(16px);
+      margin-bottom: 1.2rem;
+    }
+    .hero-chip-badge .chip-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #00f0ff;
+      box-shadow: 0 0 10px #00f0ff;
+      animation: pulseGreen 1.4s infinite alternate;
+    }
+    .hero-chip-badge span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #00f0ff;
+      text-transform: uppercase;
+    }
+
+    .hero-brand-lockup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-display-subtitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(0.85rem, 1.8vw, 1.2rem);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #cbd5e1;
+      text-transform: uppercase;
+    }
+
+    .hero-display-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .word-kinetic-anchor {
+      color: #ffffff;
+      text-shadow: 0 0 35px rgba(255, 255, 255, 0.4);
+    }
+
+    .word-pour-prism {
+      background: linear-gradient(135deg, #ffffff 0%, #00f0ff 40%, #c084fc 70%, #ffaa00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 45px rgba(0, 240, 255, 0.5);
+      position: relative;
+    }
+
+    .hero-editorial-lead {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+      color: #94a3b8;
+      letter-spacing: 0.1em;
+      margin-top: 0.4rem;
+    }
+
+    .hero-desc-clean {
+      font-size: clamp(0.92rem, 1.4vw, 1.05rem);
+      color: #cbd5e1;
+      max-width: 820px;
+      line-height: 1.7;
+      margin: 0 auto 2rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    }
+
+    .hero-cta-cluster {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.8rem;
+    }
+
+    .btn-fluted-primary {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.25) 0%, rgba(0, 240, 255, 0.08) 100%);
+      border: 1.5px solid #00f0ff;
+      border-radius: 12px;
+      padding: 0.85rem 1.8rem;
+      color: #ffffff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+      transition: all 0.25s ease;
+    }
+    .btn-fluted-primary:hover {
+      background: #00f0ff;
+      color: #02060e;
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .btn-fluted-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 0.85rem 1.6rem;
+      color: #f1f5f9;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      transition: all 0.25s ease;
+    }
+    .btn-fluted-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-fluted-operator {
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      border-radius: 12px;
+      padding: 0.85rem 1.5rem;
+      color: #00f0ff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      backdrop-filter: blur(16px);
+      transition: all 0.25s ease;
+    }
+    .btn-fluted-operator:hover {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: #00f0ff;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .fluted-telemetry-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 1160px;
+    }
+
+    .fluted-telemetry-card {
+      background: radial-gradient(120% 120% at 20% 10%, rgba(20, 28, 45, 0.8) 0%, rgba(8, 12, 20, 0.95) 100%);
+      background-image: 
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 14px),
+        radial-gradient(120% 120% at 20% 10%, rgba(20, 28, 45, 0.8) 0%, rgba(8, 12, 20, 0.95) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+      transition: all 0.25s ease;
+    }
+    .fluted-telemetry-card:hover {
+      border-color: #00f0ff;
+      box-shadow: 0 12px 36px rgba(0, 240, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .fluted-telemetry-card .telemetry-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.08em;
+    }
+    .fluted-telemetry-card .telemetry-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .fluted-telemetry-card .telemetry-num .unit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #00f0ff;
+      font-weight: 600;
+    }
+
+    @media (max-width: 992px) {
+      .fluted-telemetry-row { grid-template-columns: repeat(2, 1fr); }
+      .hero-bg-text-layer .bg-char { font-size: 12vw; }
+      .hero-display-title { font-size: 3.2rem; }
+    }
+    @media (max-width: 600px) {
+      .fluted-telemetry-row { grid-template-columns: 1fr; }
+      .hero-cta-cluster { flex-direction: column; width: 100%; }
+      .btn-fluted-primary, .btn-fluted-secondary, .btn-fluted-operator { width: 100%; justify-content: center; }
+    }
   </style>
   
   <!-- Three.js and OrbitControls -->
@@ -976,7 +1364,7 @@
   <!-- Navigation Bar -->
   <header class="navbar">
     <div class="nav-brand">
-      <span class="brand-badge">CAPSTONE 2026</span>
+      <span class="brand-badge">ENGINEERED FLUIDICS</span>
       <span class="brand-title">KINETIC POUR</span>
     </div>
 
@@ -1000,45 +1388,163 @@
   </header>
 
   <!-- ==========================================================================
-       1. HERO SECTION WITH CADENCE ANIMATED MOVING BACKGROUND
+       1. HERO SECTION: 3D TRANSLUCENT FLUIDIC TUBING & FLUTED GLASS ARCHITECTURE
+          - LAYER 1 (z:1): Background Architectural Letters [K I N E T I C]
+          - LAYER 2 (z:2): 3D Translucent Glass Tubes with Animated Flowing Liquid (Overlays KINETIC)
+          - LAYER 3 (z:3): Foreground Title [POUR], Controls & Telemetry Deck (Overlays the Tubes)
        ========================================================================== -->
-  <section id="portal" class="hero-portal">
-    <!-- Cadence Animated Canvas -->
-    <canvas id="cadence-canvas"></canvas>
+  <section id="portal" class="hero-portal fluted-hero-experience">
+    <!-- Ambient Chromatic Caustics Glow & Fluted Glass Slats -->
+    <div class="hero-fluted-glass-grid"></div>
+    <div class="hero-ambient-prism-glow"></div>
 
-    <div class="hero-tag">
-      <span>AUTONOMOUS FLUIDIC SYSTEM // UC SENIOR DESIGN CAPSTONE</span>
+    <!-- LAYER 1: ARCHITECTURAL BACKGROUND LETTERS (BEHIND THE TUBES) -->
+    <div class="hero-bg-text-layer" aria-hidden="true">
+      <span class="bg-char">K</span>
+      <span class="bg-char">I</span>
+      <span class="bg-char">N</span>
+      <span class="bg-char">E</span>
+      <span class="bg-char">T</span>
+      <span class="bg-char">I</span>
+      <span class="bg-char">C</span>
     </div>
 
-    <h1 class="hero-headline">
-      AUTOMATED DRINK TABLE <br>
-      <span class="accent">KINETIC POUR</span>
-    </h1>
+    <!-- LAYER 2: 3D TRANSLUCENT FLUIDIC TUBES WITH FLOWING LIQUIDS (OVERLAYS KINETIC) -->
+    <div class="hero-tubes-stage">
+      <svg class="hero-tubes-svg" viewBox="0 0 1600 750" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Flowing Fluid Gradients -->
+          <linearGradient id="cyanFluidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.95" />
+            <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#0284c7" stop-opacity="0.95" />
+          </linearGradient>
 
-    <p class="hero-subtitle">
-      Engineered by Team Avengers for University of Cincinnati Senior Design (MECH5051 / EECE5001). Precision 8-bottle cocktail synthesizer featuring an in-house 3D printed reservoir crate, GROTHEN 24V peristaltic pumps, inline check-valves, custom mixing manifold, and stepper-driven linear elevator.
-    </p>
+          <linearGradient id="amberFluidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fef08a" stop-opacity="0.95" />
+            <stop offset="40%" stop-color="#f59e0b" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#b45309" stop-opacity="0.95" />
+          </linearGradient>
 
-    <!-- Real-Time Telemetry Status Bar -->
-    <div class="hero-telemetry-bar">
-      <div class="telemetry-pill">
-        <div class="label">RESERVOIR STATUS</div>
-        <div class="val">8 BOTTLES <span>750ml</span></div>
+          <linearGradient id="rubyFluidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fda4af" stop-opacity="0.95" />
+            <stop offset="50%" stop-color="#ff2a6d" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#be123c" stop-opacity="0.95" />
+          </linearGradient>
+
+          <linearGradient id="violetFluidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f0abfc" stop-opacity="0.95" />
+            <stop offset="50%" stop-color="#c084fc" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#7e22ce" stop-opacity="0.95" />
+          </linearGradient>
+
+          <!-- Glass Tube Wall Gradient -->
+          <linearGradient id="glassWallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="rgba(255, 255, 255, 0.45)" />
+            <stop offset="35%" stop-color="rgba(255, 255, 255, 0.08)" />
+            <stop offset="70%" stop-color="rgba(255, 255, 255, 0.04)" />
+            <stop offset="100%" stop-color="rgba(255, 255, 255, 0.35)" />
+          </linearGradient>
+        </defs>
+
+        <!-- TUBE 1: CYAN / TONIC CARRIER (Sweeps top-left, curves down behind POUR, exits right) -->
+        <g class="tube-assembly">
+          <!-- Glass Tube Outer Wall -->
+          <path d="M -40 180 C 260 140, 420 380, 800 370 C 1140 360, 1320 180, 1640 220" 
+                class="glass-tube-outer" stroke="url(#glassWallGrad)" stroke-width="32" />
+          <!-- Animated Liquid Stream -->
+          <path d="M -40 180 C 260 140, 420 380, 800 370 C 1140 360, 1320 180, 1640 220" 
+                class="fluid-core-stream fluid-cyan" />
+          <!-- Specular Surface Highlight -->
+          <path d="M -40 172 C 260 132, 420 372, 800 362 C 1140 352, 1320 172, 1640 212" 
+                class="glass-specular-highlight" />
+        </g>
+
+        <!-- TUBE 2: AMBER / CITRUS BOURBON CARRIER (Lower curve that arches upwards through the center) -->
+        <g class="tube-assembly">
+          <path d="M -30 520 C 310 540, 480 260, 810 270 C 1160 280, 1360 560, 1640 510" 
+                class="glass-tube-outer" stroke="url(#glassWallGrad)" stroke-width="30" />
+          <path d="M -30 520 C 310 540, 480 260, 810 270 C 1160 280, 1360 560, 1640 510" 
+                class="fluid-core-stream fluid-amber" />
+          <path d="M -30 512 C 310 532, 480 252, 810 262 C 1160 272, 1360 552, 1640 502" 
+                class="glass-specular-highlight" />
+        </g>
+
+        <!-- TUBE 3: RUBY / BITTERS CARRIER (Dynamic S-Curve weaving through letters) -->
+        <g class="tube-assembly">
+          <path d="M 220 -20 C 320 220, 600 480, 940 440 C 1240 400, 1420 620, 1520 780" 
+                class="glass-tube-outer" stroke="url(#glassWallGrad)" stroke-width="26" />
+          <path d="M 220 -20 C 320 220, 600 480, 940 440 C 1240 400, 1420 620, 1520 780" 
+                class="fluid-core-stream fluid-ruby" />
+          <path d="M 220 -28 C 320 212, 600 472, 940 432 C 1240 392, 1420 612, 1520 772" 
+                class="glass-specular-highlight" />
+        </g>
+
+        <!-- TUBE 4: VIOLET / BOTANICAL ELIXIR (Transverse feeder manifold) -->
+        <g class="tube-assembly">
+          <path d="M 120 760 C 240 580, 520 240, 800 220 C 1100 200, 1380 440, 1650 360" 
+                class="glass-tube-outer" stroke="url(#glassWallGrad)" stroke-width="24" />
+          <path d="M 120 760 C 240 580, 520 240, 800 220 C 1100 200, 1380 440, 1650 360" 
+                class="fluid-core-stream fluid-violet" />
+          <path d="M 120 752 C 240 572, 520 232, 800 212 C 1100 192, 1380 432, 1650 352" 
+                class="glass-specular-highlight" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- LAYER 3: FOREGROUND CONTENT (SITS IN FRONT OF THE TUBES) -->
+    <div class="hero-foreground-content">
+      <div class="hero-chip-badge">
+        <span class="chip-dot"></span>
+        <span>AUTONOMOUS FLUIDIC SYSTEM // UC SENIOR DESIGN</span>
       </div>
 
-      <div class="telemetry-pill ultraviolet">
-        <div class="label">DOSING PUMP ARRAY</div>
-        <div class="val">8x GROTHEN <span>24V PWM</span></div>
+      <div class="hero-brand-lockup">
+        <div class="hero-display-subtitle">AUTOMATED DRINK SYNTHESIS</div>
+        <h1 class="hero-display-title">
+          <span class="word-pour-prism">POUR</span>
+        </h1>
+        <div class="hero-editorial-lead">8-BOTTLE MICRO-PERISTALTIC RESYNTHESIZER &bull; T8 LINEAR GANTRY</div>
       </div>
 
-      <div class="telemetry-pill">
-        <div class="label">LINEAR ELEVATOR</div>
-        <div class="val">T8 SCREW <span>100mm</span></div>
+      <p class="hero-desc-clean">
+        Engineered by Team Avengers for University of Cincinnati Senior Design (MECH5051 / EECE5001). 
+        A closed-loop fluidic instrument coupling an in-house 3D printed reservoir crate, eight GROTHEN 24V PWM dosing pumps, inline anti-cavitation check valves, precision manifold, and lead-screw elevator carriage.
+      </p>
+
+      <div class="hero-cta-cluster">
+        <button class="btn-fluted-primary" onclick="focusSubsystem('all'); document.getElementById('simulation').scrollIntoView({behavior: 'smooth'});">
+          LAUNCH 3D DIGITAL TWIN
+        </button>
+        <button class="btn-fluted-secondary" onclick="focusSubsystem('bottling'); document.getElementById('simulation').scrollIntoView({behavior: 'smooth'});">
+          8-BOTTLE CRATE CAD
+        </button>
+        <a href="https://rohendhar.github.io/jarvis-operator/" target="_blank" class="btn-fluted-operator">
+          OPERATOR PORTAL ↗
+        </a>
       </div>
 
-      <div class="telemetry-pill ultraviolet">
-        <div class="label">PLC FIRMWARE</div>
-        <div class="val" style="color: var(--status-green);">ESP32 BUS <span>ONLINE</span></div>
+      <!-- Real-Time Telemetry Bar in Fluted Glass Aesthetics -->
+      <div class="fluted-telemetry-row">
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">RESERVOIR CAPACITY</div>
+          <div class="telemetry-num">8 BOTTLES <span class="unit">750 mL</span></div>
+        </div>
+
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">DOSING ARRAY</div>
+          <div class="telemetry-num">8x GROTHEN <span class="unit">24V PWM</span></div>
+        </div>
+
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">ELEVATOR GANTRY</div>
+          <div class="telemetry-num">T8 SCREW <span class="unit">100 mm</span></div>
+        </div>
+
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">FLUIDICS CORE</div>
+          <div class="telemetry-num" style="color: #00f0ff;">ONLINE <span class="unit">ESP32 PLC</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -1533,7 +2039,7 @@
     <div class="footer-info">
       <div style="font-weight: 700; color: #fff;">KINETIC POUR // PROJECT AVENGERS</div>
       <div style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem;">
-        MECH5051 / EECE5001 &bull; <span class="uc">UNIVERSITY OF CINCINNATI</span> &bull; 2026
+        MECH5051 / EECE5001 &bull; <span class="uc">UNIVERSITY OF CINCINNATI</span> &bull; SENIOR DESIGN CAPSTONE
       </div>
     </div>
 
