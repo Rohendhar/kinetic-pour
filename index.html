@@ -1345,6 +1345,113 @@
       .hero-cta-cluster { flex-direction: column; width: 100%; }
       .btn-fluted-primary, .btn-fluted-secondary, .btn-fluted-operator { width: 100%; justify-content: center; }
     }
+
+    /* Hero Interactive Logo Emblem & Scroll Animation */
+    .hero-logo-emblem-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.4rem;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .logo-ambient-halo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 145%;
+      height: 145%;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(255, 59, 20, 0.42) 0%, rgba(255, 170, 0, 0.16) 45%, transparent 72%);
+      filter: blur(28px);
+      pointer-events: none;
+      z-index: 0;
+      transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+    }
+
+    .hero-interactive-logo {
+      position: relative;
+      z-index: 1;
+      width: 185px;
+      max-width: 32vw;
+      height: auto;
+      border-radius: 22px;
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 
+        0 14px 35px rgba(0, 0, 0, 0.85),
+        0 0 35px rgba(255, 59, 20, 0.22),
+        inset 0 1px 2px rgba(255, 255, 255, 0.25);
+      transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s ease;
+      will-change: transform;
+      background: #000;
+    }
+
+    .hero-logo-emblem-wrap:hover .hero-interactive-logo {
+      box-shadow: 
+        0 22px 50px rgba(0, 0, 0, 0.95),
+        0 0 55px rgba(255, 59, 20, 0.45),
+        inset 0 1px 3px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Navbar Brand Icon */
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1.5px solid rgba(255, 59, 20, 0.5);
+      box-shadow: 0 0 12px rgba(255, 59, 20, 0.35);
+      transition: all 0.25s ease;
+    }
+    .nav-brand:hover .nav-brand-icon {
+      transform: scale(1.08) rotate(3deg);
+      border-color: #ff3b14;
+      box-shadow: 0 0 20px rgba(255, 59, 20, 0.6);
+    }
+
+    /* Scroll Indicator at bottom of Hero */
+    .hero-scroll-indicator {
+      margin-top: 1.8rem;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      text-decoration: none;
+    }
+    .hero-scroll-indicator:hover {
+      opacity: 1;
+      transform: translateY(3px);
+    }
+    .hero-scroll-indicator span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+    .scroll-arrow-drip {
+      width: 20px;
+      height: 20px;
+      color: #ff5722;
+      animation: dripBounce 1.8s infinite ease-in-out;
+    }
+    @keyframes dripBounce {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50% { transform: translateY(6px); opacity: 1; filter: drop-shadow(0 0 6px #ff3b14); }
+    }
   </style>
   
   <!-- Three.js and OrbitControls -->
@@ -1356,6 +1463,7 @@
   <!-- Navigation Bar -->
   <header class="navbar">
     <div class="nav-brand">
+      <img src="static/images/kinetic_pour_rich_pour_master.jpg" alt="Kinetic Pour Emblem" class="nav-brand-icon">
       <span class="brand-title">KINETIC POUR</span>
     </div>
 
@@ -1450,6 +1558,15 @@
 
     <!-- LAYER 3: FOREGROUND TEXT CONSOLE (CLEAN, FOCUSED, ZERO VISUAL OBSTRUCTION) -->
     <div class="hero-glass-console">
+      <!-- Interactive Logo Emblem with Dynamic Scroll Parallax & 3D Tilt -->
+      <div class="hero-logo-emblem-wrap" id="hero-logo-wrap" title="Kinetic Pour // Engineered Fluidics">
+        <div class="logo-ambient-halo" id="logo-ambient-halo"></div>
+        <img src="static/images/kinetic_pour_rich_pour_master.jpg" 
+             alt="Kinetic Pour Fluted Glass Droplet Logo" 
+             class="hero-interactive-logo" 
+             id="hero-logo-img">
+      </div>
+
       <div class="hero-chip-badge">
         <span class="chip-dot"></span>
         <span>AUTONOMOUS FLUIDIC SYSTEM // UC SENIOR DESIGN</span>
@@ -1503,6 +1620,15 @@
           <div class="telemetry-num" style="color: #ff5722;">ONLINE <span class="unit" style="color: #ffaa00;">ESP32 PLC</span></div>
         </div>
       </div>
+
+      <!-- Interactive Scroll Down Prompt -->
+      <a href="#simulation" class="hero-scroll-indicator" onclick="document.getElementById('simulation').scrollIntoView({behavior: 'smooth'}); return false;">
+        <span>EXPLORE 3D DIGITAL TWIN &amp; HMI</span>
+        <svg class="scroll-arrow-drip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </a>
     </div>
   </section>
 
@@ -2204,6 +2330,79 @@
         }, 700);
       });
     }
+
+    // 3. Hero Logo Scroll Parallax & 3D Interactive Tilt
+    function initLogoScrollInteraction() {
+      const logoImg = document.getElementById('hero-logo-img');
+      const logoHalo = document.getElementById('logo-ambient-halo');
+      const logoWrap = document.getElementById('hero-logo-wrap');
+      const heroSection = document.getElementById('portal');
+      if (!logoImg || !heroSection) return;
+
+      let scrollProgress = 0;
+      let targetTiltX = 0, targetTiltY = 0;
+      let currentTiltX = 0, currentTiltY = 0;
+      let isMouseOver = false;
+
+      function onScroll() {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        const heroHeight = heroSection.offsetHeight || 800;
+        scrollProgress = Math.min(Math.max(scrollY / heroHeight, 0), 1);
+        applyTransform();
+      }
+
+      function applyTransform() {
+        const translateY = scrollProgress * 120;
+        const scale = 1 - (scrollProgress * 0.14);
+        const rotateZ = (scrollProgress * 4.5);
+        const opacity = Math.max(0.2, 1 - (scrollProgress * 0.75));
+
+        logoImg.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale}) rotate(${rotateZ}deg) rotateX(${currentTiltX.toFixed(2)}deg) rotateY(${currentTiltY.toFixed(2)}deg)`;
+        logoImg.style.opacity = opacity;
+
+        if (logoHalo) {
+          const haloScale = 1 + (scrollProgress * 0.45);
+          const haloOpacity = Math.max(0, 1 - (scrollProgress * 0.85));
+          logoHalo.style.transform = `translate(-50%, -50%) translate3d(0, ${translateY * 0.7}px, 0) scale(${haloScale})`;
+          logoHalo.style.opacity = haloOpacity;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      if (logoWrap) {
+        logoWrap.addEventListener('mousemove', function (e) {
+          isMouseOver = true;
+          const rect = logoWrap.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const deltaX = (e.clientX - centerX) / (rect.width / 2);
+          const deltaY = (e.clientY - centerY) / (rect.height / 2);
+
+          targetTiltY = deltaX * 16;
+          targetTiltX = -deltaY * 16;
+        });
+
+        logoWrap.addEventListener('mouseleave', function () {
+          isMouseOver = false;
+          targetTiltX = 0;
+          targetTiltY = 0;
+        });
+
+        function animatePhysics() {
+          const lerpFactor = isMouseOver ? 0.12 : 0.08;
+          currentTiltX += (targetTiltX - currentTiltX) * lerpFactor;
+          currentTiltY += (targetTiltY - currentTiltY) * lerpFactor;
+
+          applyTransform();
+          requestAnimationFrame(animatePhysics);
+        }
+        requestAnimationFrame(animatePhysics);
+      }
+
+      onScroll();
+    }
+    initLogoScrollInteraction();
   </script>
 </body>
 </html>
