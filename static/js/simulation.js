@@ -70,29 +70,34 @@
     plc: { pos: new THREE.Vector3(75, 60, 80), target: new THREE.Vector3(50, 25, -20), name: "ELECTRICAL // PLC & SENSORS" }
   };
 
-  // Material Library (Optimized for High-Performance 60 FPS across Mobile & Desktop)
+  // Material Library
   const matObsidian = new THREE.MeshStandardMaterial({ color: 0x101015, metalness: 0.85, roughness: 0.25 });
   const matBrushedMetal = new THREE.MeshStandardMaterial({ color: 0x909099, metalness: 0.95, roughness: 0.25 });
-  const matSmokedAcrylic = new THREE.MeshStandardMaterial({
+  const matSmokedAcrylic = new THREE.MeshPhysicalMaterial({
     color: 0x121218,
-    metalness: 0.25,
-    roughness: 0.15,
+    metalness: 0.1,
+    roughness: 0.1,
+    transmission: 0.88,
     transparent: true,
-    opacity: 0.45
+    opacity: 0.4,
+    ior: 1.49
   });
   const matPrintedPLA = new THREE.MeshStandardMaterial({ color: 0x22222a, roughness: 0.75, metalness: 0.15 });
-  const matGlass = new THREE.MeshStandardMaterial({
-    color: 0xecf4ff,
-    metalness: 0.1,
+  const matGlass = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    metalness: 0.05,
     roughness: 0.05,
+    transmission: 0.95,
     transparent: true,
-    opacity: 0.65
+    opacity: 0.85,
+    ior: 1.52
   });
-  const matSiliconeTube = new THREE.MeshStandardMaterial({
-    color: 0xecfeff,
-    roughness: 0.25,
+  const matSiliconeTube = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    transmission: 0.85,
+    opacity: 0.5,
     transparent: true,
-    opacity: 0.55
+    roughness: 0.2
   });
 
   function init() {
@@ -115,7 +120,7 @@
       powerPreference: 'high-performance'
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -148,9 +153,9 @@
   }
 
   function setupLighting() {
-    scene.add(new THREE.AmbientLight(0x383048, 2.2));
+    scene.add(new THREE.AmbientLight(0x28202c, 1.4));
 
-    const keySpot = new THREE.SpotLight(0xff3b14, 4.2, 380, Math.PI / 3.8, 0.45, 1.2);
+    const keySpot = new THREE.SpotLight(0xff3b14, 4.0, 350, Math.PI / 3.8, 0.45, 1.2);
     keySpot.position.set(70, 180, 110);
     keySpot.castShadow = true;
     keySpot.shadow.bias = -0.0008;
@@ -158,23 +163,14 @@
     keySpot.shadow.mapSize.height = 1024;
     scene.add(keySpot);
 
-    const uvPoint = new THREE.PointLight(0x8b24e3, 2.8, 280);
+    const uvPoint = new THREE.PointLight(0x8b24e3, 2.5, 260);
     uvPoint.position.set(-85, 130, -70);
     scene.add(uvPoint);
 
     // Warm chamber light
-    const chamberLight = new THREE.PointLight(0xff5722, 2.8, 160);
+    const chamberLight = new THREE.PointLight(0xff5722, 2.5, 140);
     chamberLight.position.set(0, 95, 0);
     scene.add(chamberLight);
-
-    // Studio fill lights for crisp mechanical & tabletop definition
-    const topLight = new THREE.DirectionalLight(0xffffff, 1.3);
-    topLight.position.set(30, 220, 100);
-    scene.add(topLight);
-
-    const cyanRim = new THREE.DirectionalLight(0x00f0ff, 0.8);
-    cyanRim.position.set(-80, 140, 100);
-    scene.add(cyanRim);
   }
 
   function buildTableStructure() {
