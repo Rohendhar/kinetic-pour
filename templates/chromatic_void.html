@@ -2190,7 +2190,11 @@
       history.scrollTop = history.scrollHeight;
 
       try {
-        const res = await fetch('/api/chat', {
+        const API_ENDPOINT = (window.location.origin.includes('github.io') || window.location.protocol === 'file:')
+          ? 'https://avengers-jarvis.onrender.com/api/chat'
+          : '/api/chat';
+
+        const res = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
