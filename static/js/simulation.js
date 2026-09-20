@@ -70,34 +70,29 @@
     plc: { pos: new THREE.Vector3(75, 60, 80), target: new THREE.Vector3(50, 25, -20), name: "ELECTRICAL // PLC & SENSORS" }
   };
 
-  // Material Library
+  // Material Library (Optimized for High-Performance 60 FPS across Mobile & Desktop)
   const matObsidian = new THREE.MeshStandardMaterial({ color: 0x101015, metalness: 0.85, roughness: 0.25 });
   const matBrushedMetal = new THREE.MeshStandardMaterial({ color: 0x909099, metalness: 0.95, roughness: 0.25 });
-  const matSmokedAcrylic = new THREE.MeshPhysicalMaterial({
+  const matSmokedAcrylic = new THREE.MeshStandardMaterial({
     color: 0x121218,
-    metalness: 0.1,
-    roughness: 0.1,
-    transmission: 0.88,
+    metalness: 0.25,
+    roughness: 0.15,
     transparent: true,
-    opacity: 0.4,
-    ior: 1.49
+    opacity: 0.45
   });
   const matPrintedPLA = new THREE.MeshStandardMaterial({ color: 0x22222a, roughness: 0.75, metalness: 0.15 });
-  const matGlass = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,
-    metalness: 0.05,
+  const matGlass = new THREE.MeshStandardMaterial({
+    color: 0xecf4ff,
+    metalness: 0.1,
     roughness: 0.05,
-    transmission: 0.95,
     transparent: true,
-    opacity: 0.85,
-    ior: 1.52
+    opacity: 0.65
   });
-  const matSiliconeTube = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,
-    transmission: 0.85,
-    opacity: 0.5,
+  const matSiliconeTube = new THREE.MeshStandardMaterial({
+    color: 0xecfeff,
+    roughness: 0.25,
     transparent: true,
-    roughness: 0.2
+    opacity: 0.55
   });
 
   function init() {
@@ -120,7 +115,7 @@
       powerPreference: 'high-performance'
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -144,7 +139,6 @@
     buildElectricalAndPLC();
     buildGroundGrid();
 
-    setupCadenceHeroAnimation();
     window.addEventListener('resize', onWindowResize);
 
     logTerminal("SYS_INIT", "3D Digital Twin Simulation initialized with 8-bottle fluid dynamics.", "ok");
@@ -154,23 +148,33 @@
   }
 
   function setupLighting() {
-    scene.add(new THREE.AmbientLight(0x28202c, 1.4));
+    scene.add(new THREE.AmbientLight(0x383048, 2.2));
 
-    const keySpot = new THREE.SpotLight(0xff3b14, 4.0, 350, Math.PI / 3.8, 0.45, 1.2);
+    const keySpot = new THREE.SpotLight(0xff3b14, 4.2, 380, Math.PI / 3.8, 0.45, 1.2);
     keySpot.position.set(70, 180, 110);
     keySpot.castShadow = true;
+    keySpot.shadow.bias = -0.0008;
     keySpot.shadow.mapSize.width = 1024;
     keySpot.shadow.mapSize.height = 1024;
     scene.add(keySpot);
 
-    const uvPoint = new THREE.PointLight(0x8b24e3, 2.5, 260);
+    const uvPoint = new THREE.PointLight(0x8b24e3, 2.8, 280);
     uvPoint.position.set(-85, 130, -70);
     scene.add(uvPoint);
 
     // Warm chamber light
-    const chamberLight = new THREE.PointLight(0xff5722, 2.5, 140);
+    const chamberLight = new THREE.PointLight(0xff5722, 2.8, 160);
     chamberLight.position.set(0, 95, 0);
     scene.add(chamberLight);
+
+    // Studio fill lights for crisp mechanical & tabletop definition
+    const topLight = new THREE.DirectionalLight(0xffffff, 1.3);
+    topLight.position.set(30, 220, 100);
+    scene.add(topLight);
+
+    const cyanRim = new THREE.DirectionalLight(0x00f0ff, 0.8);
+    cyanRim.position.set(-80, 140, 100);
+    scene.add(cyanRim);
   }
 
   function buildTableStructure() {
@@ -205,83 +209,7 @@
     rimMesh.position.set(0, 100.1, 0);
     tableGroup.add(rimMesh);
 
-    // 3D Liquid Glass HMI Touchscreen Tablet mounted on Tabletop
-    const tabletGroup = new THREE.Group();
-    tabletGroup.position.set(50, 102, 38);
-    tabletGroup.rotation.x = -Math.PI / 6.5; // Angled toward user
-    tabletGroup.rotation.y = -Math.PI / 14;  // Angled inward
-    tableGroup.add(tabletGroup);
 
-    // Tablet Aluminum/Obsidian Chassis
-    const tabletBase = new THREE.Mesh(new THREE.BoxGeometry(38, 25, 2.2), matObsidian);
-    tabletGroup.add(tabletBase);
-
-    // Tablet Bezel Rim
-    const bezel = new THREE.Mesh(new THREE.BoxGeometry(36.8, 23.8, 2.4), new THREE.MeshStandardMaterial({
-      color: 0x181824,
-      metalness: 0.9,
-      roughness: 0.2
-    }));
-    tabletGroup.add(bezel);
-
-    // Luminous Screen Surface with Dynamic Canvas UI Texture
-    const hmiCanvas = document.createElement('canvas');
-    hmiCanvas.width = 512;
-    hmiCanvas.height = 340;
-    const hmiCtx = hmiCanvas.getContext('2d');
-
-    updateHmiTexture = function(recipeName, activeBottles) {
-      if (!hmiCtx) return;
-      hmiCtx.fillStyle = '#06070a';
-      hmiCtx.fillRect(0, 0, 512, 340);
-
-      // Top bar with telemetry
-      hmiCtx.fillStyle = '#10141f';
-      hmiCtx.fillRect(0, 0, 512, 45);
-      hmiCtx.fillStyle = '#ff3b14';
-      hmiCtx.font = 'bold 15px monospace';
-      hmiCtx.fillText('KINETIC POUR OS // CAPACITIVE OLED • 120Hz', 20, 28);
-
-      // Selected Recipe Badge
-      hmiCtx.fillStyle = 'rgba(255, 59, 20, 0.2)';
-      hmiCtx.strokeStyle = '#ff3b14';
-      hmiCtx.lineWidth = 2;
-      hmiCtx.fillRect(20, 60, 472, 75);
-      hmiCtx.strokeRect(20, 60, 472, 75);
-      hmiCtx.fillStyle = '#ffffff';
-      hmiCtx.font = 'bold 26px sans-serif';
-      hmiCtx.fillText('ORDER: ' + (recipeName || 'OLD FASHIONED'), 38, 108);
-
-      // 8 Reservoir Level Gauges
-      for (let i = 0; i < 8; i++) {
-        const bx = 20 + i * 59;
-        const isActive = activeBottles && activeBottles.includes(i);
-        hmiCtx.fillStyle = isActive ? '#ffaa00' : 'rgba(255, 255, 255, 0.08)';
-        hmiCtx.fillRect(bx, 155, 48, 140);
-        if (isActive) {
-          hmiCtx.strokeStyle = '#ff3b14';
-          hmiCtx.lineWidth = 2;
-          hmiCtx.strokeRect(bx, 155, 48, 140);
-        }
-        hmiCtx.fillStyle = '#cbd5e1';
-        hmiCtx.font = 'bold 13px monospace';
-        hmiCtx.fillText('B' + (i+1), bx + 15, 320);
-      }
-      if (hmiScreenTexture) hmiScreenTexture.needsUpdate = true;
-    };
-
-    hmiScreenTexture = new THREE.CanvasTexture(hmiCanvas);
-    updateHmiTexture("OLD FASHIONED", [0, 7]);
-
-    const screenMat = new THREE.MeshBasicMaterial({ map: hmiScreenTexture });
-    const screenMesh = new THREE.Mesh(new THREE.PlaneGeometry(35, 22), screenMat);
-    screenMesh.position.z = 1.25;
-    tabletGroup.add(screenMesh);
-
-    // Glass Sheen Reflection
-    const glassSheen = new THREE.Mesh(new THREE.PlaneGeometry(35, 22), matGlass);
-    glassSheen.position.z = 1.35;
-    tabletGroup.add(glassSheen);
 
     // 4 Corner Legs
     const legGeom = new THREE.CylinderGeometry(3.5, 3.5, 96, 16);
@@ -648,58 +576,7 @@
     scene.add(grid);
   }
 
-  // Cadence Animated Moving Fluid/Wave Background on Hero
-  function setupCadenceHeroAnimation() {
-    const canvas = document.getElementById('cadence-canvas');
-    if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let time = 0;
-
-    function resize() {
-      width = canvas.width = canvas.clientWidth;
-      height = canvas.height = canvas.clientHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    function drawCadence() {
-      requestAnimationFrame(drawCadence);
-      ctx.clearRect(0, 0, width, height);
-
-      // Dark background gradient
-      const bgGrad = ctx.createRadialGradient(width * 0.7, height * 0.3, 50, width * 0.5, height * 0.5, width * 0.8);
-      bgGrad.addColorStop(0, 'rgba(139, 36, 227, 0.12)');
-      bgGrad.addColorStop(0.5, 'rgba(255, 59, 20, 0.08)');
-      bgGrad.addColorStop(1, 'rgba(6, 6, 8, 0.95)');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, width, height);
-
-      // Draw 6 undulating harmonic wave streams
-      for (let i = 0; i < 6; i++) {
-        ctx.beginPath();
-        const baseHeight = height * (0.35 + i * 0.1);
-        ctx.moveTo(0, baseHeight);
-
-        for (let x = 0; x < width; x += 15) {
-          const wave1 = Math.sin(x * 0.003 + time * 0.8 + i * 0.7) * 35;
-          const wave2 = Math.cos(x * 0.007 - time * 0.5 + i * 1.2) * 20;
-          const y = baseHeight + wave1 + wave2;
-          ctx.lineTo(x, y);
-        }
-
-        ctx.strokeStyle = i % 2 === 0 ? 'rgba(255, 59, 20, 0.25)' : 'rgba(139, 36, 227, 0.2)';
-        ctx.lineWidth = 2.5;
-        ctx.shadowColor = i % 2 === 0 ? 'rgba(255, 59, 20, 0.5)' : 'rgba(139, 36, 227, 0.5)';
-        ctx.shadowBlur = 10;
-        ctx.stroke();
-      }
-
-      time += 0.015;
-    }
-    drawCadence();
-  }
 
   // Focus Subsystem View
   window.focusSubsystem = function (key) {
