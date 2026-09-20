@@ -1168,50 +1168,51 @@
       will-change: transform;
     }
 
-    /* Fluted Glass Droplet & Pouring Typography (Screens Seamlessly onto Void) */
-    .masterpiece-artwork-img {
+    /* Native Recreated Kinetic Pour Emblem (Zero Bitmap / Zero Bounding Box) */
+    .kinetic-pour-native-emblem {
       display: block;
-      width: clamp(320px, 46vw, 560px);
+      width: clamp(340px, 48vw, 560px);
       height: auto;
-      object-fit: contain;
-      mix-blend-mode: screen;
-      border: none !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
-      background: transparent !important;
-      filter: drop-shadow(0 0 35px rgba(255, 59, 20, 0.5)) drop-shadow(0 0 15px rgba(255, 170, 0, 0.35));
-      transition: filter 0.35s ease;
-      pointer-events: auto;
+      overflow: visible;
+      filter: drop-shadow(0 0 35px rgba(255, 59, 20, 0.45));
+      transition: filter 0.3s ease;
+      cursor: pointer;
     }
 
-    .masterpiece-artwork-img:hover {
-      filter: drop-shadow(0 0 55px rgba(255, 59, 20, 0.8)) drop-shadow(0 0 28px rgba(255, 170, 0, 0.65));
+    .kinetic-pour-native-emblem:hover {
+      filter: drop-shadow(0 0 55px rgba(255, 59, 20, 0.8)) drop-shadow(0 0 25px rgba(255, 170, 0, 0.6));
     }
 
-    /* Refractive Diagonal Sheen Sweep across Fluted Glass */
-    .masterpiece-sheen-sweep {
-      position: absolute;
-      top: 0;
-      left: -60%;
-      width: 45%;
-      height: 100%;
-      background: linear-gradient(110deg, 
-        transparent 20%, 
-        rgba(255, 255, 255, 0.03) 35%, 
-        rgba(255, 255, 255, 0.22) 50%, 
-        rgba(255, 255, 255, 0.03) 65%, 
-        transparent 80%);
-      transform: skewX(-24deg);
-      pointer-events: none;
-      z-index: 2;
-      animation: flutedSheenSweep 5.5s ease-in-out infinite;
+    /* Fluted Crystal Ribs: Animated Liquid Transit */
+    .rib-fluid-core {
+      stroke-dasharray: 80 30;
+      animation: ribLiquidTransit 4.5s linear infinite;
+    }
+    @keyframes ribLiquidTransit {
+      0% { stroke-dashoffset: 220; }
+      100% { stroke-dashoffset: 0; }
     }
 
-    @keyframes flutedSheenSweep {
-      0% { left: -60%; opacity: 0; }
-      15% { opacity: 1; }
-      42% { left: 140%; opacity: 0; }
-      100% { left: 140%; opacity: 0; }
+    /* Specular Crystal Light Sheen Sweep Across Flutes */
+    .droplet-sheen-sweep {
+      animation: crystalSheenSweep 5.5s ease-in-out infinite;
+    }
+    @keyframes crystalSheenSweep {
+      0% { transform: translate(-80%, -80%) rotate(-25deg); opacity: 0; }
+      15% { opacity: 0.95; }
+      40% { transform: translate(80%, 80%) rotate(-25deg); opacity: 0; }
+      100% { transform: translate(80%, 80%) rotate(-25deg); opacity: 0; }
+    }
+
+    /* Slow-Pour Liquid Drips Tendril Physics */
+    .liquid-drop-tendril {
+      filter: drop-shadow(0 2px 6px rgba(255, 59, 20, 0.8));
+      animation: dripTendrilBreathe 3s ease-in-out infinite alternate;
+      transform-origin: 250px 470px;
+    }
+    @keyframes dripTendrilBreathe {
+      0% { transform: scaleY(0.94); }
+      100% { transform: scaleY(1.08); filter: drop-shadow(0 4px 10px rgba(255, 170, 0, 0.9)); }
     }
 
     /* Chip Badge in Fluted Obsidian Style */
@@ -1484,7 +1485,7 @@
   <!-- Navigation Bar -->
   <header class="navbar">
     <div class="nav-brand">
-      <img src="static/images/kinetic_pour_rich_pour_master.jpg" alt="Kinetic Pour Emblem" class="nav-brand-icon">
+      <img src="static/images/kinetic_pour_native_emblem.svg" alt="Kinetic Pour Emblem" class="nav-brand-icon">
       <span class="brand-title">KINETIC POUR</span>
     </div>
 
@@ -1577,11 +1578,207 @@
       <div class="hero-masterpiece-stage" id="hero-masterpiece-stage" title="Kinetic Pour // Automated Drink Table">
         <div class="masterpiece-ambient-halo" id="masterpiece-halo"></div>
         <div class="masterpiece-canvas" id="masterpiece-canvas">
-          <img src="static/images/kinetic_pour_rich_pour_master.jpg" 
-               alt="Kinetic Pour Fluted Droplet &amp; Slow Pour Typography" 
-               class="masterpiece-artwork-img" 
-               id="hero-masterpiece-img" />
-          <div class="masterpiece-sheen-sweep"></div>
+          <!-- 100% NATIVE RECREATED KINETIC POUR EMBLEM & SLOW-POUR TYPOGRAPHY (ZERO BITMAP / ZERO BOX) -->
+          <svg class="kinetic-pour-native-emblem" viewBox="0 0 500 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kinetic Pour // Engineered Fluidics">
+  <defs>
+
+    <!-- Ambient Core Furnace Glow -->
+    <radialGradient id="kpFurnaceCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff3b14" stop-opacity="0.65" />
+      <stop offset="30%" stop-color="#ff9900" stop-opacity="0.38" />
+      <stop offset="65%" stop-color="#ff3b14" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Fluted 3D Glass Cylinder Surface Shading -->
+    <linearGradient id="ribGlassGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.55)" />
+      <stop offset="15%" stop-color="rgba(255, 255, 255, 0.12)" />
+      <stop offset="42%" stop-color="rgba(8, 8, 12, 0.95)" />
+      <stop offset="50%" stop-color="rgba(255, 170, 0, 0.88)" />
+      <stop offset="58%" stop-color="rgba(8, 8, 12, 0.95)" />
+      <stop offset="85%" stop-color="rgba(255, 255, 255, 0.15)" />
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.65)" />
+    </linearGradient>
+
+    <!-- Liquid Fluid Core Stream Gradient -->
+    <linearGradient id="liquidCoreGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff0d0" stop-opacity="0.95" />
+      <stop offset="25%" stop-color="#ffaa00" stop-opacity="1" />
+      <stop offset="70%" stop-color="#ff5722" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#ff3b14" stop-opacity="1" />
+    </linearGradient>
+
+    <!-- Outer Droplet Glass Wall Gradient -->
+    <linearGradient id="dropletWallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.85)" />
+      <stop offset="30%" stop-color="rgba(255, 255, 255, 0.2)" />
+      <stop offset="70%" stop-color="rgba(255, 170, 0, 0.35)" />
+      <stop offset="100%" stop-color="rgba(255, 59, 20, 0.8)" />
+    </linearGradient>
+
+    <!-- Drip Liquid Taper Gradient -->
+    <linearGradient id="dripFlowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbf1e2" />
+      <stop offset="35%" stop-color="#f5cc8e" />
+      <stop offset="70%" stop-color="#ff9900" />
+      <stop offset="100%" stop-color="#ff3b14" />
+    </linearGradient>
+
+    <!-- Diagonal Refractive Specular Sheen -->
+    <linearGradient id="specularSweepGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="transparent" />
+      <stop offset="40%" stop-color="transparent" />
+      <stop offset="50%" stop-color="rgba(255, 255, 255, 0.7)" />
+      <stop offset="60%" stop-color="transparent" />
+      <stop offset="100%" stop-color="transparent" />
+    </linearGradient>
+
+    <!-- Clip Path of Teardrop Droplet -->
+    <clipPath id="dropletClip">
+      <path d="M 250,38 C 256,48 376,176 376,276 C 376,346 320,396 250,396 C 180,396 124,346 124,276 C 124,176 244,48 250,38 Z" />
+    </clipPath>
+
+    <!-- Ember Glow Filter for Typography & Drips -->
+    <filter id="kpEmberGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.5" result="blur1" />
+      <feGaussianBlur stdDeviation="8" in="SourceGraphic" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Ambient Furnace Glow Behind Flutes -->
+  <circle cx="250" cy="265" r="175" fill="url(#kpFurnaceCore)" />
+
+  <!-- Fluted Crystal Tubes (Clipped to Teardrop Contour) -->
+  <g clip-path="url(#dropletClip)">
+    <path d="M 250,38 C 256,48 376,176 376,276 C 376,346 320,396 250,396 C 180,396 124,346 124,276 C 124,176 244,48 250,38 Z" fill="rgba(6, 7, 10, 0.92)" />
+    <!-- Rib 1: center x=150 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 222.6,34 Q 141.0,220 178.25,400 L 191.75,400 Q 159.0,220 233.4,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 228.0,34 Q 150,220 185.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 0.0s;" />
+      <path d="M 224.1,34 Q 143.0,220 180.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 231.9,34 Q 157.0,220 189.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 2: center x=170 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 227.0,34 Q 161.0,220 191.25,400 L 204.75,400 Q 179.0,220 237.8,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 232.4,34 Q 170,220 198.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 0.45s;" />
+      <path d="M 228.5,34 Q 163.0,220 193.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 236.3,34 Q 177.0,220 202.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 3: center x=190 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 231.4,34 Q 181.0,220 204.25,400 L 217.75,400 Q 199.0,220 242.20000000000002,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 236.8,34 Q 190,220 211.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 0.9s;" />
+      <path d="M 232.9,34 Q 183.0,220 206.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 240.70000000000002,34 Q 197.0,220 215.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 4: center x=210 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 235.79999999999998,34 Q 201.0,220 217.25,400 L 230.75,400 Q 219.0,220 246.6,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 241.2,34 Q 210,220 224.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 1.35s;" />
+      <path d="M 237.29999999999998,34 Q 203.0,220 219.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 245.1,34 Q 217.0,220 228.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 5: center x=230 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 240.2,34 Q 221.0,220 230.25,400 L 243.75,400 Q 239.0,220 251.0,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 245.6,34 Q 230,220 237.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 0.0s;" />
+      <path d="M 241.7,34 Q 223.0,220 232.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 249.5,34 Q 237.0,220 241.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 6: center x=250 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 244.6,34 Q 241.0,220 243.25,400 L 256.75,400 Q 259.0,220 255.4,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 250.0,34 Q 250,220 250.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 0.45s;" />
+      <path d="M 246.1,34 Q 243.0,220 245.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 253.9,34 Q 257.0,220 254.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 7: center x=270 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 249.0,34 Q 261.0,220 256.25,400 L 269.75,400 Q 279.0,220 259.8,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 254.4,34 Q 270,220 263.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 0.9s;" />
+      <path d="M 250.5,34 Q 263.0,220 258.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 258.3,34 Q 277.0,220 267.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 8: center x=290 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 253.4,34 Q 281.0,220 269.25,400 L 282.75,400 Q 299.0,220 264.2,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 258.8,34 Q 290,220 276.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 1.35s;" />
+      <path d="M 254.9,34 Q 283.0,220 271.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 262.7,34 Q 297.0,220 280.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 9: center x=310 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 257.8,34 Q 301.0,220 282.25,400 L 295.75,400 Q 319.0,220 268.59999999999997,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 263.2,34 Q 310,220 289.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 0.0s;" />
+      <path d="M 259.3,34 Q 303.0,220 284.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 267.09999999999997,34 Q 317.0,220 293.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 10: center x=330 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 262.20000000000005,34 Q 321.0,220 295.25,400 L 308.75,400 Q 339.0,220 273.0,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 267.6,34 Q 330,220 302.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 0.45s;" />
+      <path d="M 263.70000000000005,34 Q 323.0,220 297.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 271.5,34 Q 337.0,220 306.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Rib 11: center x=350 -->
+    <g class="fluted-rib-assembly">
+      <path d="M 266.6,34 Q 341.0,220 308.25,400 L 321.75,400 Q 359.0,220 277.4,34 Z" fill="url(#ribGlassGrad)" opacity="0.95" />
+      <path d="M 272.0,34 Q 350,220 315.0,400" fill="none" stroke="url(#liquidCoreGrad)" stroke-width="3" stroke-linecap="round" class="rib-fluid-core" style="animation-delay: 0.9s;" />
+      <path d="M 268.1,34 Q 343.0,220 310.05,400" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.2" />
+      <path d="M 275.9,34 Q 357.0,220 319.95,400" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="0.8" />
+    </g>
+    <!-- Specular Light Sheen Across Crystal Droplet -->
+    <rect x="-100" y="-100" width="700" height="600" fill="url(#specularSweepGrad)" class="droplet-sheen-sweep" pointer-events="none" />
+  </g>
+
+  <!-- Outer Glass Wall & Specular Highlights -->
+  <path d="M 250,38 C 256,48 376,176 376,276 C 376,346 320,396 250,396 C 180,396 124,346 124,276 C 124,176 244,48 250,38 Z" fill="none" stroke="url(#dropletWallGrad)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 248,46 C 243,56 128,180 128,276 C 128,335 170,385 240,394" fill="none" stroke="rgba(255, 255, 255, 0.85)" stroke-width="2.5" stroke-linecap="round" opacity="0.95" />
+  <path d="M 252,46 C 257,56 372,180 372,276 C 372,335 330,385 260,394" fill="none" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.8" stroke-linecap="round" opacity="0.75" />
+
+  <!-- Liquid Pouring Drips / Tendrils -->
+  <g class="slow-pour-drips-group">
+    <path d="M 86.1,470 C 86.73333333333333,479.6 84.39,482.39 84.39,486 A 3.61,3.61 0 0,0 91.61,486 C 91.61,482.39 89.26666666666667,479.6 89.9,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 0.0s;" />
+    <circle cx="88" cy="487.2635" r="1.444" fill="#ffffff" opacity="0.9" />
+    <path d="M 109.9,470 C 110.6,482.0 108.01,486.01 108.01,490 A 3.9899999999999998,3.9899999999999998 0 0,0 115.99,490 C 115.99,486.01 113.4,482.0 114.1,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 0.35s;" />
+    <circle cx="112" cy="491.3965" r="1.596" fill="#ffffff" opacity="0.9" />
+    <path d="M 136.5,470 C 137.0,477.2 135.15,479.15 135.15,482 A 2.8499999999999996,2.8499999999999996 0 0,0 140.85,482 C 140.85,479.15 139.0,477.2 139.5,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 0.7s;" />
+    <circle cx="138" cy="482.9975" r="1.14" fill="#ffffff" opacity="0.9" />
+    <path d="M 155.75,470 C 156.5,483.2 153.725,487.725 153.725,492 A 4.2749999999999995,4.2749999999999995 0 0,0 162.275,492 C 162.275,487.725 159.5,483.2 160.25,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 1.0499999999999998s;" />
+    <circle cx="158" cy="493.49625" r="1.71" fill="#ffffff" opacity="0.9" />
+    <path d="M 178.25,470 C 178.83333333333334,479.6 176.675,482.675 176.675,486 A 3.3249999999999997,3.3249999999999997 0 0,0 183.325,486 C 183.325,482.675 181.16666666666666,479.6 181.75,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 1.4s;" />
+    <circle cx="180" cy="487.16375" r="1.33" fill="#ffffff" opacity="0.9" />
+    <path d="M 200.25,470 C 200.83333333333334,478.4 198.675,480.675 198.675,484 A 3.3249999999999997,3.3249999999999997 0 0,0 205.325,484 C 205.325,480.675 203.16666666666666,478.4 203.75,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 0.0s;" />
+    <circle cx="202" cy="485.16375" r="1.33" fill="#ffffff" opacity="0.9" />
+    <path d="M 224.75,470 C 225.5,485.0 222.725,490.725 222.725,495 A 4.2749999999999995,4.2749999999999995 0 0,0 231.275,495 C 231.275,490.725 228.5,485.0 229.25,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 0.35s;" />
+    <circle cx="227" cy="496.49625" r="1.71" fill="#ffffff" opacity="0.9" />
+    <path d="M 248.5,470 C 249.0,477.2 247.15,479.15 247.15,482 A 2.8499999999999996,2.8499999999999996 0 0,0 252.85,482 C 252.85,479.15 251.0,477.2 251.5,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 0.7s;" />
+    <circle cx="250" cy="482.9975" r="1.14" fill="#ffffff" opacity="0.9" />
+    <path d="M 272.0,470 C 272.6666666666667,480.2 270.2,483.2 270.2,487 A 3.8,3.8 0 0,0 277.8,487 C 277.8,483.2 275.3333333333333,480.2 276.0,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 1.0499999999999998s;" />
+    <circle cx="274" cy="488.33" r="1.52" fill="#ffffff" opacity="0.9" />
+    <path d="M 311.6,470 C 312.4,485.6 309.44,491.44 309.44,496 A 4.56,4.56 0 0,0 318.56,496 C 318.56,491.44 315.6,485.6 316.4,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 1.4s;" />
+    <circle cx="314" cy="497.596" r="1.8239999999999998" fill="#ffffff" opacity="0.9" />
+    <path d="M 344.0,470 C 344.6666666666667,479.0 342.2,481.2 342.2,485 A 3.8,3.8 0 0,0 349.8,485 C 349.8,481.2 347.3333333333333,479.0 348.0,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 0.0s;" />
+    <circle cx="346" cy="486.33" r="1.52" fill="#ffffff" opacity="0.9" />
+    <path d="M 375.9,470 C 376.6,481.4 374.01,485.01 374.01,489 A 3.9899999999999998,3.9899999999999998 0 0,0 381.99,489 C 381.99,485.01 379.4,481.4 380.1,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 0.35s;" />
+    <circle cx="378" cy="490.3965" r="1.596" fill="#ffffff" opacity="0.9" />
+    <path d="M 405.75,470 C 406.5,483.8 403.725,488.725 403.725,493 A 4.2749999999999995,4.2749999999999995 0 0,0 412.275,493 C 412.275,488.725 409.5,483.8 410.25,470 Z" fill="url(#dripFlowGrad)" class="liquid-drop-tendril" style="animation-delay: 0.7s;" />
+    <circle cx="408" cy="494.49625" r="1.71" fill="#ffffff" opacity="0.9" />
+  </g>
+
+  <!-- Primary Wordmark: KINETIC POUR -->
+  <text x="250" y="468" text-anchor="middle" font-family="'Space Grotesk', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="44" letter-spacing="3.5" fill="#fbf1e2" filter="url(#kpEmberGlow)">KINETIC POUR</text>
+
+  <!-- Subtitle: ENGINEERED FLUIDICS -->
+  <text x="250" y="506" text-anchor="middle" font-family="'Space Grotesk', 'JetBrains Mono', sans-serif" font-weight="700" font-size="14" letter-spacing="7.5" fill="#ead0b3" opacity="0.95" filter="drop-shadow(0 0 10px rgba(255, 170, 0, 0.5))">ENGINEERED FLUIDICS</text>
+</svg>
         </div>
       </div>
 
