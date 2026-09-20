@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KINETIC POUR // Automated Drink-Dispensing Table (Team Avengers)</title>
+  <title>KINETIC POUR // Automated Drink-Dispensing Table</title>
   
   <!-- Fonts: Plus Jakarta Sans, Space Grotesk, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,12 +11,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
   <!-- Cache Control to prevent stale browser cache -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
   <!-- CSS with Version Cache-Buster -->
-  <link rel="stylesheet" href="static/css/chromatic_void.css?v=5.0">
+  <link rel="stylesheet" href="static/css/chromatic_void.css?v=6.0">
   
   <!-- Embedded Liquid Glass Touchscreen Styles (Guarantees Instant Render) -->
   <style>
@@ -965,6 +965,493 @@
       transform: translateX(4px) !important;
       box-shadow: 0 4px 18px rgba(0, 240, 255, 0.28) !important;
     }
+
+    /* ==========================================================================
+       FLUTED OPTICAL GLASS & INFRARED FLUIDIC CONDUIT HERO EXPERIENCE
+       ========================================================================== */
+    .hero-portal.fluted-hero-experience {
+      position: relative !important;
+      min-height: 94vh !important;
+      padding: 120px 1.5rem 50px !important;
+      background: radial-gradient(circle at 50% 12%, rgba(255, 59, 20, 0.1) 0%, #070709 68%) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      overflow: hidden !important;
+      z-index: 1 !important;
+    }
+
+    .hero-fluted-glass-grid {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 24px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    .hero-ambient-prism-glow {
+      position: absolute;
+      top: 25%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 85vw; max-width: 1200px; height: 380px;
+      background: radial-gradient(ellipse at center, rgba(255, 59, 20, 0.16) 0%, rgba(255, 170, 0, 0.08) 50%, transparent 75%);
+      filter: blur(75px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* LAYER 1: ARCHITECTURAL BACKGROUND LETTERS */
+    .hero-bg-text-layer {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      max-width: 1550px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.5rem;
+      pointer-events: none;
+      z-index: 1;
+      user-select: none;
+    }
+
+    .hero-bg-text-layer .bg-char {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(5rem, 12vw, 14.5rem);
+      font-weight: 900;
+      line-height: 0.9;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255, 59, 20, 0.15);
+      text-shadow: 0 0 30px rgba(255, 59, 20, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    /* LAYER 2: CLEAN PERIMETER FLUIDIC CONDUITS (FRAMES THE HERO CLEANLY) */
+    .hero-tubes-stage {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-tubes-svg {
+      width: 100%;
+      max-width: 1650px;
+      height: 100%;
+      max-height: 900px;
+      overflow: visible;
+    }
+
+    .glass-tube-outer {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.22);
+      stroke-width: 26px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.9));
+    }
+
+    .fluid-core-stream {
+      fill: none;
+      stroke-width: 13px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 220 60;
+      animation: fluidTransit 5s linear infinite;
+    }
+
+    .fluid-core-stream.fluid-vermilion {
+      stroke: url(#vermilionFluidGrad);
+      filter: drop-shadow(0 0 16px #ff3b14);
+      animation-duration: 4.8s;
+    }
+    .fluid-core-stream.fluid-amber {
+      stroke: url(#amberFluidGrad);
+      filter: drop-shadow(0 0 16px #ffaa00);
+      animation-duration: 5.4s;
+    }
+
+    .glass-specular-highlight {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.8);
+      stroke-width: 2.5px;
+      stroke-linecap: round;
+      opacity: 0.85;
+    }
+
+    @keyframes fluidTransit {
+      0% { stroke-dashoffset: 1600; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    /* LAYER 3: FOREGROUND TEXT CONSOLE (CLEAN, FOCUSED, MAXIMUM READABILITY) */
+    .hero-glass-console {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 980px;
+      width: 100%;
+      margin: 0 auto;
+      background: rgba(12, 12, 16, 0.82);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      padding: 2.6rem 3rem;
+      box-shadow: 
+        0 24px 60px rgba(0, 0, 0, 0.9), 
+        inset 0 1px 2px rgba(255, 255, 255, 0.25), 
+        0 0 45px rgba(255, 59, 20, 0.1);
+    }
+
+    .hero-chip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.4rem 1.1rem;
+      border-radius: 999px;
+      background: rgba(18, 18, 24, 0.85);
+      border: 1px solid rgba(255, 59, 20, 0.4);
+      box-shadow: 0 0 18px rgba(255, 59, 20, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      margin-bottom: 1.1rem;
+    }
+    .hero-chip-badge .chip-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ff3b14;
+      box-shadow: 0 0 10px #ff3b14;
+      animation: pulseVermilion 1.4s infinite alternate;
+    }
+    @keyframes pulseVermilion {
+      0% { transform: scale(0.85); opacity: 0.8; box-shadow: 0 0 6px #ff3b14; }
+      100% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 14px #ff3b14; }
+    }
+    .hero-chip-badge span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #ff5722;
+      text-transform: uppercase;
+    }
+
+    .hero-brand-lockup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-display-subtitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .hero-display-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5.2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 0.2rem 0;
+    }
+
+    .word-kinetic-anchor {
+      color: #ffffff;
+      text-shadow: 0 0 35px rgba(255, 255, 255, 0.4);
+    }
+
+    .word-pour-prism {
+      background: linear-gradient(135deg, #ffffff 10%, #ff5722 55%, #ff3b14 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 35px rgba(255, 59, 20, 0.45);
+      position: relative;
+    }
+
+    .hero-editorial-lead {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(0.72rem, 1.2vw, 0.85rem);
+      color: #cbd5e1;
+      letter-spacing: 0.08em;
+      margin-top: 0.2rem;
+    }
+
+    .hero-desc-clean {
+      font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+      color: #e2e8f0;
+      max-width: 820px;
+      line-height: 1.7;
+      margin: 0.9rem auto 1.8rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .hero-cta-cluster {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.2rem;
+    }
+
+    .btn-fluted-primary {
+      background: linear-gradient(135deg, #ff3b14 0%, #ff5722 100%);
+      border: 1.5px solid #ff3b14;
+      border-radius: 12px;
+      padding: 0.85rem 1.8rem;
+      color: #ffffff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 25px rgba(255, 59, 20, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+      transition: all 0.25s ease;
+    }
+    .btn-fluted-primary:hover {
+      background: #ff5722;
+      box-shadow: 0 0 40px rgba(255, 59, 20, 0.7);
+      transform: translateY(-2px);
+    }
+
+    .btn-fluted-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 0.85rem 1.6rem;
+      color: #f1f5f9;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      transition: all 0.25s ease;
+    }
+    .btn-fluted-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-fluted-operator {
+      background: rgba(255, 59, 20, 0.08);
+      border: 1.5px solid rgba(255, 59, 20, 0.4);
+      border-radius: 12px;
+      padding: 0.85rem 1.5rem;
+      color: #ff5722;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      backdrop-filter: blur(16px);
+      transition: all 0.25s ease;
+    }
+    .btn-fluted-operator:hover {
+      background: rgba(255, 59, 20, 0.2);
+      border-color: #ff3b14;
+      box-shadow: 0 0 20px rgba(255, 59, 20, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .fluted-telemetry-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+      width: 100%;
+    }
+
+    .fluted-telemetry-card {
+      background: rgba(18, 18, 24, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+      transition: all 0.25s ease;
+    }
+    .fluted-telemetry-card:hover {
+      border-color: rgba(255, 59, 20, 0.4);
+      box-shadow: 0 12px 36px rgba(255, 59, 20, 0.18);
+      transform: translateY(-2px);
+    }
+
+    .fluted-telemetry-card .telemetry-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.08em;
+    }
+    .fluted-telemetry-card .telemetry-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .fluted-telemetry-card .telemetry-num .unit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #ffaa00;
+      font-weight: 600;
+    }
+
+    @media (max-width: 992px) {
+      .hero-glass-console { padding: 2rem 1.5rem; }
+      .fluted-telemetry-row { grid-template-columns: repeat(2, 1fr); }
+      .hero-bg-text-layer .bg-char { font-size: 11vw; }
+      .hero-display-title { font-size: 3rem; }
+    }
+    @media (max-width: 600px) {
+      .fluted-telemetry-row { grid-template-columns: 1fr; }
+      .hero-cta-cluster { flex-direction: column; width: 100%; }
+      .btn-fluted-primary, .btn-fluted-secondary, .btn-fluted-operator { width: 100%; justify-content: center; }
+    }
+
+    /* Hero Interactive Logo Emblem & Scroll Animation */
+    .hero-logo-emblem-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.4rem;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .logo-ambient-halo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 145%;
+      height: 145%;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(255, 59, 20, 0.42) 0%, rgba(255, 170, 0, 0.16) 45%, transparent 72%);
+      filter: blur(28px);
+      pointer-events: none;
+      z-index: 0;
+      transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+    }
+
+    .hero-interactive-logo {
+      position: relative;
+      z-index: 1;
+      width: 185px;
+      max-width: 32vw;
+      height: auto;
+      border-radius: 22px;
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 
+        0 14px 35px rgba(0, 0, 0, 0.85),
+        0 0 35px rgba(255, 59, 20, 0.22),
+        inset 0 1px 2px rgba(255, 255, 255, 0.25);
+      transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s ease;
+      will-change: transform;
+      background: #000;
+    }
+
+    .hero-logo-emblem-wrap:hover .hero-interactive-logo {
+      box-shadow: 
+        0 22px 50px rgba(0, 0, 0, 0.95),
+        0 0 55px rgba(255, 59, 20, 0.45),
+        inset 0 1px 3px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Navbar Brand Icon */
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1.5px solid rgba(255, 59, 20, 0.5);
+      box-shadow: 0 0 12px rgba(255, 59, 20, 0.35);
+      transition: all 0.25s ease;
+    }
+    .nav-brand:hover .nav-brand-icon {
+      transform: scale(1.08) rotate(3deg);
+      border-color: #ff3b14;
+      box-shadow: 0 0 20px rgba(255, 59, 20, 0.6);
+    }
+
+    /* Scroll Indicator at bottom of Hero */
+    .hero-scroll-indicator {
+      margin-top: 1.8rem;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      text-decoration: none;
+    }
+    .hero-scroll-indicator:hover {
+      opacity: 1;
+      transform: translateY(3px);
+    }
+    .hero-scroll-indicator span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+    .scroll-arrow-drip {
+      width: 20px;
+      height: 20px;
+      color: #ff5722;
+      animation: dripBounce 1.8s infinite ease-in-out;
+    }
+    @keyframes dripBounce {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50% { transform: translateY(6px); opacity: 1; filter: drop-shadow(0 0 6px #ff3b14); }
+    }
   </style>
   
   <!-- Three.js and OrbitControls -->
@@ -976,7 +1463,7 @@
   <!-- Navigation Bar -->
   <header class="navbar">
     <div class="nav-brand">
-      <span class="brand-badge">CAPSTONE 2026</span>
+      <img src="static/images/kinetic_pour_rich_pour_master.jpg" alt="Kinetic Pour Emblem" class="nav-brand-icon">
       <span class="brand-title">KINETIC POUR</span>
     </div>
 
@@ -1000,46 +1487,148 @@
   </header>
 
   <!-- ==========================================================================
-       1. HERO SECTION WITH CADENCE ANIMATED MOVING BACKGROUND
+       1. HERO SECTION: 3D TRANSLUCENT FLUIDIC TUBING & FLUTED GLASS ARCHITECTURE
+          - LAYER 1 (z:1): Background Architectural Letters [K I N E T I C]
+          - LAYER 2 (z:2): 3D Translucent Glass Tubes with Animated Flowing Liquid (Overlays KINETIC)
+          - LAYER 3 (z:3): Foreground Title [POUR], Controls & Telemetry Deck (Overlays the Tubes)
        ========================================================================== -->
-  <section id="portal" class="hero-portal">
-    <!-- Cadence Animated Canvas -->
-    <canvas id="cadence-canvas"></canvas>
+  <section id="portal" class="hero-portal fluted-hero-experience">
+    <!-- Ambient Infrared Caustics Glow & Fluted Glass Slats -->
+    <div class="hero-fluted-glass-grid"></div>
+    <div class="hero-ambient-prism-glow"></div>
 
-    <div class="hero-tag">
-      <span>AUTONOMOUS FLUIDIC SYSTEM // UC SENIOR DESIGN CAPSTONE</span>
+    <!-- LAYER 1: ARCHITECTURAL BACKGROUND LETTERS -->
+    <div class="hero-bg-text-layer" aria-hidden="true">
+      <span class="bg-char">K</span>
+      <span class="bg-char">I</span>
+      <span class="bg-char">N</span>
+      <span class="bg-char">E</span>
+      <span class="bg-char">T</span>
+      <span class="bg-char">I</span>
+      <span class="bg-char">C</span>
     </div>
 
-    <h1 class="hero-headline">
-      AUTOMATED DRINK TABLE <br>
-      <span class="accent">KINETIC POUR</span>
-    </h1>
+    <!-- LAYER 2: CLEAN PERIMETER FLUIDIC CONDUITS (FRAMES THE HERO WITHOUT OBSCURING TEXT) -->
+    <div class="hero-tubes-stage">
+      <svg class="hero-tubes-svg" viewBox="0 0 1600 750" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Signature Infrared Vermilion & Warm Amber Gradients -->
+          <linearGradient id="vermilionFluidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff8a65" stop-opacity="0.95" />
+            <stop offset="50%" stop-color="#ff5722" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#ff3b14" stop-opacity="0.95" />
+          </linearGradient>
 
-    <p class="hero-subtitle">
-      Engineered by Team Avengers for University of Cincinnati Senior Design (MECH5051 / EECE5001). Precision 8-bottle cocktail synthesizer featuring an in-house 3D printed reservoir crate, GROTHEN 24V peristaltic pumps, inline check-valves, custom mixing manifold, and stepper-driven linear elevator.
-    </p>
+          <linearGradient id="amberFluidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fef08a" stop-opacity="0.95" />
+            <stop offset="50%" stop-color="#ffaa00" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#d97706" stop-opacity="0.95" />
+          </linearGradient>
 
-    <!-- Real-Time Telemetry Status Bar -->
-    <div class="hero-telemetry-bar">
-      <div class="telemetry-pill">
-        <div class="label">RESERVOIR STATUS</div>
-        <div class="val">8 BOTTLES <span>750ml</span></div>
+          <!-- Glass Tube Outer Wall Gradient -->
+          <linearGradient id="glassWallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)" />
+            <stop offset="35%" stop-color="rgba(255, 255, 255, 0.08)" />
+            <stop offset="70%" stop-color="rgba(255, 255, 255, 0.04)" />
+            <stop offset="100%" stop-color="rgba(255, 255, 255, 0.3)" />
+          </linearGradient>
+        </defs>
+
+        <!-- TUBE 1: INFRARED VERMILION CONDUIT (Upper perimeter arch, framing the top) -->
+        <g class="tube-assembly">
+          <path d="M -40 140 C 350 40, 750 170, 1250 80 C 1450 40, 1580 110, 1640 120" 
+                class="glass-tube-outer" stroke="url(#glassWallGrad)" stroke-width="28" />
+          <path d="M -40 140 C 350 40, 750 170, 1250 80 C 1450 40, 1580 110, 1640 120" 
+                class="fluid-core-stream fluid-vermilion" />
+          <path d="M -40 133 C 350 33, 750 163, 1250 73 C 1450 33, 1580 103, 1640 113" 
+                class="glass-specular-highlight" />
+        </g>
+
+        <!-- TUBE 2: WARM AMBER CONDUIT (Lower perimeter arch, framing the bottom) -->
+        <g class="tube-assembly">
+          <path d="M -40 690 C 360 740, 780 630, 1180 720 C 1420 780, 1580 690, 1640 700" 
+                class="glass-tube-outer" stroke="url(#glassWallGrad)" stroke-width="26" />
+          <path d="M -40 690 C 360 740, 780 630, 1180 720 C 1420 780, 1580 690, 1640 700" 
+                class="fluid-core-stream fluid-amber" />
+          <path d="M -40 683 C 360 733, 780 623, 1180 713 C 1420 773, 1580 683, 1640 693" 
+                class="glass-specular-highlight" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- LAYER 3: FOREGROUND TEXT CONSOLE (CLEAN, FOCUSED, ZERO VISUAL OBSTRUCTION) -->
+    <div class="hero-glass-console">
+      <!-- Interactive Logo Emblem with Dynamic Scroll Parallax & 3D Tilt -->
+      <div class="hero-logo-emblem-wrap" id="hero-logo-wrap" title="Kinetic Pour // Engineered Fluidics">
+        <div class="logo-ambient-halo" id="logo-ambient-halo"></div>
+        <img src="static/images/kinetic_pour_rich_pour_master.jpg" 
+             alt="Kinetic Pour Fluted Glass Droplet Logo" 
+             class="hero-interactive-logo" 
+             id="hero-logo-img">
       </div>
 
-      <div class="telemetry-pill ultraviolet">
-        <div class="label">DOSING PUMP ARRAY</div>
-        <div class="val">8x GROTHEN <span>24V PWM</span></div>
+      <div class="hero-chip-badge">
+        <span class="chip-dot"></span>
+        <span>AUTONOMOUS FLUIDIC SYSTEM // UC SENIOR DESIGN</span>
       </div>
 
-      <div class="telemetry-pill">
-        <div class="label">LINEAR ELEVATOR</div>
-        <div class="val">T8 SCREW <span>100mm</span></div>
+      <div class="hero-brand-lockup">
+        <div class="hero-display-subtitle">AUTOMATED DRINK TABLE</div>
+        <h1 class="hero-display-title">
+          <span class="word-kinetic-anchor">KINETIC</span>
+          <span class="word-pour-prism">POUR</span>
+        </h1>
+        <div class="hero-editorial-lead">8-BOTTLE MICRO-PERISTALTIC RESYNTHESIZER &bull; T8 LINEAR GANTRY</div>
       </div>
 
-      <div class="telemetry-pill ultraviolet">
-        <div class="label">PLC FIRMWARE</div>
-        <div class="val" style="color: var(--status-green);">ESP32 BUS <span>ONLINE</span></div>
+      <p class="hero-desc-clean">
+        Engineered for University of Cincinnati Senior Design (MECH5051 / EECE5001). 
+        A closed-loop fluidic instrument coupling an in-house 3D printed reservoir crate, eight GROTHEN 24V PWM dosing pumps, inline anti-cavitation check valves, precision manifold, and lead-screw elevator carriage.
+      </p>
+
+      <div class="hero-cta-cluster">
+        <button class="btn-fluted-primary" onclick="focusSubsystem('all'); document.getElementById('simulation').scrollIntoView({behavior: 'smooth'});">
+          LAUNCH 3D DIGITAL TWIN
+        </button>
+        <button class="btn-fluted-secondary" onclick="focusSubsystem('bottling'); document.getElementById('simulation').scrollIntoView({behavior: 'smooth'});">
+          8-BOTTLE CRATE CAD
+        </button>
+        <a href="https://rohendhar.github.io/jarvis-operator/" target="_blank" class="btn-fluted-operator">
+          OPERATOR PORTAL ↗
+        </a>
       </div>
+
+      <!-- Real-Time Telemetry Bar in Fluted Glass Aesthetics -->
+      <div class="fluted-telemetry-row">
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">RESERVOIR CAPACITY</div>
+          <div class="telemetry-num">8 BOTTLES <span class="unit">750 mL</span></div>
+        </div>
+
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">DOSING ARRAY</div>
+          <div class="telemetry-num">8x GROTHEN <span class="unit">24V PWM</span></div>
+        </div>
+
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">ELEVATOR GANTRY</div>
+          <div class="telemetry-num">T8 SCREW <span class="unit">100 mm</span></div>
+        </div>
+
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">FLUIDICS CORE</div>
+          <div class="telemetry-num" style="color: #ff5722;">ONLINE <span class="unit" style="color: #ffaa00;">ESP32 PLC</span></div>
+        </div>
+      </div>
+
+      <!-- Interactive Scroll Down Prompt -->
+      <a href="#simulation" class="hero-scroll-indicator" onclick="document.getElementById('simulation').scrollIntoView({behavior: 'smooth'}); return false;">
+        <span>EXPLORE 3D DIGITAL TWIN &amp; HMI</span>
+        <svg class="scroll-arrow-drip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </a>
     </div>
   </section>
 
@@ -1531,9 +2120,9 @@
   <!-- Footer -->
   <footer>
     <div class="footer-info">
-      <div style="font-weight: 700; color: #fff;">KINETIC POUR // PROJECT AVENGERS</div>
+      <div style="font-weight: 700; color: #fff;">KINETIC POUR // AUTOMATED DRINK TABLE</div>
       <div style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem;">
-        MECH5051 / EECE5001 &bull; <span class="uc">UNIVERSITY OF CINCINNATI</span> &bull; 2026
+        MECH5051 / EECE5001 &bull; <span class="uc">UNIVERSITY OF CINCINNATI</span> &bull; SENIOR DESIGN CAPSTONE
       </div>
     </div>
 
@@ -1741,6 +2330,79 @@
         }, 700);
       });
     }
+
+    // 3. Hero Logo Scroll Parallax & 3D Interactive Tilt
+    function initLogoScrollInteraction() {
+      const logoImg = document.getElementById('hero-logo-img');
+      const logoHalo = document.getElementById('logo-ambient-halo');
+      const logoWrap = document.getElementById('hero-logo-wrap');
+      const heroSection = document.getElementById('portal');
+      if (!logoImg || !heroSection) return;
+
+      let scrollProgress = 0;
+      let targetTiltX = 0, targetTiltY = 0;
+      let currentTiltX = 0, currentTiltY = 0;
+      let isMouseOver = false;
+
+      function onScroll() {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        const heroHeight = heroSection.offsetHeight || 800;
+        scrollProgress = Math.min(Math.max(scrollY / heroHeight, 0), 1);
+        applyTransform();
+      }
+
+      function applyTransform() {
+        const translateY = scrollProgress * 120;
+        const scale = 1 - (scrollProgress * 0.14);
+        const rotateZ = (scrollProgress * 4.5);
+        const opacity = Math.max(0.2, 1 - (scrollProgress * 0.75));
+
+        logoImg.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale}) rotate(${rotateZ}deg) rotateX(${currentTiltX.toFixed(2)}deg) rotateY(${currentTiltY.toFixed(2)}deg)`;
+        logoImg.style.opacity = opacity;
+
+        if (logoHalo) {
+          const haloScale = 1 + (scrollProgress * 0.45);
+          const haloOpacity = Math.max(0, 1 - (scrollProgress * 0.85));
+          logoHalo.style.transform = `translate(-50%, -50%) translate3d(0, ${translateY * 0.7}px, 0) scale(${haloScale})`;
+          logoHalo.style.opacity = haloOpacity;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      if (logoWrap) {
+        logoWrap.addEventListener('mousemove', function (e) {
+          isMouseOver = true;
+          const rect = logoWrap.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const deltaX = (e.clientX - centerX) / (rect.width / 2);
+          const deltaY = (e.clientY - centerY) / (rect.height / 2);
+
+          targetTiltY = deltaX * 16;
+          targetTiltX = -deltaY * 16;
+        });
+
+        logoWrap.addEventListener('mouseleave', function () {
+          isMouseOver = false;
+          targetTiltX = 0;
+          targetTiltY = 0;
+        });
+
+        function animatePhysics() {
+          const lerpFactor = isMouseOver ? 0.12 : 0.08;
+          currentTiltX += (targetTiltX - currentTiltX) * lerpFactor;
+          currentTiltY += (targetTiltY - currentTiltY) * lerpFactor;
+
+          applyTransform();
+          requestAnimationFrame(animatePhysics);
+        }
+        requestAnimationFrame(animatePhysics);
+      }
+
+      onScroll();
+    }
+    initLogoScrollInteraction();
   </script>
 </body>
 </html>
