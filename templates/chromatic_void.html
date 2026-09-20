@@ -1453,237 +1453,6 @@
       0%, 100% { transform: translateY(0); opacity: 0.6; }
       50% { transform: translateY(6px); opacity: 1; filter: drop-shadow(0 0 6px #ff3b14); }
     }
-
-    /* ==========================================================================
-       CINEMATIC PROMOTIONAL TOUR & 1080P VIDEO HUD (16:9 Widescreen)
-       ========================================================================== */
-    .btn-fluted-video {
-      background: linear-gradient(135deg, rgba(255, 59, 20, 0.25) 0%, rgba(255, 170, 0, 0.2) 100%) !important;
-      border: 1.5px solid #ffaa00 !important;
-      border-radius: 12px !important;
-      padding: 0.85rem 1.8rem !important;
-      color: #fff !important;
-      font-family: 'Space Grotesk', sans-serif !important;
-      font-size: 0.88rem !important;
-      font-weight: 700 !important;
-      letter-spacing: 0.08em !important;
-      cursor: pointer !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 10px !important;
-      box-shadow: 0 0 25px rgba(255, 170, 0, 0.35) !important;
-      transition: all 0.25s ease !important;
-    }
-    .btn-fluted-video:hover {
-      background: linear-gradient(135deg, #ffaa00 0%, #ff3b14 100%) !important;
-      transform: translateY(-2px) scale(1.03) !important;
-      box-shadow: 0 0 35px rgba(255, 59, 20, 0.6) !important;
-      color: #000 !important;
-    }
-
-    .btn-promo-primary {
-      background: linear-gradient(135deg, #ff3b14 0%, #ff5722 100%);
-      border: 1px solid #ff3b14;
-      border-radius: 8px;
-      color: #fff;
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: 0.82rem;
-      letter-spacing: 0.06em;
-      padding: 0.55rem 1.2rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 0 15px rgba(255, 59, 20, 0.35);
-      transition: all 0.2s ease;
-    }
-    .btn-promo-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 22px rgba(255, 59, 20, 0.65);
-    }
-
-    .btn-promo-record {
-      background: rgba(220, 38, 38, 0.2);
-      border: 1px solid #ef4444;
-      border-radius: 8px;
-      color: #fca5a5;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      font-size: 0.8rem;
-      letter-spacing: 0.06em;
-      padding: 0.55rem 1.2rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-    }
-    .btn-promo-record:hover {
-      background: #ef4444;
-      color: #fff;
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.7);
-    }
-
-    /* Cinematic HUD Overlay on 3D Viewport */
-    .promo-hud-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      pointer-events: none;
-      z-index: 50;
-      display: none;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 1.5rem;
-      background: radial-gradient(circle at center, transparent 65%, rgba(0, 0, 0, 0.6) 100%);
-      transition: opacity 0.3s ease;
-    }
-    .promo-hud-overlay.active {
-      display: flex;
-    }
-
-    .promo-hud-tl {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .rec-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0.3rem 0.8rem;
-      border-radius: 6px;
-      background: rgba(10, 12, 18, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      color: #e2e8f0;
-      width: fit-content;
-    }
-    .rec-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #ffaa00;
-      box-shadow: 0 0 8px #ffaa00;
-    }
-    .rec-indicator.recording .rec-dot {
-      background: #ef4444;
-      box-shadow: 0 0 12px #ef4444;
-      animation: recPulse 1s infinite alternate;
-    }
-    @keyframes recPulse {
-      0% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0.3; transform: scale(0.85); }
-    }
-    .rec-timer {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      color: #94a3b8;
-      letter-spacing: 0.08em;
-      padding-left: 0.5rem;
-    }
-
-    /* Top Right Watermark */
-    .promo-hud-tr {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(8, 10, 16, 0.75);
-      border: 1px solid rgba(255, 59, 20, 0.35);
-      padding: 0.35rem 0.85rem;
-      border-radius: 8px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-    }
-    .promo-watermark-droplet {
-      height: 28px;
-      width: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 0 6px rgba(255, 59, 20, 0.6));
-    }
-    .promo-watermark-text {
-      height: 14px;
-      width: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 0 6px rgba(255, 59, 20, 0.5));
-    }
-
-    /* Bottom Scene Title Card */
-    .promo-hud-bottom {
-      align-self: center;
-      text-align: center;
-      background: rgba(8, 10, 16, 0.88);
-      border: 1px solid rgba(255, 59, 20, 0.45);
-      border-radius: 12px;
-      padding: 0.8rem 1.8rem;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 59, 20, 0.2);
-      max-width: 650px;
-      width: 90%;
-    }
-    .promo-scene-badge {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      color: #ffffff;
-      text-shadow: 0 0 12px rgba(255, 59, 20, 0.6);
-      margin-bottom: 0.2rem;
-    }
-    .promo-scene-sub {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.74rem;
-      color: #cbd5e1;
-      letter-spacing: 0.08em;
-      margin-bottom: 0.6rem;
-    }
-    .promo-progress-bar {
-      width: 100%;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .promo-progress-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #ff3b14, #ffaa00);
-      box-shadow: 0 0 8px #ffaa00;
-      transition: width 0.1s linear;
-    }
-
-    /* Tour Controls */
-    .promo-hud-controls {
-      position: absolute;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      pointer-events: auto;
-    }
-    .promo-ctrl-btn {
-      background: rgba(20, 24, 36, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.4rem 0.9rem;
-      border-radius: 6px;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.2s ease;
-    }
-    .promo-ctrl-btn:hover {
-      background: rgba(239, 68, 68, 0.35);
-      border-color: #ef4444;
-      color: #fca5a5;
-    }
   </style>
   
   <!-- Three.js and OrbitControls -->
@@ -1814,9 +1583,6 @@
       </p>
 
       <div class="hero-cta-cluster">
-        <button class="btn-fluted-video" onclick="startPromoTourAndScroll()">
-          ▶ WATCH PROMO VIDEO (USER &amp; FLUID POV)
-        </button>
         <button class="btn-fluted-primary" onclick="focusSubsystem('all'); document.getElementById('simulation').scrollIntoView({behavior: 'smooth'});">
           LAUNCH 3D DIGITAL TWIN
         </button>
@@ -1877,13 +1643,7 @@
         </p>
       </div>
 
-      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-        <button id="btn-promo-tour" class="btn-promo-primary" onclick="startPromoTour(false)">
-          ▶ PLAY PROMOTIONAL TOUR
-        </button>
-        <button id="btn-promo-record" class="btn-promo-record" onclick="startPromoTour(true)">
-          ⏺ RECORD 1080p VIDEO (.WEBM)
-        </button>
+      <div>
         <button id="btn-xray" class="btn-secondary" onclick="toggleXRay()">
           X-RAY: ACTIVE
         </button>
@@ -1895,38 +1655,6 @@
       <div class="sim-viewport-wrapper" id="three-viewport">
         <canvas id="three-canvas"></canvas>
 
-        <!-- Cinematic Promo HUD Overlay (16:9 Broadcast Quality) -->
-        <div id="promo-hud-overlay" class="promo-hud-overlay">
-          <!-- Top Left: Recording Telemetry & Timer -->
-          <div class="promo-hud-tl">
-            <div class="rec-indicator" id="promo-rec-indicator">
-              <span class="rec-dot"></span>
-              <span id="promo-rec-label">CINEMATIC PROMO TOUR</span>
-            </div>
-            <div class="rec-timer" id="promo-rec-timer">00:00.0 // 60 FPS • 1080p (16:9)</div>
-          </div>
-
-          <!-- Top Right: Authentic Kinetic Pour Logo Watermark -->
-          <div class="promo-hud-tr">
-            <img src="static/images/kinetic_pour_droplet_transparent.png" alt="Kinetic Pour" class="promo-watermark-droplet">
-            <img src="static/images/kinetic_pour_nav_wordmark_transparent.png" alt="Kinetic Pour" class="promo-watermark-text">
-          </div>
-
-          <!-- Bottom Center: Active Scene Title & Subtitle Card -->
-          <div class="promo-hud-bottom" id="promo-scene-card">
-            <div class="promo-scene-badge" id="promo-scene-badge">SCENE 01 // KINETIC POUR ARCHITECTURE</div>
-            <div class="promo-scene-sub" id="promo-scene-sub">CLOSED-LOOP AUTOMATED FLUIDIC SYSTEM // UC SENIOR DESIGN</div>
-            <div class="promo-progress-bar"><div class="promo-progress-fill" id="promo-progress-fill"></div></div>
-          </div>
-
-          <!-- Floating Tour Controls -->
-          <div class="promo-hud-controls">
-            <button class="promo-ctrl-btn promo-stop-btn" onclick="stopPromoTour()" title="Exit Cinematic Mode">
-              ✕ EXIT TOUR
-            </button>
-          </div>
-        </div>
-
         <div class="viewport-hud">
           <div class="hud-badge">
             <span id="view-badge">FULL SYSTEM // TABLE CUTAWAY</span>
@@ -1937,12 +1665,6 @@
           <div class="focus-pills">
             <button id="btn-focus-all" class="focus-btn active" onclick="focusSubsystem('all')">
               TABLE OVERVIEW
-            </button>
-            <button id="btn-focus-user_pov" class="focus-btn" onclick="focusSubsystem('user_pov')">
-              USER POV (HMI)
-            </button>
-            <button id="btn-focus-fluid_pov" class="focus-btn" onclick="focusSubsystem('fluid_pov')">
-              FLUID POV (CONDUIT)
             </button>
             <button id="btn-focus-bottling" class="focus-btn" onclick="focusSubsystem('bottling')">
               8-BOTTLE 3D CRATE
