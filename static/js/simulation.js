@@ -64,6 +64,8 @@
   // Subsystem Camera Preset Positions
   const CAMERA_VIEWS = {
     all: { pos: new THREE.Vector3(0, 170, 240), target: new THREE.Vector3(0, 45, 0), name: "FULL SYSTEM // TABLE CUTAWAY" },
+    user_pov: { pos: new THREE.Vector3(46, 118, 75), target: new THREE.Vector3(50, 102, 38), name: "USER POV // LIQUID GLASS HMI" },
+    fluid_pov: { pos: new THREE.Vector3(-22, 92, 42), target: new THREE.Vector3(0, 80, 0), name: "FLUID POV // INTERNAL CONDUIT FLOW" },
     bottling: { pos: new THREE.Vector3(-65, 95, 115), target: new THREE.Vector3(-45, 35, 0), name: "BOTTLING BAY // 8-BOTTLE 3D CRATE" },
     manifold: { pos: new THREE.Vector3(0, 130, 80), target: new THREE.Vector3(0, 78, 0), name: "FLUIDICS // 8-PORT MANIFOLD & PUMPS" },
     lift: { pos: new THREE.Vector3(45, 90, 85), target: new THREE.Vector3(0, 50, 0), name: "MECHANICAL // LEAD SCREW ELEVATOR" },
@@ -204,6 +206,84 @@
     const rimMesh = new THREE.Mesh(rimGeom, new THREE.MeshBasicMaterial({ color: 0xff3b14, side: THREE.DoubleSide }));
     rimMesh.position.set(0, 100.1, 0);
     tableGroup.add(rimMesh);
+
+    // 3D Liquid Glass HMI Touchscreen Tablet mounted on Tabletop
+    const tabletGroup = new THREE.Group();
+    tabletGroup.position.set(50, 102, 38);
+    tabletGroup.rotation.x = -Math.PI / 6.5; // Angled toward user
+    tabletGroup.rotation.y = -Math.PI / 14;  // Angled inward
+    tableGroup.add(tabletGroup);
+
+    // Tablet Aluminum/Obsidian Chassis
+    const tabletBase = new THREE.Mesh(new THREE.BoxGeometry(38, 25, 2.2), matObsidian);
+    tabletGroup.add(tabletBase);
+
+    // Tablet Bezel Rim
+    const bezel = new THREE.Mesh(new THREE.BoxGeometry(36.8, 23.8, 2.4), new THREE.MeshStandardMaterial({
+      color: 0x181824,
+      metalness: 0.9,
+      roughness: 0.2
+    }));
+    tabletGroup.add(bezel);
+
+    // Luminous Screen Surface with Dynamic Canvas UI Texture
+    const hmiCanvas = document.createElement('canvas');
+    hmiCanvas.width = 512;
+    hmiCanvas.height = 340;
+    const hmiCtx = hmiCanvas.getContext('2d');
+
+    updateHmiTexture = function(recipeName, activeBottles) {
+      if (!hmiCtx) return;
+      hmiCtx.fillStyle = '#06070a';
+      hmiCtx.fillRect(0, 0, 512, 340);
+
+      // Top bar with telemetry
+      hmiCtx.fillStyle = '#10141f';
+      hmiCtx.fillRect(0, 0, 512, 45);
+      hmiCtx.fillStyle = '#ff3b14';
+      hmiCtx.font = 'bold 15px monospace';
+      hmiCtx.fillText('KINETIC POUR OS // CAPACITIVE OLED • 120Hz', 20, 28);
+
+      // Selected Recipe Badge
+      hmiCtx.fillStyle = 'rgba(255, 59, 20, 0.2)';
+      hmiCtx.strokeStyle = '#ff3b14';
+      hmiCtx.lineWidth = 2;
+      hmiCtx.fillRect(20, 60, 472, 75);
+      hmiCtx.strokeRect(20, 60, 472, 75);
+      hmiCtx.fillStyle = '#ffffff';
+      hmiCtx.font = 'bold 26px sans-serif';
+      hmiCtx.fillText('ORDER: ' + (recipeName || 'OLD FASHIONED'), 38, 108);
+
+      // 8 Reservoir Level Gauges
+      for (let i = 0; i < 8; i++) {
+        const bx = 20 + i * 59;
+        const isActive = activeBottles && activeBottles.includes(i);
+        hmiCtx.fillStyle = isActive ? '#ffaa00' : 'rgba(255, 255, 255, 0.08)';
+        hmiCtx.fillRect(bx, 155, 48, 140);
+        if (isActive) {
+          hmiCtx.strokeStyle = '#ff3b14';
+          hmiCtx.lineWidth = 2;
+          hmiCtx.strokeRect(bx, 155, 48, 140);
+        }
+        hmiCtx.fillStyle = '#cbd5e1';
+        hmiCtx.font = 'bold 13px monospace';
+        hmiCtx.fillText('B' + (i+1), bx + 15, 320);
+      }
+      if (hmiScreenTexture) hmiScreenTexture.needsUpdate = true;
+    };
+
+    hmiScreenTexture = new THREE.CanvasTexture(hmiCanvas);
+    updateHmiTexture("OLD FASHIONED", [0, 7]);
+
+    const screenMat = new THREE.MeshBasicMaterial({ map: hmiScreenTexture });
+    const screenMesh = new THREE.Mesh(new THREE.PlaneGeometry(35, 22), screenMat);
+    screenMesh.position.z = 1.25;
+    tabletGroup.add(screenMesh);
+
+    // Glass Sheen Reflection
+    const glassSheen = new THREE.Mesh(new THREE.PlaneGeometry(35, 22), matGlass);
+    glassSheen.position.z = 1.35;
+    tabletGroup.add(glassSheen);
 
     // 4 Corner Legs
     const legGeom = new THREE.CylinderGeometry(3.5, 3.5, 96, 16);
@@ -873,14 +953,438 @@
 
   let clock = new THREE.Clock();
 
+  // ==========================================================================
+  // CINEMATIC PROMOTIONAL DIRECTOR & 1080P VIDEO RECORDER
+  // High-End Commercial Showcase featuring User POV & Fluid POV
+  // ==========================================================================
+  let isPromoTourActive = false;
+  let promoTourTime = 0;
+  const promoTourDuration = 38.0;
+  let currentSceneIndex = -1;
+  let isRecordingVideo = false;
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let promoAudioCtx = null;
+  let promoAudioDest = null;
+  let synthGain = null;
+
+  function initPromoAudio() {
+    if (promoAudioCtx) return;
+    try {
+      const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtxClass) return;
+      promoAudioCtx = new AudioCtxClass();
+      promoAudioDest = promoAudioCtx.createMediaStreamDestination();
+      synthGain = promoAudioCtx.createGain();
+      synthGain.gain.setValueAtTime(0.3, promoAudioCtx.currentTime);
+      synthGain.connect(promoAudioCtx.destination);
+      synthGain.connect(promoAudioDest);
+    } catch (e) {
+      console.warn("Web Audio not supported:", e);
+    }
+  }
+
+  function playSynthChime(freq) {
+    if (!promoAudioCtx) return;
+    try {
+      const now = promoAudioCtx.currentTime;
+      const osc = promoAudioCtx.createOscillator();
+      const gain = promoAudioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq || 580, now);
+      osc.frequency.exponentialRampToValueAtTime((freq || 580) * 1.5, now + 0.35);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+      osc.connect(gain);
+      gain.connect(synthGain);
+      osc.start(now);
+      osc.stop(now + 0.85);
+    } catch (e) {}
+  }
+
+  function playFluidWhoosh() {
+    if (!promoAudioCtx) return;
+    try {
+      const now = promoAudioCtx.currentTime;
+      const bufferSize = promoAudioCtx.sampleRate * 2.5;
+      const buffer = promoAudioCtx.createBuffer(1, bufferSize, promoAudioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = promoAudioCtx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = promoAudioCtx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(320, now);
+      filter.frequency.exponentialRampToValueAtTime(950, now + 1.2);
+      filter.frequency.exponentialRampToValueAtTime(240, now + 2.4);
+      filter.Q.value = 3.5;
+
+      const gain = promoAudioCtx.createGain();
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.35, now + 0.8);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.4);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(synthGain);
+      noise.start(now);
+      noise.stop(now + 2.5);
+    } catch (e) {}
+  }
+
+  function playServoSound() {
+    if (!promoAudioCtx) return;
+    try {
+      const now = promoAudioCtx.currentTime;
+      const osc = promoAudioCtx.createOscillator();
+      const gain = promoAudioCtx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.linearRampToValueAtTime(220, now + 1.5);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+      osc.connect(gain);
+      gain.connect(synthGain);
+      osc.start(now);
+      osc.stop(now + 2.1);
+    } catch (e) {}
+  }
+
+  function playOutroChord() {
+    if (!promoAudioCtx) return;
+    try {
+      const now = promoAudioCtx.currentTime;
+      [261.63, 329.63, 392.00, 523.25].forEach((freq, idx) => {
+        const osc = promoAudioCtx.createOscillator();
+        const gain = promoAudioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 3.2);
+        osc.connect(gain);
+        gain.connect(synthGain);
+        osc.start(now + idx * 0.08);
+        osc.stop(now + 3.4);
+      });
+    } catch (e) {}
+  }
+
+  // 6 Choreographed Scenes for the Promotional Tour
+  const PROMO_SCENES = [
+    {
+      id: "overview",
+      start: 0.0,
+      end: 6.0,
+      title: "SCENE 01 // KINETIC POUR ARCHITECTURE",
+      subtitle: "CLOSED-LOOP AUTOMATED FLUIDIC SYSTEM // UC SENIOR DESIGN",
+      getCamera: function (progress) {
+        const angle = 0.85 + progress * 0.4;
+        const radius = 245 - progress * 20;
+        return {
+          pos: new THREE.Vector3(Math.sin(angle) * radius, 165 - progress * 20, Math.cos(angle) * radius),
+          target: new THREE.Vector3(0, 48, 0)
+        };
+      },
+      onEnter: function () {
+        if (!isXRay) window.toggleXRay();
+        playSynthChime(440);
+      }
+    },
+    {
+      id: "user_pov",
+      start: 6.0,
+      end: 13.0,
+      title: "SCENE 02 // USER POV: CAPACITIVE LIQUID GLASS HMI",
+      subtitle: "AUTONOMOUS RECIPE SELECTION • 120Hz TOUCH SURFACE",
+      getCamera: function (progress) {
+        const t = easeInOutQuad(progress);
+        const p1 = new THREE.Vector3(45, 150, 160);
+        const p2 = new THREE.Vector3(47, 118, 76);
+        const pos = new THREE.Vector3().lerpVectors(p1, p2, t);
+        const target = new THREE.Vector3(50, 102, 38);
+        return { pos, target };
+      },
+      onEnter: function () {
+        playSynthChime(660);
+        if (window.selectRecipeHmi) {
+          const btn = document.querySelector('.hmi-drink-btn');
+          window.selectRecipeHmi('Old Fashioned', [0, 7], 'a84200', btn);
+        }
+        if (updateHmiTexture) updateHmiTexture('Old Fashioned', [0, 7]);
+      }
+    },
+    {
+      id: "crate_and_pumps",
+      start: 13.0,
+      end: 20.0,
+      title: "SCENE 03 // INTERNAL ROBOTICS: 8-BOTTLE CRATE & DOSING ARRAY",
+      subtitle: "MODULAR CARTRIDGE // 8x GROTHEN 24V PWM PERISTALTIC PUMPS",
+      getCamera: function (progress) {
+        const t = easeInOutQuad(progress);
+        const p1 = new THREE.Vector3(-75, 100, 115);
+        const p2 = new THREE.Vector3(-45, 82, 65);
+        const pos = new THREE.Vector3().lerpVectors(p1, p2, t);
+        const target = new THREE.Vector3(-42, 42, 0);
+        return { pos, target };
+      },
+      onEnter: function () {
+        playSynthChime(520);
+        if (!cupPresent && window.placeDrinkCup) {
+          window.placeDrinkCup();
+        }
+      }
+    },
+    {
+      id: "fluid_pov",
+      start: 20.0,
+      end: 28.0,
+      title: "SCENE 04 // FLUID POV: CLOSED-LOOP CONDUIT FLOW",
+      subtitle: "MICRO-DROPLET LAMINAR SURGE // ZERO CROSS-CONTAMINATION",
+      getCamera: function (progress) {
+        if (tubeCurves && tubeCurves.length > 0) {
+          const curve = tubeCurves[0];
+          const curveT = Math.min(0.96, Math.max(0.04, progress * 0.92));
+          const pt = curve.getPoint(curveT);
+          const nextPt = curve.getPoint(Math.min(1.0, curveT + 0.08));
+          const camPos = new THREE.Vector3(pt.x + 2.2, pt.y + 1.8, pt.z + 3.5);
+          return { pos: camPos, target: nextPt };
+        }
+        return { pos: new THREE.Vector3(-22, 92, 42), target: new THREE.Vector3(0, 80, 0) };
+      },
+      onEnter: function () {
+        playFluidWhoosh();
+        if (window.startDispenseCycle && (cycleState === STATE_IDLE || cycleState === STATE_COMPLETE)) {
+          window.startDispenseCycle();
+        }
+      }
+    },
+    {
+      id: "dispense",
+      start: 28.0,
+      end: 33.0,
+      title: "SCENE 05 // LEAD-SCREW ELEVATOR DISPENSING",
+      subtitle: "T8 STEPPER GANTRY // ANTI-CAVITATION CHECK VALVES",
+      getCamera: function (progress) {
+        const t = easeInOutQuad(progress);
+        const p1 = new THREE.Vector3(28, 68, 50);
+        const p2 = new THREE.Vector3(16, 56, 38);
+        const pos = new THREE.Vector3().lerpVectors(p1, p2, t);
+        const target = new THREE.Vector3(0, 48, 0);
+        return { pos, target };
+      },
+      onEnter: function () {
+        playServoSound();
+      }
+    },
+    {
+      id: "outro",
+      start: 33.0,
+      end: 38.0,
+      title: "SCENE 06 // KINETIC POUR // ENGINEERED FLUIDICS",
+      subtitle: "PRECISION AUTOMATION • 8-BOTTLE ARCHITECTURE • UC SENIOR DESIGN",
+      getCamera: function (progress) {
+        const t = easeInOutQuad(progress);
+        const p1 = new THREE.Vector3(45, 95, 120);
+        const p2 = new THREE.Vector3(0, 160, 230);
+        const pos = new THREE.Vector3().lerpVectors(p1, p2, t);
+        const target = new THREE.Vector3(0, 45, 0);
+        return { pos, target };
+      },
+      onEnter: function () {
+        playOutroChord();
+      }
+    }
+  ];
+
+  function updateCinematicPromoDirector(delta) {
+    promoTourTime += delta;
+    if (promoTourTime >= promoTourDuration) {
+      stopPromoTour();
+      return;
+    }
+
+    // Find active scene
+    let activeScene = null;
+    let sceneIndex = 0;
+    for (let i = 0; i < PROMO_SCENES.length; i++) {
+      const sc = PROMO_SCENES[i];
+      if (promoTourTime >= sc.start && promoTourTime < sc.end) {
+        activeScene = sc;
+        sceneIndex = i;
+        break;
+      }
+    }
+    if (!activeScene) activeScene = PROMO_SCENES[PROMO_SCENES.length - 1];
+
+    if (sceneIndex !== currentSceneIndex) {
+      currentSceneIndex = sceneIndex;
+      if (activeScene.onEnter) activeScene.onEnter();
+
+      // Update HUD Overlay
+      const badge = document.getElementById('promo-scene-badge');
+      const sub = document.getElementById('promo-scene-sub');
+      if (badge) badge.innerText = activeScene.title;
+      if (sub) sub.innerText = activeScene.subtitle;
+    }
+
+    // Interpolate camera
+    const sceneProgress = Math.max(0, Math.min(1, (promoTourTime - activeScene.start) / (activeScene.end - activeScene.start)));
+    const camState = activeScene.getCamera(sceneProgress);
+    camera.position.lerp(camState.pos, 0.08);
+    if (controls) {
+      controls.target.lerp(camState.target, 0.08);
+      controls.update();
+    }
+
+    // Update Progress Bar & Timer
+    const totalProgress = (promoTourTime / promoTourDuration) * 100;
+    const bar = document.getElementById('promo-progress-fill');
+    if (bar) bar.style.width = `${totalProgress}%`;
+
+    const timer = document.getElementById('promo-rec-timer');
+    if (timer) {
+      const s = Math.floor(promoTourTime);
+      const ms = Math.floor((promoTourTime % 1) * 10);
+      const strSec = String(s).padStart(2, '0');
+      timer.innerText = `00:${strSec}.${ms} // 60 FPS • 1080p`;
+    }
+  }
+
+  window.startPromoTour = function (isRecord) {
+    initPromoAudio();
+    if (promoAudioCtx && promoAudioCtx.state === 'suspended') {
+      promoAudioCtx.resume();
+    }
+
+    isPromoTourActive = true;
+    promoTourTime = 0;
+    currentSceneIndex = -1;
+    isRecordingVideo = Boolean(isRecord);
+
+    const hud = document.getElementById('promo-hud-overlay');
+    if (hud) hud.classList.add('active');
+
+    const recDot = document.getElementById('promo-rec-indicator');
+    const recLabel = document.getElementById('promo-rec-label');
+    if (recDot) recDot.classList.toggle('recording', isRecordingVideo);
+    if (recLabel) recLabel.innerText = isRecordingVideo ? "REC ● 1080p CAPTURE" : "CINEMATIC PROMO TOUR";
+
+    logTerminal("PROMO", isRecordingVideo ? "Started 60FPS High-Definition Video Recording" : "Launched Cinematic 3D Product Tour", "ok");
+
+    if (isRecordingVideo) {
+      startPromoVideoRecording();
+    }
+  };
+
+  window.stopPromoTour = function () {
+    isPromoTourActive = false;
+    currentSceneIndex = -1;
+
+    const hud = document.getElementById('promo-hud-overlay');
+    if (hud) hud.classList.remove('active');
+
+    if (isRecordingVideo) {
+      stopPromoVideoRecording();
+    }
+
+    // Restore table view
+    desiredCameraPos.copy(CAMERA_VIEWS.all.pos);
+    desiredCameraTarget.copy(CAMERA_VIEWS.all.target);
+    logTerminal("PROMO", "Cinematic Tour ended. Standard 3D navigation restored.", "info");
+  };
+
+  window.startPromoTourAndScroll = function () {
+    const simSection = document.getElementById('simulation');
+    if (simSection) {
+      simSection.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        window.startPromoTour(false);
+      }, 700);
+    }
+  };
+
+  function startPromoVideoRecording() {
+    const canvas = document.getElementById('three-canvas');
+    if (!canvas || !canvas.captureStream) {
+      alert("Canvas capture is not supported in this browser.");
+      isRecordingVideo = false;
+      return;
+    }
+
+    const stream = canvas.captureStream(60);
+    if (promoAudioDest && promoAudioDest.stream) {
+      const audioTrack = promoAudioDest.stream.getAudioTracks()[0];
+      if (audioTrack) stream.addTrack(audioTrack);
+    }
+
+    const mimeTypes = [
+      'video/webm;codecs=vp9,opus',
+      'video/webm;codecs=vp8,opus',
+      'video/webm',
+      'video/mp4'
+    ];
+    let selectedMime = '';
+    for (const m of mimeTypes) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported(m)) {
+        selectedMime = m;
+        break;
+      }
+    }
+
+    try {
+      mediaRecorder = new MediaRecorder(stream, {
+        mimeType: selectedMime || undefined,
+        videoBitsPerSecond: 12000000 // 12 Mbps broadcast quality
+      });
+    } catch (e) {
+      mediaRecorder = new MediaRecorder(stream);
+    }
+
+    recordedChunks = [];
+    mediaRecorder.ondataavailable = function (e) {
+      if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = function () {
+      const blob = new Blob(recordedChunks, { type: selectedMime || 'video/webm' });
+      const ext = (selectedMime && selectedMime.includes('mp4')) ? 'mp4' : 'webm';
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `kinetic_pour_promotional_commercial.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1000);
+      logTerminal("EXPORT", `Video saved as kinetic_pour_promotional_commercial.${ext} (${(blob.size / 1024 / 1024).toFixed(2)} MB)`, "ok");
+    };
+
+    mediaRecorder.start();
+  }
+
+  function stopPromoVideoRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+    isRecordingVideo = false;
+  }
+
   function animate() {
     requestAnimationFrame(animate);
     const delta = clock.getDelta();
 
-    camera.position.lerp(desiredCameraPos, 0.045);
-    if (controls) {
-      controls.target.lerp(desiredCameraTarget, 0.045);
-      controls.update();
+    if (isPromoTourActive) {
+      updateCinematicPromoDirector(delta);
+    } else {
+      camera.position.lerp(desiredCameraPos, 0.045);
+      if (controls) {
+        controls.target.lerp(desiredCameraTarget, 0.045);
+        controls.update();
+      }
     }
 
     updateDispenseCycle(delta);
