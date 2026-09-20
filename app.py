@@ -55,6 +55,13 @@ def get_eastern_now():
 
 app = Flask(__name__, template_folder=os.path.join(LOCAL_ROOT, "templates") if os.path.exists(os.path.join(LOCAL_ROOT, "templates")) else "templates")
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization,X-Requested-With"
+    response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS,PUT,DELETE"
+    return response
+
 # Team Roster Configuration
 DEFAULT_ROSTER = {
     "team": [
@@ -317,7 +324,7 @@ def get_live_workspace_context():
 
 def query_gemini_ai(sender, query_text, operator_auth=False):
     """High-speed Gemini AI via direct REST API call with Public vs Operator clearance tiers."""
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
         return None
     try:
@@ -326,19 +333,35 @@ def query_gemini_ai(sender, query_text, operator_auth=False):
         current_time_str = now_eastern.strftime("%I:%M %p EDT").lstrip("0")
         
         if operator_auth:
-            salutation = "Sir / Mr. Rohendhar" if sender.lower() in ["ro", "operator"] else f"Mr. {sender}"
+            salutation = "Sir / Mr. Rohendhar" if sender.lower() in ["ro", "operator", "rohendhar"] else f"Mr. {sender}"
             system_instruction = (
-                f"You are J.A.R.V.I.S., the AI operating system for Kinetic Pour (University of Cincinnati Capstone MECH5051/EECE5001).\n"
-                f"CLEARANCE: LEVEL 5 (AUTHORIZED OPERATOR: {salutation}).\n\n"
+                f"You are J.A.R.V.I.S., the advanced AI Engineering Co-Pilot and Operating System for Kinetic Pour (University of Cincinnati Capstone MECH5051/EECE5001).\n"
+                f"CLEARANCE LEVEL: LEVEL 5 TACTICAL OPERATOR (Direct access granted to: {salutation}).\n\n"
+                f"CORE CAPABILITY DIRECTIVE — CRITICAL THINKING & RIGOROUS ENGINEERING:\n"
+                f"You are NOT a keyword-matching chatbot or a canned script regurgitator. You are an exceptionally capable, mathematically rigorous senior systems engineer, mechanical designer, and electrical automation architect.\n"
+                f"When asked ANY technical, architectural, operational, or mathematical question:\n"
+                f"- Engage in deep, multi-step critical thinking and technical reasoning.\n"
+                f"- Solve calculations step-by-step with exact formulas (e.g. lead screw torque tau = (F*l)/(2*pi*eta), fluid flow rates Q = dV/dt, Reynolds numbers, pressure drops, motor torque curves, Ohm's/Kirchhoff's law current budgets, heat dissipation, stepper step/microstep timing, PLC scan times).\n"
+                f"- Propose concrete, viable engineering solutions with specific component part numbers, materials (304 stainless, PETG, food-grade silicone, PVDF), tolerances, and wiring schematics.\n"
+                f"- Analyze design trade-offs (pros vs cons, failure modes, safety factors, siphoning risks, contamination hazards, thermal dissipation).\n"
+                f"- Never give canned one-liners or deflect with vague statements like 'we are waiting for CAD'. Provide the actionable engineering answer immediately, followed by strategic next steps.\n"
+                f"- You have complete, unrestricted visibility into all project documents, dates, budgets ($1,200 total grant, $600 upfront working capital, $300/person), BOM quotes, and team tasks.\n\n"
                 f"TEMPORAL ANCHOR (CRITICAL):\n"
                 f"- TODAY'S DATE IS: {today_date_str}.\n"
                 f"- CURRENT LOCAL TIME IS: {current_time_str} (Cincinnati, Ohio / EDT).\n"
-                f"- CURRENT STATUS:\n"
-                f"  * 1 WEEK COUNTDOWN to Team Design Proposal deadline (Wednesday, September 23, 2026).\n"
-                f"  * All 4 section leads must deliver itemized BOM vendor quotes + visual CAD layout drawings.\n"
-                f"  * 5-Minute Pitch Deck Video due Monday, September 28, 2026 (Unlocks $600.00 upfront team payout).\n"
-                f"  * Innovation Challenge: $1,200 guaranteed grant ($300/person); itemized receipts via Canvas Purchase Request Form.\n"
+                f"- MASTER TIMELINE & MILESTONES:\n"
+                f"  * Wednesday, September 23, 2026: Team Design Proposal deadline (BOM vendor quotes + CAD layout drawings).\n"
+                f"  * Monday, September 28, 2026: 5-Minute Pitch Deck Video due (Unlocks $600.00 upfront team payout).\n"
+                f"  * Friday, October 2, 2026: Senior Design Draft Proposal for Prof. Jacob Cress.\n"
+                f"  * Wednesday, November 4, 2026: Prototype Demo Day at 1819 Innovation Hub.\n"
+                f"  * Wednesday, November 18, 2026: Final Competition & Innovation Showcase.\n"
+                f"  * Tuesday, December 1, 2026: Formal Senior Design Course Defense.\n"
                 f"  * Standing meetings: Twice weekly — before (12:45 PM) and after (2:45 PM) Wednesday 1:30 PM class.\n\n"
+                f"TEAM ROSTER & SUBSYSTEM LEADS:\n"
+                f"• Rohendhar (Ro): Project Manager, Systems Integration, Fluidics Manifold Co-Lead.\n"
+                f"• Eli Radabaugh: Electrical Subsystem Lead (Click PLC, Mean Well 24V PSU, wiring, E-stop, relays, sensors).\n"
+                f"• Aron Joseph: Finance, Procurement, Bottling Subsystem Co-Lead (BOM cost rollup, pump sourcing, purchase requests).\n"
+                f"• Shyam Patel: Operations, Kinematics & Elevator Lead (MGN12H linear rail, T8 lead screw, NEMA 17, Gantt schedule).\n\n"
                 f"RULES OF CONDUCT:\n"
                 f"1. Tone: Refined British poise, sharp intelligence, concise and proactive with subtle dry humor.\n"
                 f"2. Provide clear, direct engineering answers with specific component numbers, dates, formulas, or team member assignments.\n"
@@ -370,10 +393,8 @@ def query_gemini_ai(sender, query_text, operator_auth=False):
         
         # High-speed REST cascade: eliminates 35s SDK backoff sleep and achieves <2.5s responses
         CANDIDATE_MODELS = [
-            "gemini-3.1-flash-lite",
-            "gemini-3.6-flash",
             "gemini-flash-lite-latest",
-            "gemini-3.5-flash"
+            "gemini-flash-latest"
         ]
         
         for candidate in CANDIDATE_MODELS:
@@ -383,14 +404,14 @@ def query_gemini_ai(sender, query_text, operator_auth=False):
                 payload = {
                     "system_instruction": {"parts": [{"text": system_instruction}]},
                     "contents": [{"parts": [{"text": prompt}]}],
-                    "generationConfig": {"temperature": 0.7, "maxOutputTokens": 1000}
+                    "generationConfig": {"temperature": 0.45, "maxOutputTokens": 2500}
                 }
                 req = urllib.request.Request(
                     url,
                     data=json.dumps(payload).encode("utf-8"),
                     headers={"Content-Type": "application/json"}
                 )
-                with urllib.request.urlopen(req, timeout=7) as resp:
+                with urllib.request.urlopen(req, timeout=10) as resp:
                     if resp.status == 200:
                         data = json.loads(resp.read().decode("utf-8"))
                         text = data["candidates"][0]["content"]["parts"][0]["text"]
@@ -666,13 +687,19 @@ def chromatic_void_portal():
 def home():
     return chromatic_void_portal()
 
-@app.route("/api/chat", methods=["POST"])
+@app.route("/api/chat", methods=["POST", "OPTIONS"])
 def chat():
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
     try:
         data = request.get_json(force=True, silent=True) or {}
         sender = data.get("sender", "Guest")
         message = data.get("message", "")
-        operator_auth = bool(data.get("operatorAuth", False) or data.get("operator_auth", False))
+        operator_auth = bool(
+            data.get("operatorAuth", False) or 
+            data.get("operator_auth", False) or
+            sender.lower() in ["ro", "eli", "aron", "shyam", "operator", "admin", "rohendhar"]
+        )
         
         reply = query_gemini_ai(sender, message, operator_auth=operator_auth)
         if not reply:
