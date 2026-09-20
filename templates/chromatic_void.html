@@ -1003,32 +1003,35 @@
       z-index: 0;
     }
 
-    /* LAYER 1: ARCHITECTURAL BACKGROUND LETTERS */
-    .hero-bg-text-layer {
-      position: absolute;
-      top: 48%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%;
-      max-width: 1550px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 1.5rem;
-      pointer-events: none;
-      z-index: 1;
-      user-select: none;
+    /* ==========================================================================
+       HERO STAGE ARCHITECTURE: FLUTED GLASS VOID & INTEGRATED MASTERPIECE
+       ========================================================================== */
+    .fluted-hero-experience {
+      position: relative;
+      background-color: #000000;
+      background-image: 
+        radial-gradient(ellipse 95% 75% at 50% 36%, rgba(255, 59, 20, 0.16) 0%, rgba(255, 170, 0, 0.07) 38%, #000000 75%),
+        repeating-linear-gradient(90deg, 
+          transparent 0px, 
+          transparent 46px, 
+          rgba(255, 255, 255, 0.012) 47px, 
+          rgba(255, 255, 255, 0.026) 48px, 
+          rgba(255, 255, 255, 0.008) 49px, 
+          transparent 50px);
+      overflow: hidden;
     }
 
-    .hero-bg-text-layer .bg-char {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(5rem, 12vw, 14.5rem);
-      font-weight: 900;
-      line-height: 0.9;
-      color: transparent;
-      -webkit-text-stroke: 1.5px rgba(255, 59, 20, 0.15);
-      text-shadow: 0 0 30px rgba(255, 59, 20, 0.08);
-      transition: all 0.3s ease;
+    /* Ambient Core Furnace Caustics behind Masterpiece */
+    .hero-ambient-prism-glow {
+      position: absolute;
+      top: 36%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90vw; max-width: 1300px; height: 520px;
+      background: radial-gradient(ellipse at center, rgba(255, 59, 20, 0.22) 0%, rgba(255, 170, 0, 0.12) 40%, transparent 72%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: coreHaloBreathe 6s ease-in-out infinite alternate;
     }
 
     /* LAYER 2: CLEAN PERIMETER FLUIDIC CONDUITS (FRAMES THE HERO CLEANLY) */
@@ -1094,39 +1097,135 @@
       100% { stroke-dashoffset: 0; }
     }
 
-    /* LAYER 3: FOREGROUND TEXT CONSOLE (CLEAN, FOCUSED, MAXIMUM READABILITY) */
+    /* Seamless, Borderless Stage Console Plinth */
     .hero-glass-console {
       position: relative;
       z-index: 3;
       display: flex;
       flex-direction: column;
       align-items: center;
-      max-width: 980px;
+      max-width: 1040px;
       width: 100%;
       margin: 0 auto;
-      background: rgba(12, 12, 16, 0.82);
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      border: 1.5px solid rgba(255, 255, 255, 0.12);
-      border-radius: 28px;
-      padding: 2.6rem 3rem;
-      box-shadow: 
-        0 24px 60px rgba(0, 0, 0, 0.9), 
-        inset 0 1px 2px rgba(255, 255, 255, 0.25), 
-        0 0 45px rgba(255, 59, 20, 0.1);
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 2.2rem 1.5rem 2.8rem !important;
+      box-shadow: none !important;
     }
 
+    /* Integrated Masterpiece Stage (Droplet + Handcrafted Slow-Pour Wordmark) */
+    .hero-masterpiece-stage {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0.4rem auto 1.2rem;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Organic Pulsing Ambient Halo */
+    .masterpiece-ambient-halo {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(340px, 48vw, 640px);
+      height: clamp(340px, 48vw, 640px);
+      border-radius: 50%;
+      background: radial-gradient(circle at center, 
+        rgba(255, 59, 20, 0.48) 0%, 
+        rgba(255, 170, 0, 0.25) 32%, 
+        rgba(255, 59, 20, 0.08) 60%, 
+        transparent 75%);
+      filter: blur(45px);
+      pointer-events: none;
+      z-index: 0;
+      animation: coreHaloBreathe 4.5s ease-in-out infinite alternate;
+      transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+    }
+
+    @keyframes coreHaloBreathe {
+      0% { transform: translate(-50%, -50%) scale(0.88); opacity: 0.7; }
+      100% { transform: translate(-50%, -50%) scale(1.16); opacity: 1; filter: blur(52px); }
+    }
+
+    /* Masterpiece Artwork Container */
+    .masterpiece-canvas {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    /* Fluted Glass Droplet & Pouring Typography (Screens Seamlessly onto Void) */
+    .masterpiece-artwork-img {
+      display: block;
+      width: clamp(320px, 46vw, 560px);
+      height: auto;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      filter: drop-shadow(0 0 35px rgba(255, 59, 20, 0.5)) drop-shadow(0 0 15px rgba(255, 170, 0, 0.35));
+      transition: filter 0.35s ease;
+      pointer-events: auto;
+    }
+
+    .masterpiece-artwork-img:hover {
+      filter: drop-shadow(0 0 55px rgba(255, 59, 20, 0.8)) drop-shadow(0 0 28px rgba(255, 170, 0, 0.65));
+    }
+
+    /* Refractive Diagonal Sheen Sweep across Fluted Glass */
+    .masterpiece-sheen-sweep {
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 45%;
+      height: 100%;
+      background: linear-gradient(110deg, 
+        transparent 20%, 
+        rgba(255, 255, 255, 0.03) 35%, 
+        rgba(255, 255, 255, 0.22) 50%, 
+        rgba(255, 255, 255, 0.03) 65%, 
+        transparent 80%);
+      transform: skewX(-24deg);
+      pointer-events: none;
+      z-index: 2;
+      animation: flutedSheenSweep 5.5s ease-in-out infinite;
+    }
+
+    @keyframes flutedSheenSweep {
+      0% { left: -60%; opacity: 0; }
+      15% { opacity: 1; }
+      42% { left: 140%; opacity: 0; }
+      100% { left: 140%; opacity: 0; }
+    }
+
+    /* Chip Badge in Fluted Obsidian Style */
     .hero-chip-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 0.4rem 1.1rem;
+      padding: 0.42rem 1.2rem;
       border-radius: 999px;
-      background: rgba(18, 18, 24, 0.85);
-      border: 1px solid rgba(255, 59, 20, 0.4);
-      box-shadow: 0 0 18px rgba(255, 59, 20, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+      background: rgba(18, 18, 24, 0.7);
+      border: 1px solid rgba(255, 59, 20, 0.45);
+      box-shadow: 0 0 20px rgba(255, 59, 20, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(16px);
-      margin-bottom: 1.1rem;
+      margin-bottom: 0.8rem;
     }
     .hero-chip-badge .chip-dot {
       width: 8px; height: 8px;
@@ -1148,57 +1247,29 @@
       text-transform: uppercase;
     }
 
-    .hero-brand-lockup {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.3rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero-display-subtitle {
+    /* Architectural Subtitle & Specifications */
+    .hero-system-descriptor {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+      font-size: clamp(0.78rem, 1.3vw, 0.96rem);
       font-weight: 700;
       letter-spacing: 0.22em;
-      color: #94a3b8;
       text-transform: uppercase;
-    }
-
-    .hero-display-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.8rem, 6vw, 5.2rem);
-      font-weight: 900;
-      line-height: 1.05;
-      letter-spacing: -0.01em;
-      color: #fff;
+      color: #cbd5e1;
+      margin-top: 0.2rem;
+      margin-bottom: 0.9rem;
+      text-shadow: 0 0 20px rgba(255, 59, 20, 0.35);
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin: 0.2rem 0;
+      gap: 12px;
     }
-
-    .word-kinetic-anchor {
-      color: #ffffff;
-      text-shadow: 0 0 35px rgba(255, 255, 255, 0.4);
+    .hero-system-descriptor::before, .hero-system-descriptor::after {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 59, 20, 0.7));
     }
-
-    .word-pour-prism {
-      background: linear-gradient(135deg, #ffffff 10%, #ff5722 55%, #ff3b14 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 35px rgba(255, 59, 20, 0.45);
-      position: relative;
-    }
-
-    .hero-editorial-lead {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: clamp(0.72rem, 1.2vw, 0.85rem);
-      color: #cbd5e1;
-      letter-spacing: 0.08em;
-      margin-top: 0.2rem;
+    .hero-system-descriptor::after {
+      background: linear-gradient(90deg, rgba(255, 59, 20, 0.7), transparent);
     }
 
     .hero-desc-clean {
@@ -1335,65 +1406,15 @@
     }
 
     @media (max-width: 992px) {
-      .hero-glass-console { padding: 2rem 1.5rem; }
+      .hero-glass-console { padding: 1.5rem 1rem !important; }
       .fluted-telemetry-row { grid-template-columns: repeat(2, 1fr); }
-      .hero-bg-text-layer .bg-char { font-size: 11vw; }
-      .hero-display-title { font-size: 3rem; }
+      .masterpiece-artwork-img { width: 85vw; max-width: 440px; }
     }
     @media (max-width: 600px) {
       .fluted-telemetry-row { grid-template-columns: 1fr; }
       .hero-cta-cluster { flex-direction: column; width: 100%; }
       .btn-fluted-primary, .btn-fluted-secondary, .btn-fluted-operator { width: 100%; justify-content: center; }
-    }
-
-    /* Hero Interactive Logo Emblem & Scroll Animation */
-    .hero-logo-emblem-wrap {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.4rem;
-      perspective: 1000px;
-      cursor: pointer;
-    }
-
-    .logo-ambient-halo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 145%;
-      height: 145%;
-      border-radius: 50%;
-      background: radial-gradient(circle at center, rgba(255, 59, 20, 0.42) 0%, rgba(255, 170, 0, 0.16) 45%, transparent 72%);
-      filter: blur(28px);
-      pointer-events: none;
-      z-index: 0;
-      transition: transform 0.25s ease-out, opacity 0.25s ease-out;
-    }
-
-    .hero-interactive-logo {
-      position: relative;
-      z-index: 1;
-      width: 185px;
-      max-width: 32vw;
-      height: auto;
-      border-radius: 22px;
-      border: 1.5px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 
-        0 14px 35px rgba(0, 0, 0, 0.85),
-        0 0 35px rgba(255, 59, 20, 0.22),
-        inset 0 1px 2px rgba(255, 255, 255, 0.25);
-      transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s ease;
-      will-change: transform;
-      background: #000;
-    }
-
-    .hero-logo-emblem-wrap:hover .hero-interactive-logo {
-      box-shadow: 
-        0 22px 50px rgba(0, 0, 0, 0.95),
-        0 0 55px rgba(255, 59, 20, 0.45),
-        inset 0 1px 3px rgba(255, 255, 255, 0.4);
+      .hero-system-descriptor { font-size: 0.72rem; letter-spacing: 0.14em; }
     }
 
     /* Navbar Brand Icon */
@@ -1497,18 +1518,7 @@
     <div class="hero-fluted-glass-grid"></div>
     <div class="hero-ambient-prism-glow"></div>
 
-    <!-- LAYER 1: ARCHITECTURAL BACKGROUND LETTERS -->
-    <div class="hero-bg-text-layer" aria-hidden="true">
-      <span class="bg-char">K</span>
-      <span class="bg-char">I</span>
-      <span class="bg-char">N</span>
-      <span class="bg-char">E</span>
-      <span class="bg-char">T</span>
-      <span class="bg-char">I</span>
-      <span class="bg-char">C</span>
-    </div>
-
-    <!-- LAYER 2: CLEAN PERIMETER FLUIDIC CONDUITS (FRAMES THE HERO WITHOUT OBSCURING TEXT) -->
+    <!-- LAYER 2: CLEAN PERIMETER FLUIDIC CONDUITS (FRAMES THE HERO CLEANLY) -->
     <div class="hero-tubes-stage">
       <svg class="hero-tubes-svg" viewBox="0 0 1600 750" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -1556,29 +1566,28 @@
       </svg>
     </div>
 
-    <!-- LAYER 3: FOREGROUND TEXT CONSOLE (CLEAN, FOCUSED, ZERO VISUAL OBSTRUCTION) -->
+    <!-- LAYER 3: FOREGROUND CINEMATIC LOGO INTEGRATION (ZERO BOX, ZERO DUPLICATE TEXT) -->
     <div class="hero-glass-console">
-      <!-- Interactive Logo Emblem with Dynamic Scroll Parallax & 3D Tilt -->
-      <div class="hero-logo-emblem-wrap" id="hero-logo-wrap" title="Kinetic Pour // Engineered Fluidics">
-        <div class="logo-ambient-halo" id="logo-ambient-halo"></div>
-        <img src="static/images/kinetic_pour_rich_pour_master.jpg" 
-             alt="Kinetic Pour Fluted Glass Droplet Logo" 
-             class="hero-interactive-logo" 
-             id="hero-logo-img">
-      </div>
-
       <div class="hero-chip-badge">
         <span class="chip-dot"></span>
         <span>AUTONOMOUS FLUIDIC SYSTEM // UC SENIOR DESIGN</span>
       </div>
 
-      <div class="hero-brand-lockup">
-        <div class="hero-display-subtitle">AUTOMATED DRINK TABLE</div>
-        <h1 class="hero-display-title">
-          <span class="word-kinetic-anchor">KINETIC</span>
-          <span class="word-pour-prism">POUR</span>
-        </h1>
-        <div class="hero-editorial-lead">8-BOTTLE MICRO-PERISTALTIC RESYNTHESIZER &bull; T8 LINEAR GANTRY</div>
+      <!-- Integrated Hero Masterpiece (Droplet, Handcrafted Pouring Wordmark & Light Sheen) -->
+      <div class="hero-masterpiece-stage" id="hero-masterpiece-stage" title="Kinetic Pour // Automated Drink Table">
+        <div class="masterpiece-ambient-halo" id="masterpiece-halo"></div>
+        <div class="masterpiece-canvas" id="masterpiece-canvas">
+          <img src="static/images/kinetic_pour_rich_pour_master.jpg" 
+               alt="Kinetic Pour Fluted Droplet &amp; Slow Pour Typography" 
+               class="masterpiece-artwork-img" 
+               id="hero-masterpiece-img" />
+          <div class="masterpiece-sheen-sweep"></div>
+        </div>
+      </div>
+
+      <!-- Architectural Subtitle & Specifications -->
+      <div class="hero-system-descriptor">
+        AUTOMATED 8-BOTTLE MICRO-PERISTALTIC TABLE &bull; T8 LINEAR GANTRY
       </div>
 
       <p class="hero-desc-clean">
@@ -2331,13 +2340,13 @@
       });
     }
 
-    // 3. Hero Logo Scroll Parallax & 3D Interactive Tilt
+    // 3. Hero Masterpiece Scroll Parallax & 3D Interactive Tilt
     function initLogoScrollInteraction() {
-      const logoImg = document.getElementById('hero-logo-img');
-      const logoHalo = document.getElementById('logo-ambient-halo');
-      const logoWrap = document.getElementById('hero-logo-wrap');
+      const canvas = document.getElementById('masterpiece-canvas');
+      const halo = document.getElementById('masterpiece-halo');
+      const stage = document.getElementById('hero-masterpiece-stage');
       const heroSection = document.getElementById('portal');
-      if (!logoImg || !heroSection) return;
+      if (!canvas || !heroSection) return;
 
       let scrollProgress = 0;
       let targetTiltX = 0, targetTiltY = 0;
@@ -2346,59 +2355,59 @@
 
       function onScroll() {
         const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-        const heroHeight = heroSection.offsetHeight || 800;
+        const heroHeight = heroSection.offsetHeight || 850;
         scrollProgress = Math.min(Math.max(scrollY / heroHeight, 0), 1);
         applyTransform();
       }
 
       function applyTransform() {
-        const translateY = scrollProgress * 120;
-        const scale = 1 - (scrollProgress * 0.14);
-        const rotateZ = (scrollProgress * 4.5);
-        const opacity = Math.max(0.2, 1 - (scrollProgress * 0.75));
+        const translateY = scrollProgress * 150;
+        const scale = 1 - (scrollProgress * 0.12);
+        const rotateZ = (scrollProgress * 3.5);
+        const opacity = Math.max(0.1, 1 - (scrollProgress * 0.85));
 
-        logoImg.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale}) rotate(${rotateZ}deg) rotateX(${currentTiltX.toFixed(2)}deg) rotateY(${currentTiltY.toFixed(2)}deg)`;
-        logoImg.style.opacity = opacity;
+        canvas.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale}) rotate(${rotateZ}deg) rotateX(${currentTiltX.toFixed(2)}deg) rotateY(${currentTiltY.toFixed(2)}deg)`;
+        canvas.style.opacity = opacity;
 
-        if (logoHalo) {
-          const haloScale = 1 + (scrollProgress * 0.45);
-          const haloOpacity = Math.max(0, 1 - (scrollProgress * 0.85));
-          logoHalo.style.transform = `translate(-50%, -50%) translate3d(0, ${translateY * 0.7}px, 0) scale(${haloScale})`;
-          logoHalo.style.opacity = haloOpacity;
+        if (halo) {
+          const haloScale = 1 + (scrollProgress * 0.55);
+          const haloOpacity = Math.max(0, 1 - (scrollProgress * 0.9));
+          halo.style.transform = `translate(-50%, -50%) translate3d(0, ${translateY * 0.65}px, 0) scale(${haloScale})`;
+          halo.style.opacity = haloOpacity;
         }
       }
 
       window.addEventListener('scroll', onScroll, { passive: true });
 
-      if (logoWrap) {
-        logoWrap.addEventListener('mousemove', function (e) {
+      // Interactive 3D Cursor Tilt with Smooth Weighted Physics
+      window.addEventListener('mousemove', function (e) {
+        if (!stage) return;
+        const rect = stage.getBoundingClientRect();
+        if (e.clientY < window.innerHeight && rect.bottom > 0) {
           isMouseOver = true;
-          const rect = logoWrap.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
-          const deltaX = (e.clientX - centerX) / (rect.width / 2);
-          const deltaY = (e.clientY - centerY) / (rect.height / 2);
+          const deltaX = (e.clientX - centerX) / (window.innerWidth / 2);
+          const deltaY = (e.clientY - centerY) / (window.innerHeight / 2);
 
-          targetTiltY = deltaX * 16;
-          targetTiltX = -deltaY * 16;
-        });
-
-        logoWrap.addEventListener('mouseleave', function () {
+          targetTiltY = Math.max(-18, Math.min(18, deltaX * 16));
+          targetTiltX = Math.max(-18, Math.min(18, -deltaY * 16));
+        } else {
           isMouseOver = false;
           targetTiltX = 0;
           targetTiltY = 0;
-        });
-
-        function animatePhysics() {
-          const lerpFactor = isMouseOver ? 0.12 : 0.08;
-          currentTiltX += (targetTiltX - currentTiltX) * lerpFactor;
-          currentTiltY += (targetTiltY - currentTiltY) * lerpFactor;
-
-          applyTransform();
-          requestAnimationFrame(animatePhysics);
         }
+      });
+
+      function animatePhysics() {
+        const lerpFactor = isMouseOver ? 0.09 : 0.05;
+        currentTiltX += (targetTiltX - currentTiltX) * lerpFactor;
+        currentTiltY += (targetTiltY - currentTiltY) * lerpFactor;
+
+        applyTransform();
         requestAnimationFrame(animatePhysics);
       }
+      requestAnimationFrame(animatePhysics);
 
       onScroll();
     }
