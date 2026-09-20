@@ -108,8 +108,8 @@
     const height = container.clientHeight || 680;
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060608);
-    scene.fog = new THREE.FogExp2(0x060608, 0.0022);
+    scene.background = new THREE.Color(0x060609);
+    scene.fog = new THREE.FogExp2(0x060609, 0.0018);
 
     camera = new THREE.PerspectiveCamera(40, width / height, 1, 1500);
     camera.position.copy(CAMERA_VIEWS.all.pos);
@@ -124,7 +124,7 @@
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.25;
 
     if (window.THREE.OrbitControls) {
       controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -153,22 +153,26 @@
   }
 
   function setupLighting() {
-    scene.add(new THREE.AmbientLight(0x28202c, 1.4));
+    scene.add(new THREE.AmbientLight(0x221e2c, 1.8));
 
-    const keySpot = new THREE.SpotLight(0xff3b14, 4.0, 350, Math.PI / 3.8, 0.45, 1.2);
-    keySpot.position.set(70, 180, 110);
+    const keySpot = new THREE.SpotLight(0xff3b14, 4.8, 420, Math.PI / 3.6, 0.45, 1.2);
+    keySpot.position.set(80, 190, 120);
     keySpot.castShadow = true;
     keySpot.shadow.bias = -0.0008;
     keySpot.shadow.mapSize.width = 1024;
     keySpot.shadow.mapSize.height = 1024;
     scene.add(keySpot);
 
-    const uvPoint = new THREE.PointLight(0x8b24e3, 2.5, 260);
-    uvPoint.position.set(-85, 130, -70);
+    const uvPoint = new THREE.PointLight(0x8b24e3, 3.5, 300);
+    uvPoint.position.set(-90, 140, -80);
     scene.add(uvPoint);
 
+    const fillSpot = new THREE.SpotLight(0x00f0ff, 3.0, 350, Math.PI / 4, 0.5, 1.2);
+    fillSpot.position.set(-80, 180, 100);
+    scene.add(fillSpot);
+
     // Warm chamber light
-    const chamberLight = new THREE.PointLight(0xff5722, 2.5, 140);
+    const chamberLight = new THREE.PointLight(0xff5722, 3.2, 160);
     chamberLight.position.set(0, 95, 0);
     scene.add(chamberLight);
   }
@@ -202,7 +206,7 @@
     const rimGeom = new THREE.RingGeometry(18, 20.5, 48);
     rimGeom.rotateX(-Math.PI / 2);
     const rimMesh = new THREE.Mesh(rimGeom, new THREE.MeshBasicMaterial({ color: 0xff3b14, side: THREE.DoubleSide }));
-    rimMesh.position.set(0, 100.1, 0);
+    rimMesh.position.set(0, 106.05, 0);
     tableGroup.add(rimMesh);
 
 
@@ -297,7 +301,7 @@
         transparent: true,
         opacity: 0.85,
         emissive: cfg.color,
-        emissiveIntensity: 0.15
+        emissiveIntensity: 0.25
       });
       const liquidMesh = new THREE.Mesh(liquidGeom, liquidMat);
       liquidMesh.position.y = initialLiquidHeight / 2 + 0.5;
@@ -347,7 +351,7 @@
       );
       tubeCurves.push(curve);
 
-      const tubeGeom = new THREE.TubeGeometry(curve, 24, 0.65, 8, false);
+      const tubeGeom = new THREE.TubeGeometry(curve, 32, 0.65, 8, false);
       const tubeMesh = new THREE.Mesh(tubeGeom, matSiliconeTube);
       tableGroup.add(tubeMesh);
     });
@@ -369,7 +373,7 @@
         const beadMat = new THREE.MeshStandardMaterial({
           color: BOTTLE_CONFIGS[idx].color,
           emissive: BOTTLE_CONFIGS[idx].color,
-          emissiveIntensity: 0.9,
+          emissiveIntensity: 1.3,
           transparent: true,
           opacity: 0.95
         });
@@ -452,7 +456,7 @@
     const streamMat = new THREE.MeshStandardMaterial({
       color: 0xff3b14,
       emissive: 0xff3b14,
-      emissiveIntensity: 0.8,
+      emissiveIntensity: 0.9,
       transparent: true,
       opacity: 0.9
     });
@@ -516,9 +520,9 @@
         roughness: 0.1,
         metalness: 0.1,
         transparent: true,
-        opacity: 0.9,
+        opacity: 0.92,
         emissive: currentRecipe.blendColor,
-        emissiveIntensity: 0.25
+        emissiveIntensity: 0.35
       })
     );
     cupLiquidMesh.position.y = 6.5;
@@ -559,15 +563,15 @@
 
   function buildGroundGrid() {
     const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(1200, 1200),
-      new THREE.MeshStandardMaterial({ color: 0x050507, roughness: 0.9 })
+      new THREE.PlaneGeometry(1600, 1600),
+      new THREE.MeshStandardMaterial({ color: 0x040406, roughness: 0.95 })
     );
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -0.5;
     floor.receiveShadow = true;
     scene.add(floor);
 
-    const grid = new THREE.GridHelper(300, 30, 0xff3b14, 0x181822);
+    const grid = new THREE.GridHelper(320, 32, 0xff3b14, 0x181824);
     grid.position.y = 0;
     scene.add(grid);
   }
