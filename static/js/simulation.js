@@ -41,14 +41,14 @@
   const ELEVATOR_TOP_Y = 95;
   const ELEVATOR_BOTTOM_Y = 25;
 
-  // 8 Bottle Configurations (2x4 array)
+  // 8 Bottle Configurations (2x4 array) with Rich, Luminous Jewel-Tone Spirits
   const BOTTLE_CONFIGS = [
-    { id: 0, name: "Bourbon", color: 0x963600, row: 0, col: 0 },
-    { id: 1, name: "Vodka", color: 0xdde5ed, row: 0, col: 1 },
-    { id: 2, name: "Gin", color: 0x8a2be2, row: 0, col: 2 },
-    { id: 3, name: "Tequila", color: 0xe68a00, row: 0, col: 3 },
-    { id: 4, name: "Triple Sec", color: 0xffaa00, row: 1, col: 0 },
-    { id: 5, name: "Cranberry", color: 0xd61a3c, row: 1, col: 1 },
+    { id: 0, name: "Bourbon", color: 0xff6a00, row: 0, col: 0 },
+    { id: 1, name: "Vodka", color: 0xb8e8ff, row: 0, col: 1 },
+    { id: 2, name: "Gin", color: 0xa855f7, row: 0, col: 2 },
+    { id: 3, name: "Tequila", color: 0xf59e0b, row: 0, col: 3 },
+    { id: 4, name: "Triple Sec", color: 0xff7700, row: 1, col: 0 },
+    { id: 5, name: "Cranberry", color: 0xf43f5e, row: 1, col: 1 },
     { id: 6, name: "Tonic", color: 0x00f0ff, row: 1, col: 2 },
     { id: 7, name: "Citrus Sour", color: 0xffe600, row: 1, col: 3 }
   ];
@@ -57,7 +57,7 @@
   let currentRecipe = {
     name: "Old Fashioned",
     activeBottles: [0, 7], // Bourbon + Citrus
-    blendColor: 0xa84200,
+    blendColor: 0xff6a00,
     duration: 4.0
   };
 
@@ -74,24 +74,24 @@
   const matObsidian = new THREE.MeshStandardMaterial({ color: 0x101015, metalness: 0.85, roughness: 0.25 });
   const matBrushedMetal = new THREE.MeshStandardMaterial({ color: 0x909099, metalness: 0.95, roughness: 0.25 });
   const matSmokedAcrylic = new THREE.MeshPhysicalMaterial({
-    color: 0x0c0c14,
-    metalness: 0.15,
-    roughness: 0.08,
-    clearcoat: 0.9,
-    clearcoatRoughness: 0.08,
+    color: 0x161622,
+    metalness: 0.1,
+    roughness: 0.05,
+    clearcoat: 0.95,
+    clearcoatRoughness: 0.05,
     transparent: true,
-    opacity: 0.35
+    opacity: 0.12
   });
   const matPrintedPLA = new THREE.MeshStandardMaterial({ color: 0x22222a, roughness: 0.75, metalness: 0.15 });
   const matGlass = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
-    metalness: 0.08,
-    roughness: 0.04,
+    metalness: 0.05,
+    roughness: 0.02,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.04,
+    clearcoatRoughness: 0.03,
     transparent: true,
-    opacity: 0.22,
-    reflectivity: 0.9
+    opacity: 0.12,
+    reflectivity: 0.95
   });
   const matSiliconeTube = new THREE.MeshStandardMaterial({
     color: 0xffffff,
@@ -165,9 +165,9 @@
   }
 
   function setupLighting() {
-    scene.add(new THREE.AmbientLight(0x221e2c, 1.8));
+    scene.add(new THREE.AmbientLight(0x282035, 2.2));
 
-    const keySpot = new THREE.SpotLight(0xff3b14, 4.8, 420, Math.PI / 3.6, 0.45, 1.2);
+    const keySpot = new THREE.SpotLight(0xff3b14, 4.8, 450, Math.PI / 3.6, 0.45, 1.2);
     keySpot.position.set(80, 190, 120);
     keySpot.castShadow = true;
     keySpot.shadow.bias = -0.0008;
@@ -179,7 +179,7 @@
     uvPoint.position.set(-90, 140, -80);
     scene.add(uvPoint);
 
-    const fillSpot = new THREE.SpotLight(0x00f0ff, 3.0, 350, Math.PI / 4, 0.5, 1.2);
+    const fillSpot = new THREE.SpotLight(0x00f0ff, 3.2, 380, Math.PI / 4, 0.5, 1.2);
     fillSpot.position.set(-80, 180, 100);
     scene.add(fillSpot);
 
@@ -187,6 +187,15 @@
     const chamberLight = new THREE.PointLight(0xff5722, 3.2, 160);
     chamberLight.position.set(0, 95, 0);
     scene.add(chamberLight);
+
+    // Dedicated under-table illumination directly above the 8-bottle reservoir bay
+    const bottleBayLight = new THREE.PointLight(0xffffff, 3.8, 140);
+    bottleBayLight.position.set(-50, 48, 0);
+    scene.add(bottleBayLight);
+
+    const bottleUnderglow = new THREE.PointLight(0xff5722, 2.2, 90);
+    bottleUnderglow.position.set(-50, 14, 0);
+    scene.add(bottleUnderglow);
   }
 
   function buildTableStructure() {
@@ -308,12 +317,10 @@
       const liquidGeom = new THREE.CylinderGeometry(4.3, 4.3, initialLiquidHeight, 20);
       const liquidMat = new THREE.MeshStandardMaterial({
         color: cfg.color,
-        roughness: 0.15,
-        metalness: 0.1,
-        transparent: true,
-        opacity: 0.85,
+        roughness: 0.08,
+        metalness: 0.05,
         emissive: cfg.color,
-        emissiveIntensity: 0.25
+        emissiveIntensity: 0.75
       });
       const liquidMesh = new THREE.Mesh(liquidGeom, liquidMat);
       liquidMesh.position.y = initialLiquidHeight / 2 + 0.5;
@@ -517,7 +524,7 @@
 
     cupMesh = new THREE.Mesh(new THREE.CylinderGeometry(6.2, 5.0, 15, 24, 1, true), matGlass);
     cupMesh.position.y = 7.5;
-    cupMesh.castShadow = true;
+    cupMesh.castShadow = false;
     cupGroup.add(cupMesh);
 
     const cupBase = new THREE.Mesh(new THREE.CylinderGeometry(5.0, 5.0, 1.0, 24), matGlass);
@@ -529,12 +536,10 @@
       new THREE.CylinderGeometry(5.8, 4.8, 12, 24),
       new THREE.MeshStandardMaterial({
         color: currentRecipe.blendColor,
-        roughness: 0.1,
-        metalness: 0.1,
-        transparent: true,
-        opacity: 0.92,
+        roughness: 0.08,
+        metalness: 0.05,
         emissive: currentRecipe.blendColor,
-        emissiveIntensity: 0.35
+        emissiveIntensity: 0.7
       })
     );
     cupLiquidMesh.position.y = 6.5;
