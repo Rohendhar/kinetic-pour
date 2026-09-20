@@ -70,35 +70,38 @@
     plc: { pos: new THREE.Vector3(75, 60, 80), target: new THREE.Vector3(50, 25, -20), name: "ELECTRICAL // PLC & SENSORS" }
   };
 
-  // Material Library
+  // Material Library (High-Performance Clearcoat Physical Glass & Smoked Acrylic)
   const matObsidian = new THREE.MeshStandardMaterial({ color: 0x101015, metalness: 0.85, roughness: 0.25 });
   const matBrushedMetal = new THREE.MeshStandardMaterial({ color: 0x909099, metalness: 0.95, roughness: 0.25 });
   const matSmokedAcrylic = new THREE.MeshPhysicalMaterial({
-    color: 0x121218,
-    metalness: 0.1,
-    roughness: 0.1,
-    transmission: 0.88,
+    color: 0x0c0c14,
+    metalness: 0.15,
+    roughness: 0.08,
+    clearcoat: 0.9,
+    clearcoatRoughness: 0.08,
     transparent: true,
-    opacity: 0.4,
-    ior: 1.49
+    opacity: 0.35
   });
   const matPrintedPLA = new THREE.MeshStandardMaterial({ color: 0x22222a, roughness: 0.75, metalness: 0.15 });
   const matGlass = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
-    metalness: 0.05,
-    roughness: 0.05,
-    transmission: 0.95,
+    metalness: 0.08,
+    roughness: 0.04,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.04,
     transparent: true,
-    opacity: 0.85,
-    ior: 1.52
+    opacity: 0.22,
+    reflectivity: 0.9
   });
-  const matSiliconeTube = new THREE.MeshPhysicalMaterial({
+  const matSiliconeTube = new THREE.MeshStandardMaterial({
     color: 0xffffff,
-    transmission: 0.85,
-    opacity: 0.5,
     transparent: true,
-    roughness: 0.2
+    opacity: 0.45,
+    roughness: 0.2,
+    metalness: 0.1
   });
+
+  let isViewportVisible = true;
 
   function init() {
     const container = document.getElementById('three-viewport');
@@ -120,9 +123,9 @@
       powerPreference: 'high-performance'
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.25;
 
@@ -134,6 +137,15 @@
       controls.minDistance = 35;
       controls.maxDistance = 550;
       controls.target.copy(CAMERA_VIEWS.all.target);
+    }
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          isViewportVisible = entry.isIntersecting;
+        });
+      }, { threshold: 0.05 });
+      observer.observe(container);
     }
 
     setupLighting();
@@ -159,8 +171,8 @@
     keySpot.position.set(80, 190, 120);
     keySpot.castShadow = true;
     keySpot.shadow.bias = -0.0008;
-    keySpot.shadow.mapSize.width = 1024;
-    keySpot.shadow.mapSize.height = 1024;
+    keySpot.shadow.mapSize.width = 512;
+    keySpot.shadow.mapSize.height = 512;
     scene.add(keySpot);
 
     const uvPoint = new THREE.PointLight(0x8b24e3, 3.5, 300);
@@ -288,7 +300,7 @@
       const bodyGeom = new THREE.CylinderGeometry(4.6, 4.6, 24, 20);
       const bottleGlass = new THREE.Mesh(bodyGeom, matGlass);
       bottleGlass.position.y = 12;
-      bottleGlass.castShadow = true;
+      bottleGlass.castShadow = false;
       bottleGroup.add(bottleGlass);
 
       // Liquid Cylinder Mesh (will visually drop as dispensed!)
@@ -830,7 +842,8 @@
 
   function animate() {
     requestAnimationFrame(animate);
-    const delta = clock.getDelta();
+    if (!isViewportVisible) return;
+    const delta = Math.min(clock.getDelta(), 0.05);
 
     camera.position.lerp(desiredCameraPos, 0.045);
     if (controls) {
