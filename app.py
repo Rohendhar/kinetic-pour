@@ -698,7 +698,7 @@ def status():
     return jsonify({
         "status": "ONLINE",
         "system": "J.A.R.V.I.S. Mark VII",
-        "team": "THE AVENGERS (UC Capstone)",
+        "team": "Kinetic Pour Engineering Team",
         "today": now_eastern.strftime("%A, %B %d, %Y"),
         "time": now_eastern.strftime("%I:%M %p EDT").lstrip("0"),
         "scheduler": "24/7 ACTIVE",
