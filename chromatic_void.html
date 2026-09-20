@@ -1025,13 +1025,12 @@
     .hero-ambient-prism-glow {
       position: absolute;
       top: 36%; left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate3d(-50%, -50%, 0);
       width: 90vw; max-width: 1300px; height: 520px;
-      background: radial-gradient(ellipse at center, rgba(255, 59, 20, 0.22) 0%, rgba(255, 170, 0, 0.12) 40%, transparent 72%);
-      filter: blur(80px);
+      background: radial-gradient(ellipse at center, rgba(255, 59, 20, 0.18) 0%, rgba(255, 170, 0, 0.09) 35%, rgba(255, 59, 20, 0.02) 60%, transparent 75%);
       pointer-events: none;
       z-index: 0;
-      animation: coreHaloBreathe 6s ease-in-out infinite alternate;
+      will-change: opacity;
     }
 
     /* LAYER 2: CLEAN PERIMETER FLUIDIC CONDUITS (FRAMES THE HERO CLEANLY) */
