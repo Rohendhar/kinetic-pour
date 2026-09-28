@@ -526,15 +526,93 @@
     /* TERMINAL CHAT WINDOW */
     .terminal-chat-deck {
       width: 100%;
-      max-width: 720px;
-      background: rgba(2, 10, 20, 0.92);
+      max-width: 760px;
+      background: rgba(2, 10, 20, 0.94);
       border: 1px solid var(--border-hud);
       border-radius: 6px;
       display: flex;
       flex-direction: column;
-      height: 380px;
+      height: 480px;
+      min-height: 380px;
       overflow: hidden;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+      transition: height 0.25s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.25s ease;
+      resize: vertical;
+    }
+
+    .terminal-chat-deck.tall-mode {
+      height: 680px;
+      max-width: 840px;
+    }
+
+    .terminal-chat-deck.fullscreen-mode {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 95vw;
+      max-width: 1300px;
+      height: 88vh;
+      min-height: 88vh;
+      max-height: 88vh;
+      z-index: 99999;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 100px rgba(0, 0, 0, 0.98), 0 0 45px rgba(0, 240, 255, 0.4);
+      resize: none;
+    }
+
+    .chat-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(1, 6, 16, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 99998;
+      display: none;
+    }
+    .chat-backdrop.active {
+      display: block;
+    }
+
+    .hud-window-btn {
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      color: var(--cyan);
+      font-family: var(--font-hud);
+      font-size: 0.62rem;
+      padding: 0.22rem 0.6rem;
+      border-radius: 3px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.08em;
+      transition: all 0.15s ease;
+    }
+    .hud-window-btn:hover {
+      background: rgba(0, 240, 255, 0.25);
+      border-color: var(--cyan);
+      color: #fff;
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+    }
+    .hud-window-btn.active {
+      background: rgba(0, 240, 255, 0.35);
+      border-color: #fff;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+    }
+
+    .terminal-chat-deck.fullscreen-mode .terminal-chat-body {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      padding: 1.25rem 1.6rem;
+    }
+    .terminal-chat-deck.fullscreen-mode .terminal-bubble {
+      max-width: 96%;
+      padding: 0.85rem 1.2rem;
+      font-size: 0.88rem;
     }
 
     .terminal-chat-header {
@@ -1013,11 +1091,20 @@
           </div>
         </div>
 
+        <!-- Backdrop for Fullscreen Theater Mode -->
+        <div id="chat-backdrop" class="chat-backdrop" onclick="toggleExpandChat(false)"></div>
+
         <!-- Terminal Chat Console -->
-        <div class="terminal-chat-deck">
+        <div class="terminal-chat-deck" id="terminal-deck">
           <div class="terminal-chat-header">
-            <span>TACTICAL HUD CHAT // J.A.R.V.I.S. NEURAL LINK</span>
-            <span id="chat-clearance-indicator" style="color: var(--amber);">[SECURITY: OBSERVER GUEST]</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span>TACTICAL HUD CHAT // J.A.R.V.I.S. NEURAL LINK</span>
+              <span id="chat-clearance-indicator" style="color: var(--amber);">[SECURITY: OBSERVER GUEST]</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button id="btn-chat-tall" class="hud-window-btn" onclick="toggleTallChat()" title="Expand / Shrink Inline Height">⤢ TALL</button>
+              <button id="btn-chat-expand" class="hud-window-btn" onclick="toggleExpandChat()" title="Toggle Fullscreen Theater HUD">⛶ EXPAND</button>
+            </div>
           </div>
 
           <div class="terminal-chat-body" id="chat-body">
@@ -1636,10 +1723,83 @@
         });
     }
 
+    // Chat Expansion Controls (Tall inline vs Fullscreen Theater Mode)
+    function toggleTallChat() {
+      const deck = document.getElementById('terminal-deck');
+      const btn = document.getElementById('btn-chat-tall');
+      if (!deck) return;
+
+      if (deck.classList.contains('fullscreen-mode')) {
+        toggleExpandChat(false);
+      }
+
+      const isTall = deck.classList.toggle('tall-mode');
+      if (btn) {
+        btn.innerHTML = isTall ? '⤡ NORMAL' : '⤢ TALL';
+        btn.classList.toggle('active', isTall);
+      }
+      localStorage.setItem('kp_chat_mode', isTall ? 'tall' : 'normal');
+      playBeep(isTall ? 1050 : 850);
+      const body = document.getElementById('chat-body');
+      if (body) body.scrollTop = body.scrollHeight;
+    }
+
+    function toggleExpandChat(forceState) {
+      const deck = document.getElementById('terminal-deck');
+      const backdrop = document.getElementById('chat-backdrop');
+      const btn = document.getElementById('btn-chat-expand');
+      if (!deck) return;
+
+      const shouldExpand = (typeof forceState === 'boolean') 
+        ? forceState 
+        : !deck.classList.contains('fullscreen-mode');
+
+      if (shouldExpand) {
+        deck.classList.add('fullscreen-mode');
+        if (backdrop) backdrop.classList.add('active');
+        if (btn) {
+          btn.innerHTML = '✕ MINIMIZE';
+          btn.classList.add('active');
+        }
+        playBeep(1200);
+      } else {
+        deck.classList.remove('fullscreen-mode');
+        if (backdrop) backdrop.classList.remove('active');
+        if (btn) {
+          btn.innerHTML = '⛶ EXPAND';
+          btn.classList.remove('active');
+        }
+        playBeep(800);
+      }
+      const body = document.getElementById('chat-body');
+      if (body) body.scrollTop = body.scrollHeight;
+    }
+
+    // Keyboard ESC to exit fullscreen theater mode
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const deck = document.getElementById('terminal-deck');
+        if (deck && deck.classList.contains('fullscreen-mode')) {
+          toggleExpandChat(false);
+        }
+      }
+    });
+
     // Initial setup on load
     window.addEventListener('DOMContentLoaded', () => {
       applyStarkOperatorUI();
       prewarmJarvis();
+
+      // Restore saved tall mode preference
+      if (localStorage.getItem('kp_chat_mode') === 'tall') {
+        const deck = document.getElementById('terminal-deck');
+        const btn = document.getElementById('btn-chat-tall');
+        if (deck) deck.classList.add('tall-mode');
+        if (btn) {
+          btn.innerHTML = '⤡ NORMAL';
+          btn.classList.add('active');
+        }
+      }
     });
   </script>
 </body>
