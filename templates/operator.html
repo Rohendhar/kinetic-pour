@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Kinetic Pour // J.A.R.V.I.S. Holographic Tactical HUD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -526,14 +529,14 @@
     /* TERMINAL CHAT WINDOW */
     .terminal-chat-deck {
       width: 100%;
-      max-width: 760px;
+      max-width: 780px;
       background: rgba(2, 10, 20, 0.94);
       border: 1px solid var(--border-hud);
       border-radius: 6px;
       display: flex;
       flex-direction: column;
-      height: 480px;
-      min-height: 380px;
+      height: 540px;
+      min-height: 400px;
       overflow: hidden;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
       transition: height 0.25s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.25s ease;
@@ -541,8 +544,8 @@
     }
 
     .terminal-chat-deck.tall-mode {
-      height: 680px;
-      max-width: 840px;
+      height: 740px;
+      max-width: 880px;
     }
 
     .terminal-chat-deck.fullscreen-mode {
@@ -550,14 +553,14 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 95vw;
-      max-width: 1300px;
-      height: 88vh;
-      min-height: 88vh;
-      max-height: 88vh;
+      width: 96vw;
+      max-width: 1350px;
+      height: 90vh;
+      min-height: 90vh;
+      max-height: 90vh;
       z-index: 99999;
       border: 2px solid var(--cyan);
-      box-shadow: 0 0 100px rgba(0, 0, 0, 0.98), 0 0 45px rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 100px rgba(0, 0, 0, 0.98), 0 0 45px rgba(0, 240, 255, 0.5);
       resize: none;
     }
 
@@ -567,8 +570,8 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(1, 6, 16, 0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(1, 6, 16, 0.88);
+      backdrop-filter: blur(10px);
       z-index: 99998;
       display: none;
     }
@@ -577,31 +580,34 @@
     }
 
     .hud-window-btn {
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid rgba(0, 240, 255, 0.35);
-      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.16);
+      border: 1px solid var(--cyan);
+      color: #fff;
       font-family: var(--font-hud);
-      font-size: 0.62rem;
-      padding: 0.22rem 0.6rem;
-      border-radius: 3px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      padding: 0.28rem 0.75rem;
+      border-radius: 4px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       letter-spacing: 0.08em;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
     }
     .hud-window-btn:hover {
-      background: rgba(0, 240, 255, 0.25);
-      border-color: var(--cyan);
-      color: #fff;
-      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-    }
-    .hud-window-btn.active {
-      background: rgba(0, 240, 255, 0.35);
+      background: rgba(0, 240, 255, 0.45);
       border-color: #fff;
       color: #fff;
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.75);
+      transform: translateY(-1px);
+    }
+    .hud-window-btn.active {
+      background: var(--cyan);
+      border-color: #fff;
+      color: #010610;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.9);
     }
 
     .terminal-chat-deck.fullscreen-mode .terminal-chat-body {
@@ -1101,9 +1107,9 @@
               <span>TACTICAL HUD CHAT // J.A.R.V.I.S. NEURAL LINK</span>
               <span id="chat-clearance-indicator" style="color: var(--amber);">[SECURITY: OBSERVER GUEST]</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <button id="btn-chat-tall" class="hud-window-btn" onclick="toggleTallChat()" title="Expand / Shrink Inline Height">⤢ TALL</button>
-              <button id="btn-chat-expand" class="hud-window-btn" onclick="toggleExpandChat()" title="Toggle Fullscreen Theater HUD">⛶ EXPAND</button>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button id="btn-chat-tall" class="hud-window-btn" onclick="toggleTallChat()" title="Expand / Shrink Inline Height (740px)">⤢ TALL VIEW</button>
+              <button id="btn-chat-expand" class="hud-window-btn" onclick="toggleExpandChat()" title="Toggle Fullscreen Theater HUD (Esc to exit)">⛶ FULL HUD</button>
             </div>
           </div>
 
