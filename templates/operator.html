@@ -1444,13 +1444,24 @@
 
       let replyText = null;
 
+      // Dynamic standby indicator if response takes > 3.5s
+      const standbyTimer = setTimeout(() => {
+        const bubble = loadDiv.querySelector('.terminal-bubble');
+        if (bubble) {
+          bubble.innerHTML = '<span style="color: var(--amber);">⚡ Awakening J.A.R.V.I.S. Cloud Node from standby (Render cold-start)... Establishing encrypted neural link...</span>';
+        }
+      }, 3500);
+
       for (let attempt = 1; attempt <= 2; attempt++) {
         try {
           if (attempt > 1) {
-            loadDiv.querySelector('.terminal-bubble').innerHTML = '<span style="color: var(--amber);">Awakening cloud neural cluster (Render cold start)... Please hold...</span>';
+            const bubble = loadDiv.querySelector('.terminal-bubble');
+            if (bubble) {
+              bubble.innerHTML = '<span style="color: var(--amber);">⚡ Neural link retry in progress (container initializing)... Please hold...</span>';
+            }
           }
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 28000); // 28s timeout for Render free tier wake-up
+          const timeoutId = setTimeout(() => controller.abort(), 50000); // 50s timeout for Render free tier wake-up
 
           const res = await fetch(API_ENDPOINT, {
             method: 'POST',
@@ -1463,6 +1474,7 @@
             signal: controller.signal
           });
           clearTimeout(timeoutId);
+          clearTimeout(standbyTimer);
 
           if (res.ok) {
             const data = await res.json();
@@ -1475,6 +1487,7 @@
           console.warn(`[J.A.R.V.I.S.] Attempt ${attempt} network error:`, err);
         }
       }
+      clearTimeout(standbyTimer);
 
       if (replyText) {
         loadDiv.innerHTML = `
@@ -1608,9 +1621,25 @@
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    // Pre-warm live Render cloud node on page load
+    function prewarmJarvis() {
+      const pingUrl = (window.location.origin.includes('github.io') || window.location.protocol === 'file:')
+        ? 'https://avengers-jarvis.onrender.com/api/status'
+        : '/api/status';
+      fetch(pingUrl, { cache: 'no-store' })
+        .then(r => r.json())
+        .then(d => {
+          console.log('[J.A.R.V.I.S.] Cloud Cluster Online:', d.time || d.status);
+        })
+        .catch(err => {
+          console.log('[J.A.R.V.I.S.] Cloud Cluster wake-up initiated.');
+        });
+    }
+
     // Initial setup on load
     window.addEventListener('DOMContentLoaded', () => {
       applyStarkOperatorUI();
+      prewarmJarvis();
     });
   </script>
 </body>
