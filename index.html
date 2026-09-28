@@ -2194,6 +2194,15 @@
           ? 'https://avengers-jarvis.onrender.com/api/chat'
           : '/api/chat';
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 50000);
+        const standbyTimer = setTimeout(() => {
+          const bubble = loadingDiv.querySelector('.chat-bubble');
+          if (bubble) {
+            bubble.innerHTML = '<span style="color: #f59e0b;">⚡ Awakening J.A.R.V.I.S. Cloud Node from standby (Render cold-start)... Establishing link...</span>';
+          }
+        }, 3500);
+
         const res = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2201,8 +2210,11 @@
             sender: 'Guest', 
             operatorAuth: false,
             message: message 
-          })
+          }),
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
+        clearTimeout(standbyTimer);
         const data = await res.json();
         surgeWaveform(false);
         loadingDiv.innerHTML = `
