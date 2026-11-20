@@ -1473,6 +1473,7 @@
         <li><a href="#portal" class="active">PORTAL</a></li>
         <li><a href="#simulation">3D TWIN &amp; HMI</a></li>
         <li><a href="#plc-algorithm">PLC ALGORITHM</a></li>
+        <li><a href="#design-progress">DESIGN PROGRESS</a></li>
         <li><a href="#jarvis-ai">J.A.R.V.I.S. AI</a></li>
       </ul>
     </nav>
@@ -1980,6 +1981,99 @@
   </section>
 
   <!-- ==========================================================================
+       3B. DESIGN PROGRESS & HARDWARE EVOLUTION (FIRST ITERATION PROTOTYPE)
+       ========================================================================== -->
+  <section id="design-progress" class="design-progress-section" style="max-width: 1400px; margin: 4.5rem auto; padding: 0 1.5rem; position: relative;">
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+          HARDWARE EVOLUTION // RAPID PROTOTYPING
+        </span>
+        <h2 class="section-title" style="font-family: var(--font-title); font-size: 2.2rem; margin: 0.3rem 0; color: #fff;">
+          Design Progress &amp; First Iteration
+        </h2>
+        <p class="section-desc" style="color: var(--text-secondary); max-width: 780px; font-size: 0.95rem; line-height: 1.6;">
+          Watch the physical proof-of-concept in action. This bench prototype validated our vertical linear actuator elevator motion, in-house 3D-printed dispenser gantry, and multi-channel relay controls before scaling to the full 8-bottle concealed digital twin.
+        </p>
+      </div>
+      <div style="font-family: var(--font-mono, monospace); font-size: 0.82rem; padding: 0.45rem 1rem; border-radius: 9999px; background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.35); color: var(--cyan); display: flex; align-items: center; gap: 0.5rem;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #00f0ff; box-shadow: 0 0 8px #00f0ff; display: inline-block;"></span>
+        <span>PHASE 1 BUILD // BENCH VERIFIED</span>
+      </div>
+    </div>
+
+    <div class="prototype-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem; align-items: start;">
+      <!-- Video Player Card -->
+      <div class="prototype-video-card" style="background: rgba(16, 16, 21, 0.75); border: 1px solid rgba(255, 87, 34, 0.35); border-radius: 20px; padding: 1.25rem; box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 30px rgba(255, 87, 34, 0.15); backdrop-filter: blur(12px);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #00f0ff; box-shadow: 0 0 10px #00f0ff; display: inline-block;"></span>
+            <span style="font-family: var(--font-title); font-size: 0.85rem; letter-spacing: 0.08em; color: #fff; font-weight: 700;">PROTOTYPE 1.0 BENCH TEST</span>
+          </div>
+          <span style="font-family: var(--font-mono, monospace); font-size: 0.75rem; color: rgba(255,255,255,0.5);">1080P // 30 FPS</span>
+        </div>
+        
+        <div style="position: relative; border-radius: 14px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1);">
+          <video id="prototype-video" controls playsinline preload="metadata" poster="static/videos/kinetic_pour_first_iteration_poster.jpg" style="width: 100%; max-height: 480px; object-fit: contain; display: block; border-radius: 12px;">
+            <source src="static/videos/kinetic_pour_first_iteration.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+          </video>
+        </div>
+
+        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <span style="font-family: var(--font-mono, monospace); font-size: 0.78rem; color: var(--infrared); font-weight: 600;">
+            ▶ Linear Actuator Elevator &amp; Dispensing Validation
+          </span>
+          <span style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">Duration: 0:26</span>
+        </div>
+      </div>
+
+      <!-- Technical Breakdown & Milestone Cards -->
+      <div class="prototype-details" style="display: flex; flex-direction: column; gap: 1.2rem;">
+        <div style="background: rgba(16, 16, 21, 0.65); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+            <span style="color: var(--infrared); font-weight: 800; font-size: 1.1rem;">01</span>
+            <h4 style="font-family: var(--font-title); font-size: 1.05rem; color: #fff; margin: 0;">Motorized Elevator Mechanism</h4>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 0;">
+            Features a high-torque vertical lead-screw and linear guide rod assembly. The video demonstrates the motorized elevator lowering the cocktail glass beneath the bar top for enclosed hygienic pouring, then elevating it flush with the aperture ring upon recipe completion.
+          </p>
+        </div>
+
+        <div style="background: rgba(16, 16, 21, 0.65); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+            <span style="color: var(--cyan); font-weight: 800; font-size: 1.1rem;">02</span>
+            <h4 style="font-family: var(--font-title); font-size: 1.05rem; color: #fff; margin: 0;">In-House 3D Printed Dispenser Gantry</h4>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 0;">
+            Rapidly prototyped red PETG/PLA nozzle manifold fixture holding food-grade silicone plumbing. Validated droplet separation, nozzle aim, and laminar stream characteristics to eliminate splashing during high-velocity dispensing.
+          </p>
+        </div>
+
+        <div style="background: rgba(16, 16, 21, 0.65); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+            <span style="color: #ffaa00; font-weight: 800; font-size: 1.1rem;">03</span>
+            <h4 style="font-family: var(--font-title); font-size: 1.05rem; color: #fff; margin: 0;">Deterministic PLC &amp; Relay Interlocks</h4>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 0;">
+            Benchtop wiring harness with 5V/24V optical isolation relays, ESP32 microcontroller, and endstop switches. Verified that the pump circuit cannot energize unless the elevator has reached bottom limit switch and optical cup detection is confirmed.
+          </p>
+        </div>
+
+        <div style="background: rgba(16, 16, 21, 0.65); border: 1px solid rgba(0, 240, 255, 0.25); border-radius: 16px; padding: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+            <span style="color: #00f0ff; font-weight: 800; font-size: 1.1rem;">04</span>
+            <h4 style="font-family: var(--font-title); font-size: 1.05rem; color: #fff; margin: 0;">Evolution to Phase 2 (Digital Twin)</h4>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 0;">
+            Physical flow rates, kinematic transit times, and limit switches measured during this bench test directly inform the physics parameters of our 3D Digital Twin and real-time beverage metering calculations.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
        4. J.A.R.V.I.S. ONE-STOP AI ASSISTANT CONSOLE
        ========================================================================== -->
   <section id="jarvis-ai" class="jarvis-section">
@@ -2128,7 +2222,7 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="static/js/simulation.js?v=vibrant_bottles_v3"></script>
+  <script src="static/js/simulation.js?v=vibrant_fps_boost_v4"></script>
 
   <script>
     /* ==========================================
