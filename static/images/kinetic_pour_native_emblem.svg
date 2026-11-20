@@ -1,4 +1,4 @@
-<svg class="kinetic-pour-native-emblem" viewBox="0 0 500 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kinetic Pour // Engineered Fluidics">
+<svg class="kinetic-pour-native-emblem" viewBox="0 0 500 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kinetic Pour // Engineered Magic">
   <defs>
 
     <!-- Ambient Core Furnace Glow -->
@@ -195,6 +195,6 @@
   <!-- Primary Wordmark: KINETIC POUR -->
   <text x="250" y="468" text-anchor="middle" font-family="'Space Grotesk', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="44" letter-spacing="3.5" fill="#fbf1e2" filter="url(#kpEmberGlow)">KINETIC POUR</text>
 
-  <!-- Subtitle: ENGINEERED FLUIDICS -->
-  <text x="250" y="506" text-anchor="middle" font-family="'Space Grotesk', 'JetBrains Mono', sans-serif" font-weight="700" font-size="14" letter-spacing="7.5" fill="#ead0b3" opacity="0.95" filter="drop-shadow(0 0 10px rgba(255, 170, 0, 0.5))">ENGINEERED FLUIDICS</text>
+  <!-- Subtitle: ENGINEERED MAGIC -->
+  <text x="250" y="506" text-anchor="middle" font-family="'Space Grotesk', 'JetBrains Mono', sans-serif" font-weight="700" font-size="14" letter-spacing="7.5" fill="#ead0b3" opacity="0.95" filter="drop-shadow(0 0 10px rgba(255, 170, 0, 0.5))">ENGINEERED MAGIC</text>
 </svg>
