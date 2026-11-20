@@ -42,15 +42,16 @@
   const ELEVATOR_BOTTOM_Y = 25;
 
   // 8 Bottle Configurations (2x4 array) with Rich, Luminous Jewel-Tone Spirits
+  // 8 Bottle Configurations (2x4 array) with Rich, Luminous Jewel-Tone Spirits Matching Commercial
   const BOTTLE_CONFIGS = [
-    { id: 0, name: "Bourbon", color: 0xff6a00, row: 0, col: 0 },
-    { id: 1, name: "Vodka", color: 0xb8e8ff, row: 0, col: 1 },
-    { id: 2, name: "Gin", color: 0xa855f7, row: 0, col: 2 },
-    { id: 3, name: "Tequila", color: 0xf59e0b, row: 0, col: 3 },
-    { id: 4, name: "Triple Sec", color: 0xff7700, row: 1, col: 0 },
-    { id: 5, name: "Cranberry", color: 0xf43f5e, row: 1, col: 1 },
-    { id: 6, name: "Tonic", color: 0x00f0ff, row: 1, col: 2 },
-    { id: 7, name: "Citrus Sour", color: 0xffe600, row: 1, col: 3 }
+    { id: 0, name: "Bourbon", color: 0xff5500, row: 0, col: 0 },
+    { id: 1, name: "Vodka", color: 0x60d5ff, row: 0, col: 1 },
+    { id: 2, name: "Gin", color: 0xb838ff, row: 0, col: 2 },
+    { id: 3, name: "Tequila", color: 0xffaa00, row: 0, col: 3 },
+    { id: 4, name: "Triple Sec", color: 0xff4800, row: 1, col: 0 },
+    { id: 5, name: "Cranberry", color: 0xff0044, row: 1, col: 1 },
+    { id: 6, name: "Tonic", color: 0x00f5ff, row: 1, col: 2 },
+    { id: 7, name: "Citrus Sour", color: 0xd4ff00, row: 1, col: 3 }
   ];
 
   // Active Drink Recipe
@@ -83,15 +84,12 @@
     opacity: 0.12
   });
   const matPrintedPLA = new THREE.MeshStandardMaterial({ color: 0x22222a, roughness: 0.75, metalness: 0.15 });
-  const matGlass = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,
-    metalness: 0.05,
-    roughness: 0.02,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.03,
+  const matGlass = new THREE.MeshStandardMaterial({
+    color: 0xf5f8ff,
+    metalness: 0.1,
+    roughness: 0.05,
     transparent: true,
-    opacity: 0.12,
-    reflectivity: 0.95
+    opacity: 0.22
   });
   const matSiliconeTube = new THREE.MeshStandardMaterial({
     color: 0xffffff,
@@ -120,14 +118,19 @@
     renderer = new THREE.WebGLRenderer({
       canvas: document.getElementById('three-canvas'),
       antialias: true,
-      powerPreference: 'high-performance'
+      powerPreference: 'high-performance',
+      precision: 'mediump'
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    // Clamp pixel ratio to 1.25 for 60 FPS on laptops with high-DPI display scaling
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
+    // Don't auto-update shadow map every frame on idle! Saves 50% GPU usage on laptops
+    renderer.shadowMap.autoUpdate = false;
+    renderer.shadowMap.needsUpdate = true;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.25;
+    renderer.toneMappingExposure = 1.35;
 
     if (window.THREE.OrbitControls) {
       controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -143,6 +146,10 @@
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           isViewportVisible = entry.isIntersecting;
+          if (isViewportVisible && !isAnimating) {
+            triggerShadowUpdate();
+            animate();
+          }
         });
       }, { threshold: 0.05 });
       observer.observe(container);
@@ -317,10 +324,10 @@
       const liquidGeom = new THREE.CylinderGeometry(4.3, 4.3, initialLiquidHeight, 20);
       const liquidMat = new THREE.MeshStandardMaterial({
         color: cfg.color,
-        roughness: 0.08,
-        metalness: 0.05,
+        roughness: 0.1,
+        metalness: 0.08,
         emissive: cfg.color,
-        emissiveIntensity: 0.75
+        emissiveIntensity: 0.95 // Intense radiant glow matching the commercial!
       });
       const liquidMesh = new THREE.Mesh(liquidGeom, liquidMat);
       liquidMesh.position.y = initialLiquidHeight / 2 + 0.5;
@@ -845,15 +852,35 @@
 
   let clock = new THREE.Clock();
 
+  let isAnimating = false;
+  let animFrameId = null;
+
+  function triggerShadowUpdate() {
+    if (renderer && renderer.shadowMap) {
+      renderer.shadowMap.needsUpdate = true;
+    }
+  }
+
   function animate() {
-    requestAnimationFrame(animate);
-    if (!isViewportVisible) return;
+    if (!isViewportVisible) {
+      isAnimating = false;
+      return;
+    }
+    isAnimating = true;
+    animFrameId = requestAnimationFrame(animate);
+
     const delta = Math.min(clock.getDelta(), 0.05);
 
+    const prevCamPos = camera.position.clone();
     camera.position.lerp(desiredCameraPos, 0.045);
     if (controls) {
       controls.target.lerp(desiredCameraTarget, 0.045);
       controls.update();
+    }
+
+    // If camera moved significantly or cycle is active, recompute shadows
+    if (cycleState !== STATE_IDLE || camera.position.distanceToSquared(prevCamPos) > 0.01) {
+      triggerShadowUpdate();
     }
 
     updateDispenseCycle(delta);
