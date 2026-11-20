@@ -3,815 +3,2329 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // Senior Design Tactical HUD</title>
+  <title>KINETIC POUR // Automated Drink-Dispensing Table</title>
+  
+  <!-- Fonts: Plus Jakarta Sans, Space Grotesk, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Cache Control to prevent stale browser cache -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- CSS with Version Cache-Buster -->
+  <link rel="stylesheet" href="static/css/chromatic_void.css?v=6.0">
+  
+  <!-- Embedded Liquid Glass Touchscreen Styles (Guarantees Instant Render) -->
   <style>
-    :root {
-      --bg-dark: #020712;
-      --arc-cyan: #00f0ff;
-      --arc-blue: #0077ff;
-      --arc-glow: rgba(0, 240, 255, 0.45);
-      --arc-glow-intense: rgba(0, 240, 255, 0.85);
-      --hud-panel-bg: rgba(4, 16, 35, 0.78);
-      --hud-border: rgba(0, 240, 255, 0.35);
-      --hud-border-bright: rgba(0, 240, 255, 0.8);
-      --text-glow: #e0faff;
-      --text-muted: #5e8ca6;
-      --warning-amber: #ffaa00;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
-
-    body {
-      background: radial-gradient(circle at 50% 15%, #051630 0%, #020712 60%, #01040a 100%);
-      color: var(--text-glow);
-      font-family: 'Rajdhani', sans-serif;
-      min-height: 100vh;
+    /* ==========================================================================
+       EMBEDDED LIQUID GLASS TOUCHSCREEN USER INTERFACE
+       ========================================================================== */
+    .hmi-control-deck {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 14px;
-      overflow-x: hidden;
+      gap: 1.2rem;
       position: relative;
     }
 
-    /* Sci-Fi Grid Overlay */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: 
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-      background-size: 36px 36px;
-      pointer-events: none;
-      z-index: 0;
+    /* Screen Tablet Enclosure */
+    .hmi-screen-card {
+      position: relative !important;
+      background: radial-gradient(130% 120% at 15% 10%, rgba(32, 36, 52, 0.75) 0%, rgba(16, 18, 26, 0.9) 55%, rgba(8, 9, 14, 0.98) 100%) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
+      border-radius: 24px !important;
+      padding: 1.6rem !important;
+      backdrop-filter: blur(35px) saturate(200%) !important;
+      -webkit-backdrop-filter: blur(35px) saturate(200%) !important;
+      box-shadow: 
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 2px 3px rgba(255, 255, 255, 0.5),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.75),
+        0 28px 56px -14px rgba(0, 0, 0, 0.9),
+        0 0 45px rgba(255, 59, 20, 0.18) !important;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
 
-    /* Scanline Animation */
-    body::after {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-      background-size: 100% 4px;
+    /* Diagonal Liquid Glass Surface Glare */
+    .screen-glass-sheen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 30%, transparent 60%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Micro OLED Screen Scanline Overlay */
+    .screen-scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.14) 0px, rgba(0, 0, 0, 0.14) 1px, transparent 1px, transparent 3px);
       pointer-events: none;
       z-index: 1;
       opacity: 0.6;
     }
 
-    .hud-container {
-      width: 100%;
-      max-width: 1000px;
+    /* Top Hardware Notch & Telemetry Bar */
+    .hmi-screen-top-bar {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      position: relative !important;
+      z-index: 2 !important;
+      margin-bottom: 0.9rem !important;
+      padding-bottom: 0.65rem !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .screen-notch-group {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .screen-camera-lens {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00e676;
+      box-shadow: 0 0 8px #00e676;
+      animation: pulseGreen 2.2s infinite ease-in-out;
+    }
+
+    .screen-ir-sensor {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #ff3b14;
+      box-shadow: 0 0 6px #ff3b14;
+    }
+
+    .screen-telemetry-badge {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 0.7rem !important;
+      color: #94a3b8 !important;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+    }
+
+    .screen-live-clock {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 0.74rem !important;
+      font-weight: 700 !important;
+      color: #fff !important;
+      background: rgba(255, 255, 255, 0.08) !important;
+      padding: 3px 9px !important;
+      border-radius: 6px !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      letter-spacing: 0.05em;
+    }
+
+    /* Prominent USER INTERFACE Title Header */
+    .hmi-header {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: flex-end !important;
+      position: relative !important;
+      z-index: 2 !important;
+      margin-bottom: 1.3rem !important;
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+
+    .hmi-title-group {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 0.2rem;
+    }
+
+    .hmi-screen-tag {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 0.68rem !important;
+      font-weight: 800 !important;
+      color: #ff3b14 !important;
+      letter-spacing: 0.14em !important;
+      text-transform: uppercase !important;
+    }
+
+    .hmi-title {
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-size: 1.5rem !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.01em !important;
+      background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 70%, #94a3b8 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      margin: 0 !important;
+      text-shadow: 0 2px 14px rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .hmi-mode-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 59, 20, 0.16);
+      border: 1px solid rgba(255, 59, 20, 0.5);
+      padding: 6px 13px;
+      border-radius: 20px;
+      box-shadow: 0 0 16px rgba(255, 59, 20, 0.28);
+    }
+
+    .hmi-touch-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff3b14;
+      box-shadow: 0 0 10px #ff3b14;
+      animation: pulseInfrared 1.8s infinite ease-in-out;
+    }
+
+    .hmi-mode-tag {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 0.72rem !important;
+      font-weight: 800 !important;
+      color: #fff !important;
+      letter-spacing: 0.08em !important;
+    }
+
+    /* 6 Liquid Glass Drink Preset Cards */
+    .hmi-drink-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 0.8rem !important;
+      margin-bottom: 1.3rem !important;
+      position: relative !important;
+      z-index: 2 !important;
+    }
+
+    .hmi-drink-btn {
+      background: linear-gradient(135deg, rgba(28, 32, 44, 0.75) 0%, rgba(16, 18, 24, 0.88) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 14px !important;
+      padding: 1rem 0.9rem !important;
+      color: #f8fafc !important;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.35rem !important;
+      position: relative !important;
+      overflow: hidden !important;
+      backdrop-filter: blur(18px) !important;
+      -webkit-backdrop-filter: blur(18px) !important;
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.5),
+        0 4px 14px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    .hmi-drink-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: #ff3b14;
+      opacity: 0;
+      transition: all 0.28s ease;
+      box-shadow: 0 0 12px #ff3b14;
+    }
+
+    .hmi-drink-btn::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 80%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+      transform: skewX(-20deg);
+      transition: 0.6s ease;
+      pointer-events: none;
+    }
+
+    .hmi-drink-btn:hover {
+      border-color: rgba(255, 255, 255, 0.35) !important;
+      background: linear-gradient(135deg, rgba(42, 48, 66, 0.85) 0%, rgba(22, 25, 36, 0.95) 100%) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.45),
+        0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .hmi-drink-btn:hover::after {
+      left: 140%;
+    }
+
+    .hmi-drink-btn.active {
+      border-color: #ff3b14 !important;
+      background: linear-gradient(135deg, rgba(255, 59, 20, 0.25) 0%, rgba(38, 20, 16, 0.88) 100%) !important;
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 140, 100, 0.55),
+        0 6px 24px rgba(255, 59, 20, 0.25),
+        0 0 24px rgba(255, 59, 20, 0.35) !important;
+    }
+
+    .hmi-drink-btn.active::before {
+      opacity: 1 !important;
+    }
+
+    .drink-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hmi-drink-btn .drink-name {
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-size: 0.95rem !important;
+      font-weight: 700 !important;
+      color: #fff !important;
+      letter-spacing: 0.01em;
+    }
+
+    .drink-indicator-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--dot-color, #ff3b14);
+      box-shadow: 0 0 10px var(--dot-color, #ff3b14);
+    }
+
+    .hmi-drink-btn .drink-spec {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 0.76rem !important;
+      color: #94a3b8 !important;
+      line-height: 1.35;
+    }
+
+    /* Reservoir Inventory Header */
+    .inventory-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
       position: relative;
       z-index: 2;
     }
 
-    /* Top HUD Telemetry Bar */
-    .hud-topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 18px;
-      background: var(--hud-panel-bg);
-      border: 1px solid var(--hud-border);
-      border-radius: 12px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.15), inset 0 0 15px rgba(0, 240, 255, 0.05);
-      position: relative;
-    }
-
-    .hud-corner-tl, .hud-corner-tr, .hud-corner-bl, .hud-corner-br {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      border: 2px solid var(--arc-cyan);
-    }
-    .hud-corner-tl { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
-    .hud-corner-tr { top: -2px; right: -2px; border-left: 0; border-bottom: 0; }
-    .hud-corner-bl { bottom: -2px; left: -2px; border-right: 0; border-top: 0; }
-    .hud-corner-br { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
-
-    .sys-info {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 12px;
-      color: var(--arc-cyan);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      letter-spacing: 0.08em;
-    }
-
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--arc-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--arc-cyan);
-      animation: blink 1.4s infinite alternate;
-    }
-
-    @keyframes blink {
-      0% { opacity: 0.3; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1.2); }
-    }
-
-    .operator-select {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .operator-select select {
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid var(--hud-border);
-      color: var(--arc-cyan);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 6px;
-      outline: none;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    .operator-select select option {
-      background: #020a17;
-      color: #fff;
-    }
-
-    /* Center Arc Reactor Header */
-    .reactor-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      padding: 10px 0;
-    }
-
-    .arc-reactor {
-      width: 90px;
-      height: 90px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      filter: drop-shadow(0 0 16px var(--arc-cyan));
-    }
-
-    .reactor-ring-outer {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border: 2px dashed var(--arc-cyan);
-      border-radius: 50%;
-      animation: rotateCw 20s linear infinite;
-    }
-
-    .reactor-ring-inner {
-      position: absolute;
-      width: 70%;
-      height: 70%;
-      border: 2px dotted rgba(0, 240, 255, 0.7);
-      border-radius: 50%;
-      animation: rotateCcw 10s linear infinite;
-    }
-
-    .reactor-core {
-      width: 44%;
-      height: 44%;
-      background: radial-gradient(circle, #ffffff 10%, #00f0ff 60%, transparent 100%);
-      border-radius: 50%;
-      box-shadow: 0 0 25px #ffffff, 0 0 45px var(--arc-cyan);
-      animation: corePulse 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes rotateCw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes rotateCcw { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-    @keyframes corePulse {
-      0% { transform: scale(0.9); opacity: 0.85; }
-      100% { transform: scale(1.08); opacity: 1; filter: brightness(1.3); }
-    }
-
-    .reactor-title {
-      text-align: left;
-    }
-
-    .reactor-title h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 26px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      color: #ffffff;
-      text-shadow: 0 0 15px var(--arc-cyan), 0 0 30px rgba(0, 240, 255, 0.5);
-    }
-
-    .reactor-title p {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 12px;
-      color: var(--arc-cyan);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    /* Tactical Grid Options */
-    .tactical-section-label {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      color: var(--arc-cyan);
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tactical-section-label::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, var(--hud-border), transparent);
-    }
-
-    .tactical-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 12px;
-    }
-
-    .tactical-card {
-      background: var(--hud-panel-bg);
-      border: 1px solid var(--hud-border);
-      border-radius: 8px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-      backdrop-filter: blur(10px);
-    }
-
-    .tactical-card::before {
-      content: "";
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: var(--arc-cyan);
-      opacity: 0.4;
-      transition: all 0.2s;
-    }
-
-    .tactical-card:hover {
-      border-color: var(--arc-cyan);
-      background: rgba(0, 240, 255, 0.08);
-      transform: translateY(-2px);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 15px rgba(0, 240, 255, 0.1);
-    }
-
-    .tactical-card:hover::before {
-      width: 5px;
-      opacity: 1;
-      box-shadow: 0 0 12px var(--arc-cyan);
-    }
-
-    .tactical-card.active {
-      border-color: var(--arc-cyan);
-      background: rgba(0, 240, 255, 0.12);
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.15);
-    }
-
-    .tactical-card.active::before {
-      width: 6px;
-      opacity: 1;
-      box-shadow: 0 0 15px var(--arc-cyan);
-    }
-
-    .tactical-code {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--arc-cyan);
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid var(--hud-border);
-      border-radius: 4px;
-      padding: 6px 8px;
-      flex-shrink: 0;
-    }
-
-    .tactical-info h3 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: #ffffff;
-      margin-bottom: 2px;
-    }
-
-    .tactical-info p {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 0.04em;
-    }
-
-    /* Main Holographic Terminal Display */
-    .hud-terminal {
-      background: var(--hud-panel-bg);
-      border: 1px solid var(--hud-border-bright);
-      border-radius: 12px;
-      padding: 22px;
-      position: relative;
-      box-shadow: 0 0 35px rgba(0, 240, 255, 0.2), inset 0 0 25px rgba(0, 240, 255, 0.06);
-      min-height: 240px;
+    .inventory-title-group {
       display: flex;
       flex-direction: column;
-      backdrop-filter: blur(16px);
     }
 
-    .terminal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--hud-border);
-      margin-bottom: 16px;
-    }
-
-    .terminal-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      color: var(--arc-cyan);
-      text-shadow: 0 0 12px var(--arc-cyan);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .terminal-badge {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 10px;
-      color: #000;
-      background: var(--arc-cyan);
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
-      box-shadow: 0 0 10px var(--arc-cyan);
-    }
-
-    .terminal-content {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px;
-      line-height: 1.7;
-      color: #d8f4ff;
-      flex: 1;
-    }
-
-    .terminal-content p {
-      margin-bottom: 14px;
-    }
-
-    .terminal-content strong {
-      color: #ffffff;
-      text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
-      font-weight: 700;
-    }
-
-    .terminal-content h1, .terminal-content h2, .terminal-content h3 {
-      font-family: 'Orbitron', sans-serif;
-      color: var(--arc-cyan);
-      margin: 18px 0 8px 0;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
-    }
-
-    .terminal-content h3 {
-      font-size: 15px;
-      border-left: 3px solid var(--arc-cyan);
-      padding-left: 10px;
-    }
-
-    .terminal-content ul, .terminal-content ol {
-      margin: 10px 0 16px 24px;
-    }
-
-    .terminal-content li {
-      margin-bottom: 8px;
-    }
-
-    .terminal-content a {
-      color: var(--arc-cyan);
-      text-decoration: underline;
-      font-weight: 700;
-    }
-
-    .terminal-content code {
-      font-family: 'Share Tech Mono', monospace;
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid var(--hud-border);
-      color: var(--arc-cyan);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    /* Command Prompt Bar */
-    .command-bar {
-      display: flex;
-      gap: 10px;
-      margin-top: 4px;
-    }
-
-    .prompt-prefix {
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid var(--hud-border);
-      border-radius: 8px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 13px;
-      color: var(--arc-cyan);
-      letter-spacing: 0.05em;
-    }
-
-    .command-input {
-      flex: 1;
-      background: var(--hud-panel-bg);
-      border: 1px solid var(--hud-border);
-      border-radius: 8px;
-      padding: 12px 16px;
-      color: #ffffff;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 14px;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .command-input:focus {
-      border-color: var(--arc-cyan);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.1);
-    }
-
-    .command-btn {
-      background: linear-gradient(135deg, rgba(0, 240, 255, 0.9), rgba(0, 119, 255, 0.9));
-      border: none;
-      color: #000;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 13px;
-      padding: 0 24px;
-      border-radius: 8px;
-      cursor: pointer;
-      letter-spacing: 0.1em;
-      transition: all 0.2s;
-      box-shadow: 0 0 18px rgba(0, 240, 255, 0.4);
-    }
-
-    .command-btn:hover {
-      filter: brightness(1.2);
-      transform: scale(1.02);
-      box-shadow: 0 0 30px var(--arc-cyan);
-    }
-
-    /* Bottom Telemetry Footer */
-    .hud-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 16px;
-      background: rgba(2, 8, 20, 0.8);
-      border: 1px solid rgba(0, 240, 255, 0.2);
-      border-radius: 8px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      color: var(--text-muted);
+    .inventory-title {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-weight: 800 !important;
+      font-size: 0.78rem !important;
+      color: #f8fafc !important;
       letter-spacing: 0.06em;
     }
 
-    .hud-footer span {
-      color: var(--arc-cyan);
+    .inventory-subtitle {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 0.64rem !important;
+      color: #64748b !important;
     }
 
-    /* Mobile */
-    @media (max-width: 650px) {
-      .reactor-header { flex-direction: column; text-align: center; gap: 12px; }
-      .reactor-title { text-align: center; }
-      .tactical-grid { grid-template-columns: 1fr; }
-      .hud-topbar { flex-direction: column; gap: 8px; align-items: flex-start; }
-      .operator-select { width: 100%; justify-content: space-between; }
-      .hud-footer { flex-direction: column; gap: 6px; text-align: center; }
+    .inventory-live-chip {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 0.64rem !important;
+      color: #00e676 !important;
+      background: rgba(0, 230, 118, 0.12) !important;
+      border: 1px solid rgba(0, 230, 118, 0.35) !important;
+      padding: 3px 8px !important;
+      border-radius: 5px !important;
+      font-weight: 600;
+    }
+
+    /* 8-Bottle Glass Ampoules Rack */
+    .bottle-levels-monitor {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 0.7rem !important;
+      background: linear-gradient(180deg, rgba(14, 15, 20, 0.85) 0%, rgba(6, 7, 10, 0.95) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      border-radius: 16px !important;
+      padding: 1.05rem 0.75rem !important;
+      margin-bottom: 1.3rem !important;
+      position: relative !important;
+      z-index: 2 !important;
+      box-shadow: 
+        inset 0 1px 1px rgba(255, 255, 255, 0.18),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.7) !important;
+    }
+
+    .bottle-gauge {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+    }
+
+    .gauge-ampoule {
+      position: relative !important;
+      width: 20px !important;
+      height: 62px !important;
+      border-radius: 10px !important;
+      background: rgba(18, 20, 28, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.22) !important;
+      overflow: hidden !important;
+      box-shadow: 
+        inset 0 0 8px rgba(0, 0, 0, 0.85),
+        0 2px 8px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    .gauge-glass-glare {
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.38) 0%, 
+        rgba(255, 255, 255, 0.06) 30%, 
+        transparent 60%, 
+        rgba(255, 255, 255, 0.22) 100%) !important;
+      pointer-events: none !important;
+      z-index: 4 !important;
+    }
+
+    .gauge-bar-track {
+      width: 100% !important;
+      height: 100% !important;
+      position: relative !important;
+      display: flex !important;
+      align-items: flex-end !important;
+      border-radius: 8px !important;
+      overflow: hidden !important;
+    }
+
+    .gauge-bar-fill {
+      width: 100% !important;
+      transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      position: relative !important;
+      box-shadow: 0 0 14px var(--liquid-glow, rgba(255, 59, 20, 0.6)) !important;
+    }
+
+    .gauge-liquid-meniscus {
+      position: absolute !important;
+      top: -2px !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 4px !important;
+      background: rgba(255, 255, 255, 0.75) !important;
+      border-radius: 50% !important;
+      filter: blur(0.5px) !important;
+      animation: liquidMeniscusWave 2s infinite ease-in-out alternate !important;
+    }
+
+    .liquid-bourbon { background: #c75100 !important; --liquid-glow: rgba(199, 81, 0, 0.7); }
+    .liquid-vodka { background: #b0d4f1 !important; --liquid-glow: rgba(176, 212, 241, 0.7); }
+    .liquid-gin { background: #a34ee8 !important; --liquid-glow: rgba(163, 78, 232, 0.7); }
+    .liquid-tequila { background: #e69900 !important; --liquid-glow: rgba(230, 153, 0, 0.7); }
+    .liquid-triplesec { background: #ff7b00 !important; --liquid-glow: rgba(255, 123, 0, 0.7); }
+    .liquid-cranberry { background: #e01642 !important; --liquid-glow: rgba(224, 22, 66, 0.7); }
+    .liquid-tonic { background: #00d4ff !important; --liquid-glow: rgba(0, 212, 255, 0.7); }
+    .liquid-citrus { background: #ffd600 !important; --liquid-glow: rgba(255, 214, 0, 0.7); }
+
+    .bottle-gauge-label {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 0.66rem !important;
+      font-weight: 700 !important;
+      color: #94a3b8 !important;
+      letter-spacing: 0.04em !important;
+      text-align: center;
+    }
+
+    /* Tactile Liquid Action Buttons */
+    .hmi-actions-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-place-cup-glass {
+      background: linear-gradient(180deg, rgba(34, 38, 52, 0.9) 0%, rgba(18, 20, 28, 0.98) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      border-radius: 14px !important;
+      color: #fff !important;
+      padding: 0.95rem !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-size: 0.88rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.06em !important;
+      cursor: pointer;
+      transition: all 0.28s ease !important;
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.4),
+        0 4px 16px rgba(0, 0, 0, 0.45) !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-place-cup-glass:hover:not(:disabled) {
+      border-color: rgba(255, 255, 255, 0.4) !important;
+      background: linear-gradient(180deg, rgba(46, 52, 70, 0.95) 0%, rgba(24, 26, 38, 1) 100%) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .btn-dispense-glass {
+      position: relative !important;
+      width: 100% !important;
+      padding: 1.15rem 1rem !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-size: 1rem !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.08em !important;
+      border-radius: 14px !important;
+      border: 1px solid rgba(255, 59, 20, 0.5) !important;
+      background: linear-gradient(180deg, #ff4c24 0%, #d82b08 100%) !important;
+      color: #fff !important;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      box-shadow: 
+        inset 0 1px 3px rgba(255, 255, 255, 0.55),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.45),
+        0 8px 28px rgba(255, 59, 20, 0.5),
+        0 0 35px rgba(255, 59, 20, 0.45) !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .btn-dispense-glass::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transform: skewX(-25deg);
+      animation: liquidButtonSweep 3s infinite;
+    }
+
+    .btn-dispense-glass:hover:not(:disabled) {
+      transform: translateY(-2px) !important;
+      background: linear-gradient(180deg, #ff623b 0%, #e8330c 100%) !important;
+      box-shadow: 
+        inset 0 1px 3px rgba(255, 255, 255, 0.7),
+        0 10px 36px rgba(255, 59, 20, 0.65),
+        0 0 50px rgba(255, 59, 20, 0.6) !important;
+    }
+
+    .btn-dispense-glass:disabled {
+      background: rgba(26, 28, 38, 0.7) !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+      color: #64748b !important;
+      box-shadow: none !important;
+      cursor: not-allowed;
+      filter: grayscale(0.85);
+    }
+
+    .btn-dispense-glass:disabled::before {
+      display: none !important;
+    }
+
+    /* ==========================================================================
+       HOLOGRAPHIC J.A.R.V.I.S. AI CONSOLE & ARC REACTOR
+       ========================================================================== */
+    .jarvis-section {
+      position: relative;
+      padding: 75px 2rem 120px;
+      max-width: 1650px;
+      margin: 0 auto;
+      z-index: 2;
+    }
+
+    .jarvis-container {
+      display: grid !important;
+      grid-template-columns: 1fr 400px !important;
+      gap: 1.8rem !important;
+      background: radial-gradient(120% 120% at 20% 15%, rgba(26, 30, 44, 0.72) 0%, rgba(12, 14, 20, 0.9) 60%, rgba(6, 7, 10, 0.98) 100%) !important;
+      border: 1.5px solid rgba(0, 240, 255, 0.25) !important;
+      border-radius: 24px !important;
+      padding: 1.8rem !important;
+      backdrop-filter: blur(35px) saturate(200%) !important;
+      -webkit-backdrop-filter: blur(35px) saturate(200%) !important;
+      box-shadow: 
+        0 0 0 1px rgba(0, 240, 255, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.35),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.8),
+        0 28px 64px rgba(0, 0, 0, 0.85),
+        0 0 50px rgba(0, 240, 255, 0.15) !important;
+      position: relative !important;
+      overflow: hidden;
+    }
+
+    /* Tactical HUD Corner Brackets */
+    .hud-corner-bracket {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #00f0ff;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.85;
+    }
+    .hud-corner-bracket.top-left { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+    .hud-corner-bracket.top-right { top: 12px; right: 12px; border-left: none; border-bottom: none; }
+    .hud-corner-bracket.bottom-left { bottom: 12px; left: 12px; border-right: none; border-top: none; }
+    .hud-corner-bracket.bottom-right { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+    /* Holographic Arc Reactor Card */
+    .jarvis-reactor-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .jarvis-arc-reactor-card {
+      background: linear-gradient(180deg, rgba(16, 20, 30, 0.88) 0%, rgba(8, 10, 16, 0.96) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      border-radius: 18px;
+      padding: 1.5rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.15rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.25),
+        0 8px 30px rgba(0, 0, 0, 0.55),
+        0 0 35px rgba(0, 240, 255, 0.18);
+    }
+
+    .arc-reactor-visualizer {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arc-ring-outer {
+      position: absolute;
+      width: 116px;
+      height: 116px;
+      border: 2px dashed rgba(0, 240, 255, 0.55);
+      border-radius: 50%;
+      animation: arcSpinClockwise 14s linear infinite;
+    }
+
+    .arc-ring-middle {
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      border: 2px solid transparent;
+      border-top: 2.5px solid #00f0ff;
+      border-bottom: 2.5px solid #ff3b14;
+      border-radius: 50%;
+      animation: arcSpinCounter 7s linear infinite;
+    }
+
+    .arc-ring-inner {
+      position: absolute;
+      width: 66px;
+      height: 66px;
+      border: 1.5px dotted rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      animation: arcSpinClockwise 9s linear infinite;
+    }
+
+    .arc-core-glow {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff 0%, #00f0ff 40%, rgba(255, 59, 20, 0.6) 85%, transparent 100%);
+      box-shadow: 0 0 25px #00f0ff, 0 0 45px rgba(255, 59, 20, 0.55);
+      animation: arcCorePulse 2.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes arcSpinClockwise {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes arcSpinCounter {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
+    }
+
+    @keyframes arcCorePulse {
+      0% { transform: scale(0.9); opacity: 0.85; filter: drop-shadow(0 0 12px #00f0ff); }
+      100% { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 30px #ff3b14); }
+    }
+
+    /* Live Audio Waveform Bars */
+    .jarvis-voice-waveform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 32px;
+      width: 100%;
+      padding: 0 1rem;
+    }
+
+    .wave-bar {
+      width: 3.5px;
+      height: 6px;
+      background: linear-gradient(180deg, #00f0ff 0%, #ff3b14 100%);
+      border-radius: 2px;
+      animation: waveOscillate 1.3s ease-in-out infinite alternate;
+      box-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
+    }
+    .wave-bar:nth-child(1) { animation-delay: 0.1s; }
+    .wave-bar:nth-child(2) { animation-delay: 0.35s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.55s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.65s; }
+    .wave-bar:nth-child(6) { animation-delay: 0.4s; }
+    .wave-bar:nth-child(7) { animation-delay: 0.75s; }
+    .wave-bar:nth-child(8) { animation-delay: 0.3s; }
+    .wave-bar:nth-child(9) { animation-delay: 0.5s; }
+    .wave-bar:nth-child(10) { animation-delay: 0.25s; }
+    .wave-bar:nth-child(11) { animation-delay: 0.6s; }
+    .wave-bar:nth-child(12) { animation-delay: 0.45s; }
+
+    @keyframes waveOscillate {
+      0% { height: 4px; }
+      100% { height: 26px; }
+    }
+
+    .arc-specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      width: 100%;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 0.85rem;
+    }
+
+    .arc-specs-grid div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .arc-specs-grid span {
+      color: #64748b;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .arc-specs-grid strong {
+      color: #00f0ff;
+      font-size: 0.74rem;
+    }
+
+    /* Upgraded Chat Box & Bubbles */
+    .jarvis-chat-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 600px !important;
+      background: radial-gradient(130% 120% at 20% 10%, rgba(18, 20, 30, 0.95) 0%, rgba(8, 9, 14, 0.98) 100%) !important;
+      border-radius: 18px !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .chat-top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 1.4rem;
+      background: rgba(14, 16, 24, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: #94a3b8;
+    }
+
+    .chat-top-header .channel-tag {
+      color: #00f0ff;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chat-top-header .channel-tag::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00f0ff;
+      box-shadow: 0 0 8px #00f0ff;
+    }
+
+    /* Operator Authentication & Clearance HUD */
+    .operator-auth-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding: 0.65rem 1.2rem;
+      background: rgba(10, 14, 22, 0.92);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .operator-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.04em;
+    }
+
+    .operator-status-pill.authenticated {
+      color: #00f0ff;
+    }
+
+    .status-indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #94a3b8;
+      box-shadow: 0 0 6px rgba(148, 163, 184, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .status-indicator-dot.active-operator {
+      background: #00f0ff;
+      box-shadow: 0 0 10px #00f0ff;
+      animation: pulseGreen 1.2s infinite alternate;
+    }
+
+    .operator-selector-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .operator-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .operator-btn:hover {
+      background: rgba(0, 240, 255, 0.12);
+      border-color: #00f0ff;
+      color: #fff;
+    }
+
+    .operator-btn.active {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: #00f0ff;
+      color: #00f0ff;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+    }
+
+    .operator-logout-btn {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #f87171;
+      border-radius: 6px;
+      padding: 0.35rem 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .operator-logout-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: #ef4444;
+      color: #fff;
+    }
+
+    .operator-passcode-box {
+      margin: 0.8rem 1.2rem 0;
+      padding: 1rem 1.25rem;
+      background: rgba(8, 12, 20, 0.96);
+      border: 1.5px solid #00f0ff;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 240, 255, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.08);
+      animation: fadeInPasscode 0.25s ease-out;
+    }
+
+    @keyframes fadeInPasscode {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .passcode-input {
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(0, 240, 255, 0.45);
+      border-radius: 8px;
+      color: #fff;
+      padding: 0.45rem 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .passcode-input:focus {
+      border-color: #00f0ff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    }
+
+    .chat-bubble {
+      padding: 1.1rem 1.4rem !important;
+      border-radius: 14px !important;
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 0.95rem !important;
+      line-height: 1.6 !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .chat-msg.jarvis .chat-bubble {
+      background: linear-gradient(135deg, rgba(22, 26, 38, 0.92) 0%, rgba(14, 16, 24, 0.95) 100%) !important;
+      border: 1px solid rgba(0, 240, 255, 0.25) !important;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.1) !important;
+    }
+
+    .chat-msg.user .chat-bubble {
+      background: linear-gradient(135deg, rgba(255, 59, 20, 0.28) 0%, rgba(255, 87, 34, 0.18) 100%) !important;
+      border: 1px solid #ff3b14 !important;
+      box-shadow: 0 0 24px rgba(255, 59, 20, 0.25) !important;
+    }
+
+    /* Preset Holographic Cards */
+    .prompt-pill {
+      background: linear-gradient(135deg, rgba(22, 25, 36, 0.82) 0%, rgba(12, 14, 20, 0.92) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      border-radius: 12px !important;
+      padding: 0.9rem 1.1rem !important;
+      color: #f8fafc !important;
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 0.82rem !important;
+      font-weight: 600 !important;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.25s ease !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      backdrop-filter: blur(14px) !important;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .prompt-pill:hover {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.16) 0%, rgba(255, 59, 20, 0.2) 100%) !important;
+      border-color: #00f0ff !important;
+      transform: translateX(4px) !important;
+      box-shadow: 0 4px 18px rgba(0, 240, 255, 0.28) !important;
+    }
+
+    /* ==========================================================================
+       FLUTED OPTICAL GLASS & INFRARED FLUIDIC CONDUIT HERO EXPERIENCE
+       ========================================================================== */
+    .hero-portal.fluted-hero-experience {
+      position: relative !important;
+      min-height: 94vh !important;
+      padding: 120px 1.5rem 50px !important;
+      background: radial-gradient(circle at 50% 12%, rgba(255, 59, 20, 0.1) 0%, #070709 68%) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      overflow: hidden !important;
+      z-index: 1 !important;
+    }
+
+    .hero-fluted-glass-grid {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 24px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    .hero-ambient-prism-glow {
+      position: absolute;
+      top: 25%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 85vw; max-width: 1200px; height: 380px;
+      background: radial-gradient(ellipse at center, rgba(255, 59, 20, 0.16) 0%, rgba(255, 170, 0, 0.08) 50%, transparent 75%);
+      filter: blur(75px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ==========================================================================
+       HERO STAGE ARCHITECTURE: FLUTED GLASS VOID & INTEGRATED MASTERPIECE
+       ========================================================================== */
+    .fluted-hero-experience {
+      position: relative;
+      background-color: #000000;
+      background-image: 
+        radial-gradient(ellipse 95% 75% at 50% 36%, rgba(255, 59, 20, 0.16) 0%, rgba(255, 170, 0, 0.07) 38%, #000000 75%),
+        repeating-linear-gradient(90deg, 
+          transparent 0px, 
+          transparent 46px, 
+          rgba(255, 255, 255, 0.012) 47px, 
+          rgba(255, 255, 255, 0.026) 48px, 
+          rgba(255, 255, 255, 0.008) 49px, 
+          transparent 50px);
+      overflow: hidden;
+    }
+
+    /* Ambient Core Furnace Caustics behind Masterpiece */
+    .hero-ambient-prism-glow {
+      position: absolute;
+      top: 36%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90vw; max-width: 1300px; height: 520px;
+      background: radial-gradient(ellipse at center, rgba(255, 59, 20, 0.22) 0%, rgba(255, 170, 0, 0.12) 40%, transparent 72%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: coreHaloBreathe 6s ease-in-out infinite alternate;
+    }
+
+    /* LAYER 2: CLEAN PERIMETER FLUIDIC CONDUITS (FRAMES THE HERO CLEANLY) */
+    .hero-tubes-stage {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-tubes-svg {
+      width: 100%;
+      max-width: 1650px;
+      height: 100%;
+      max-height: 900px;
+      overflow: visible;
+    }
+
+    .glass-tube-outer {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.22);
+      stroke-width: 26px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.9));
+    }
+
+    .fluid-core-stream {
+      fill: none;
+      stroke-width: 13px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 220 60;
+      animation: fluidTransit 5s linear infinite;
+    }
+
+    .fluid-core-stream.fluid-vermilion {
+      stroke: url(#vermilionFluidGrad);
+      filter: drop-shadow(0 0 16px #ff3b14);
+      animation-duration: 4.8s;
+    }
+    .fluid-core-stream.fluid-amber {
+      stroke: url(#amberFluidGrad);
+      filter: drop-shadow(0 0 16px #ffaa00);
+      animation-duration: 5.4s;
+    }
+
+    .glass-specular-highlight {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.8);
+      stroke-width: 2.5px;
+      stroke-linecap: round;
+      opacity: 0.85;
+    }
+
+    @keyframes fluidTransit {
+      0% { stroke-dashoffset: 1600; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    /* Seamless, Borderless Stage Console Plinth */
+    .hero-glass-console {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 1040px;
+      width: 100%;
+      margin: 0 auto;
+      background: transparent !important;
+      border: none !important;
+      padding: 1.6rem 1.5rem 2.4rem !important;
+    }
+
+    /* Master Brand Lockup (Compact Droplet + Authentic Text PNG) */
+    .hero-master-lockup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0.4rem auto 0.8rem;
+    }
+
+    /* Elegant, Compact Droplet (Clean, Balanced & Refined) */
+    .hero-droplet-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.6rem;
+    }
+    .droplet-ambient-glow {
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 59, 20, 0.4) 0%, rgba(255, 170, 0, 0.18) 45%, transparent 72%);
+      filter: blur(20px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-droplet-img {
+      position: relative;
+      z-index: 1;
+      height: 108px; /* Refined luxury proportion */
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 16px rgba(255, 59, 20, 0.45));
+      transition: transform 0.25s ease;
+    }
+    .hero-droplet-img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Authentic Text PNG (Risograph Cream with Slow-Pour Drips) */
+    .hero-wordmark-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    .hero-wordmark-png {
+      width: clamp(280px, 42vw, 440px);
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 20px rgba(255, 59, 20, 0.5)) drop-shadow(0 0 8px rgba(255, 170, 0, 0.4));
+      transition: filter 0.3s ease;
+    }
+    .hero-wordmark-png:hover {
+      filter: drop-shadow(0 0 30px rgba(255, 59, 20, 0.75)) drop-shadow(0 0 14px rgba(255, 170, 0, 0.6));
+    }
+
+    /* Chip Badge in Fluted Obsidian Style */
+    .hero-chip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.38rem 1.1rem;
+      border-radius: 999px;
+      background: rgba(18, 18, 24, 0.75);
+      border: 1px solid rgba(255, 59, 20, 0.45);
+      box-shadow: 0 0 18px rgba(255, 59, 20, 0.18);
+      backdrop-filter: blur(12px);
+      margin-bottom: 0.8rem;
+    }
+    .hero-chip-badge .chip-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #ff3b14;
+      box-shadow: 0 0 8px #ff3b14;
+    }
+    .hero-chip-badge span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #ff5722;
+      text-transform: uppercase;
+    }
+
+    /* Architectural Subtitle & Specifications */
+    .hero-system-descriptor {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(0.74rem, 1.2vw, 0.88rem);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #cbd5e1;
+      margin-top: 0.2rem;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 0 15px rgba(255, 59, 20, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-system-descriptor::before, .hero-system-descriptor::after {
+      content: "";
+      width: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 59, 20, 0.6));
+    }
+    .hero-system-descriptor::after {
+      background: linear-gradient(90deg, rgba(255, 59, 20, 0.6), transparent);
+    }
+
+    /* Clean, Box-Free Hero Description */
+    .hero-desc-clean {
+      font-size: clamp(0.92rem, 1.3vw, 1.04rem);
+      color: #cbd5e1;
+      max-width: 780px;
+      line-height: 1.8;
+      margin: 0.8rem auto 1.8rem;
+      padding: 0;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0 !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      box-shadow: none !important;
+      text-align: center;
+      position: relative;
+      z-index: 5;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95);
+    }
+
+    .hero-cta-cluster {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.2rem;
+    }
+
+    .btn-fluted-primary {
+      background: linear-gradient(135deg, #ff3b14 0%, #ff5722 100%);
+      border: 1.5px solid #ff3b14;
+      border-radius: 12px;
+      padding: 0.85rem 1.8rem;
+      color: #ffffff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 25px rgba(255, 59, 20, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+      transition: all 0.25s ease;
+    }
+    .btn-fluted-primary:hover {
+      background: #ff5722;
+      box-shadow: 0 0 40px rgba(255, 59, 20, 0.7);
+      transform: translateY(-2px);
+    }
+
+    .btn-fluted-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 0.85rem 1.6rem;
+      color: #f1f5f9;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      transition: all 0.25s ease;
+    }
+    .btn-fluted-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-fluted-operator {
+      background: rgba(255, 59, 20, 0.08);
+      border: 1.5px solid rgba(255, 59, 20, 0.4);
+      border-radius: 12px;
+      padding: 0.85rem 1.5rem;
+      color: #ff5722;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      backdrop-filter: blur(16px);
+      transition: all 0.25s ease;
+    }
+    .btn-fluted-operator:hover {
+      background: rgba(255, 59, 20, 0.2);
+      border-color: #ff3b14;
+      box-shadow: 0 0 20px rgba(255, 59, 20, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .fluted-telemetry-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+      width: 100%;
+    }
+
+    .fluted-telemetry-card {
+      background: rgba(18, 18, 24, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+      transition: all 0.25s ease;
+    }
+    .fluted-telemetry-card:hover {
+      border-color: rgba(255, 59, 20, 0.4);
+      box-shadow: 0 12px 36px rgba(255, 59, 20, 0.18);
+      transform: translateY(-2px);
+    }
+
+    .fluted-telemetry-card .telemetry-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.08em;
+    }
+    .fluted-telemetry-card .telemetry-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .fluted-telemetry-card .telemetry-num .unit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #ffaa00;
+      font-weight: 600;
+    }
+
+    @media (max-width: 992px) {
+      .hero-glass-console { padding: 1.5rem 1rem !important; }
+      .fluted-telemetry-row { grid-template-columns: repeat(2, 1fr); }
+      .masterpiece-artwork-img { width: 85vw; max-width: 440px; }
+    }
+    @media (max-width: 600px) {
+      .fluted-telemetry-row { grid-template-columns: 1fr; }
+      .hero-cta-cluster { flex-direction: column; width: 100%; }
+      .btn-fluted-primary, .btn-fluted-secondary, .btn-fluted-operator { width: 100%; justify-content: center; }
+      .hero-system-descriptor { font-size: 0.72rem; letter-spacing: 0.14em; }
+    }
+
+    /* Navbar Brand Icon & Transparent Logo */
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-brand-icon {
+      height: 34px;
+      width: auto;
+      max-width: 40px;
+      object-fit: contain;
+      border: none !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      filter: drop-shadow(0 0 8px rgba(255, 59, 20, 0.45));
+      transition: transform 0.25s ease, filter 0.25s ease;
+    }
+
+    .nav-brand-text-png {
+      height: 20px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(255, 59, 20, 0.45));
+      transition: transform 0.25s ease, filter 0.25s ease;
+      vertical-align: middle;
+    }
+
+    .nav-brand:hover .nav-brand-icon {
+      transform: scale(1.06);
+      filter: drop-shadow(0 0 16px rgba(255, 59, 20, 0.8)) drop-shadow(0 0 6px rgba(255, 170, 0, 0.6));
+    }
+
+    .nav-brand:hover .nav-brand-text-png {
+      filter: drop-shadow(0 0 16px rgba(255, 59, 20, 0.75)) drop-shadow(0 0 6px rgba(255, 170, 0, 0.6));
+    }
+
+    /* Scroll Indicator at bottom of Hero */
+    .hero-scroll-indicator {
+      margin-top: 1.8rem;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      text-decoration: none;
+    }
+    .hero-scroll-indicator:hover {
+      opacity: 1;
+      transform: translateY(3px);
+    }
+    .hero-scroll-indicator span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+    .scroll-arrow-drip {
+      width: 20px;
+      height: 20px;
+      color: #ff5722;
+      animation: dripBounce 1.8s infinite ease-in-out;
+    }
+    @keyframes dripBounce {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50% { transform: translateY(6px); opacity: 1; filter: drop-shadow(0 0 6px #ff3b14); }
     }
   </style>
+  
+  <!-- Three.js and OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
-<div class="hud-container">
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <a href="#portal" class="nav-brand" title="Kinetic Pour">
+      <img src="static/images/kinetic_pour_droplet_transparent.png" alt="Kinetic Pour Logo" class="nav-brand-icon">
+      <img src="static/images/kinetic_pour_nav_wordmark_transparent.png" alt="Kinetic Pour" class="nav-brand-text-png">
+    </a>
 
-  <!-- Top Telemetry Bar -->
-  <div class="hud-topbar">
-    <div class="hud-corner-tl"></div><div class="hud-corner-tr"></div>
-    <div class="hud-corner-bl"></div><div class="hud-corner-br"></div>
-    <div class="sys-info">
-      <div class="pulse-dot"></div>
-      <span>J.A.R.V.I.S. OS // VER 3.6.1</span>
-      <span>•</span>
-      <span>STATUS: ONLINE</span>
-      <span>•</span>
-      <span id="liveClock">00:00:00</span>
-    </div>
-    <div class="operator-select">
-      <label>OPERATOR:</label>
-      <select id="userSelect" onchange="onUserChange()">
-        <option value="Ro" selected>RO // LEAD & AI</option>
-        <option value="Aron">ARON // FINANCE & BUDGET</option>
-        <option value="Eli">ELI // INVENTORY & HARDWARE</option>
-        <option value="Shyam">SHYAM // TIMELINE & GANTT</option>
-      </select>
-    </div>
-  </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#portal" class="active">PORTAL</a></li>
+        <li><a href="#simulation">3D TWIN &amp; HMI</a></li>
+        <li><a href="#plc-algorithm">PLC ALGORITHM</a></li>
+        <li><a href="#jarvis-ai">J.A.R.V.I.S. AI</a></li>
+      </ul>
+    </nav>
 
-  <!-- Arc Reactor Centerpiece -->
-  <div class="reactor-header">
-    <div class="arc-reactor">
-      <div class="reactor-ring-outer"></div>
-      <div class="reactor-ring-inner"></div>
-      <div class="reactor-core"></div>
+    <div class="nav-actions">
+      <button class="btn-secondary" onclick="focusSubsystem('bottling'); document.getElementById('simulation').scrollIntoView();">
+        8-BOTTLE CRATE
+      </button>
+      <button class="btn-primary" onclick="focusSubsystem('all'); document.getElementById('simulation').scrollIntoView();">
+        LAUNCH 3D TWIN
+      </button>
     </div>
-    <div class="reactor-title">
-      <h1>J.A.R.V.I.S.</h1>
-      <p>AVENGERS DIRECTORY // UC SENIOR DESIGN CAPSTONE</p>
-      <p style="color: #79a6c4; font-size: 11px; margin-top: 3px;">PROJECT: AUTOMATED DRINK-DISPENSING TABLE • CEAS MECH/EECE</p>
+  </header>
+
+  <!-- ==========================================================================
+       1. HERO SECTION: 3D TRANSLUCENT FLUIDIC TUBING & FLUTED GLASS ARCHITECTURE
+          - LAYER 1 (z:1): Background Architectural Letters [K I N E T I C]
+          - LAYER 2 (z:2): 3D Translucent Glass Tubes with Animated Flowing Liquid (Overlays KINETIC)
+          - LAYER 3 (z:3): Foreground Title [POUR], Controls & Telemetry Deck (Overlays the Tubes)
+       ========================================================================== -->
+  <section id="portal" class="hero-portal fluted-hero-experience">
+    <!-- Ambient Infrared Caustics Glow & Fluted Glass Slats -->
+    <div class="hero-fluted-glass-grid"></div>
+    <div class="hero-ambient-prism-glow"></div>
+
+    <!-- LAYER 2: CLEAN PERIMETER FLUIDIC CONDUITS (FRAMES THE HERO CLEANLY) -->
+    <div class="hero-tubes-stage">
+      <svg class="hero-tubes-svg" viewBox="0 0 1600 750" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Signature Infrared Vermilion & Warm Amber Gradients -->
+          <linearGradient id="vermilionFluidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff8a65" stop-opacity="0.95" />
+            <stop offset="50%" stop-color="#ff5722" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#ff3b14" stop-opacity="0.95" />
+          </linearGradient>
+
+          <linearGradient id="amberFluidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fef08a" stop-opacity="0.95" />
+            <stop offset="50%" stop-color="#ffaa00" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#d97706" stop-opacity="0.95" />
+          </linearGradient>
+
+          <!-- Glass Tube Outer Wall Gradient -->
+          <linearGradient id="glassWallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)" />
+            <stop offset="35%" stop-color="rgba(255, 255, 255, 0.08)" />
+            <stop offset="70%" stop-color="rgba(255, 255, 255, 0.04)" />
+            <stop offset="100%" stop-color="rgba(255, 255, 255, 0.3)" />
+          </linearGradient>
+        </defs>
+
+        <!-- TUBE 1: INFRARED VERMILION CONDUIT (Strictly hugs top perimeter edge, y=40..60) -->
+        <g class="tube-assembly">
+          <path d="M -40 55 C 400 15, 800 50, 1200 25 C 1440 10, 1580 35, 1640 45" 
+                class="glass-tube-outer" stroke="url(#glassWallGrad)" stroke-width="24" />
+          <path d="M -40 55 C 400 15, 800 50, 1200 25 C 1440 10, 1580 35, 1640 45" 
+                class="fluid-core-stream fluid-vermilion" />
+          <path d="M -40 48 C 400 8, 800 43, 1200 18 C 1440 3, 1580 28, 1640 38" 
+                class="glass-specular-highlight" />
+        </g>
+
+        <!-- TUBE 2: WARM AMBER CONDUIT (Strictly hugs bottom perimeter edge, y=715..735) -->
+        <g class="tube-assembly">
+          <path d="M -40 720 C 360 740, 780 700, 1180 735 C 1420 750, 1580 715, 1640 725" 
+                class="glass-tube-outer" stroke="url(#glassWallGrad)" stroke-width="24" />
+          <path d="M -40 720 C 360 740, 780 700, 1180 735 C 1420 750, 1580 715, 1640 725" 
+                class="fluid-core-stream fluid-amber" />
+          <path d="M -40 713 C 360 733, 780 693, 1180 728 C 1420 743, 1580 708, 1640 718" 
+                class="glass-specular-highlight" />
+        </g>
+      </svg>
     </div>
-  </div>
 
-  <!-- Tactical Option Cards -->
-  <div>
-    <div class="tactical-section-label">TACTICAL MODULE SELECTION</div>
-    <div class="tactical-grid">
+    <!-- LAYER 3: FOREGROUND CINEMATIC LOGO INTEGRATION (ZERO BOX, ZERO DUPLICATE TEXT) -->
+    <div class="hero-glass-console">
+      <div class="hero-chip-badge">
+        <span class="chip-dot"></span>
+        <span>AUTONOMOUS FLUIDIC SYSTEM // UC SENIOR DESIGN</span>
+      </div>
 
-      <!-- Mod 1: Tasks -->
-      <div class="tactical-card active" onclick="selectOption('tasks', this)">
-        <div class="tactical-code">[01]</div>
-        <div class="tactical-info">
-          <h3>OPERATOR DELIVERABLES</h3>
-          <p id="taskSubtext">Active deliverables for RO</p>
+      <!-- Integrated Hero Masterpiece (Droplet, Handcrafted Pouring Wordmark & Light Sheen) -->
+      <!-- Clean, Elegant Master Brand Lockup (Droplet + Authentic Transparent Text PNG) -->
+      <div class="hero-master-lockup" id="hero-master-lockup">
+        <!-- Compact, Elegant Fluted Droplet (Refined, NOT Overwhelming) -->
+        <div class="hero-droplet-wrap">
+          <div class="droplet-ambient-glow"></div>
+          <img src="static/images/kinetic_pour_droplet_transparent.png" 
+               alt="Kinetic Pour Droplet" 
+               class="hero-droplet-img" />
+        </div>
+
+        <!-- Authentic Risograph Text with Slow-Pour Drips (Zero Box / Pure Transparent PNG) -->
+        <div class="hero-wordmark-wrap">
+          <img src="static/images/kinetic_pour_text_transparent.png?v=magic" 
+               alt="KINETIC POUR // ENGINEERED MAGIC" 
+               class="hero-wordmark-png" />
         </div>
       </div>
 
-      <!-- Mod 2: Meeting -->
-      <div class="tactical-card" onclick="selectOption('meeting', this)">
-        <div class="tactical-code">[02]</div>
-        <div class="tactical-info">
-          <h3>INNOVATION CHALLENGE</h3>
-          <p>Next: Pitch Video Sept 28 ($600)</p>
+      <!-- Architectural Subtitle & Specifications -->
+      <div class="hero-system-descriptor">
+        AUTOMATED 8-BOTTLE MICRO-PERISTALTIC TABLE &bull; T8 LINEAR GANTRY
+      </div>
+
+      <p class="hero-desc-clean">
+        Engineered for University of Cincinnati Senior Design (MECH5051 / EECE5001). 
+        A closed-loop fluidic instrument coupling an in-house 3D printed reservoir crate, eight GROTHEN 24V PWM dosing pumps, inline anti-cavitation check valves, precision manifold, and lead-screw elevator carriage.
+      </p>
+
+      <div class="hero-cta-cluster">
+        <button class="btn-fluted-primary" onclick="focusSubsystem('all'); document.getElementById('simulation').scrollIntoView({behavior: 'smooth'});">
+          LAUNCH 3D DIGITAL TWIN
+        </button>
+        <button class="btn-fluted-secondary" onclick="focusSubsystem('bottling'); document.getElementById('simulation').scrollIntoView({behavior: 'smooth'});">
+          8-BOTTLE CRATE CAD
+        </button>
+        <a href="https://rohendhar.github.io/jarvis-operator/" target="_blank" class="btn-fluted-operator">
+          OPERATOR PORTAL ↗
+        </a>
+      </div>
+
+      <!-- Real-Time Telemetry Bar in Fluted Glass Aesthetics -->
+      <div class="fluted-telemetry-row">
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">RESERVOIR CAPACITY</div>
+          <div class="telemetry-num">8 BOTTLES <span class="unit">750 mL</span></div>
+        </div>
+
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">DOSING ARRAY</div>
+          <div class="telemetry-num">8x GROTHEN <span class="unit">24V PWM</span></div>
+        </div>
+
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">ELEVATOR GANTRY</div>
+          <div class="telemetry-num">T8 SCREW <span class="unit">100 mm</span></div>
+        </div>
+
+        <div class="fluted-telemetry-card">
+          <div class="telemetry-lbl">FLUIDICS CORE</div>
+          <div class="telemetry-num" style="color: #ff5722;">ONLINE <span class="unit" style="color: #ffaa00;">ESP32 PLC</span></div>
         </div>
       </div>
 
-      <!-- Mod 3: Budget -->
-      <div class="tactical-card" onclick="selectOption('budget', this)">
-        <div class="tactical-code">[03]</div>
-        <div class="tactical-info">
-          <h3>FINANCIAL // BOM SPECS</h3>
-          <p>Target: $1,200 Grant (<$1,500 Cap)</p>
-        </div>
-      </div>
-
-      <!-- Mod 4: Funding -->
-      <div class="tactical-card" onclick="selectOption('funding', this)">
-        <div class="tactical-code">[04]</div>
-        <div class="tactical-info">
-          <h3>CAPITAL // GRANTS</h3>
-          <p>Pre-Approval & 1819 Reimbursement</p>
-        </div>
-      </div>
-
-      <!-- Mod 5: Mechanism -->
-      <div class="tactical-card" onclick="selectOption('mechanism', this)">
-        <div class="tactical-code">[05]</div>
-        <div class="tactical-info">
-          <h3>HARDWARE // TRADE STUDY</h3>
-          <p>8-Bottle Mobile Table & Linear Rail</p>
-        </div>
-      </div>
-
-      <!-- Mod 6: Drive -->
-      <div class="tactical-card" onclick="selectOption('drive', this)">
-        <div class="tactical-code">[06]</div>
-        <div class="tactical-info">
-          <h3>MAINFRAME // GOOGLE DRIVE</h3>
-          <p>Direct Link to Synchronized Repository</p>
-        </div>
-      </div>
-
+      <!-- Interactive Scroll Down Prompt -->
+      <a href="#simulation" class="hero-scroll-indicator" onclick="document.getElementById('simulation').scrollIntoView({behavior: 'smooth'}); return false;">
+        <span>EXPLORE 3D DIGITAL TWIN &amp; HMI</span>
+        <svg class="scroll-arrow-drip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </a>
     </div>
-  </div>
+  </section>
 
-  <!-- Holographic Terminal Output -->
-  <div class="hud-terminal">
-    <div class="hud-corner-tl"></div><div class="hud-corner-tr"></div>
-    <div class="hud-corner-bl"></div><div class="hud-corner-br"></div>
-    <div class="terminal-header">
-      <div class="terminal-title">
-        <span id="panelTitle">OPERATOR DELIVERABLES // RO</span>
+  <!-- ==========================================================================
+       2. INTERACTIVE 3D DIGITAL TWIN & TOUCHSCREEN HMI SCREEN
+       ========================================================================== -->
+  <section id="simulation" class="simulation-section">
+    <div class="section-header">
+      <div>
+        <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+          ENGINEERING DIGITAL TWIN // 8-BOTTLE PHYSICAL FLUID DYNAMICS
+        </span>
+        <h2 class="section-title">Interactive 3D Simulation &amp; HMI</h2>
+        <p class="section-desc">
+          Live 3D kinematics with real fluid drain and tube flow animation. Pick a drink on the touchscreen HMI to watch the elevator descend, active bottles drain, fluid pulses flow through silicone tubes, and the cocktail dispense!
+        </p>
       </div>
-      <div class="terminal-badge" id="panelTag" onclick="resyncCurrentOption()" style="cursor:pointer;" title="Click to refresh telemetry">TELEMETRY SYNC ⟳</div>
+
+      <div>
+        <button id="btn-xray" class="btn-secondary" onclick="toggleXRay()">
+          X-RAY: ACTIVE
+        </button>
+      </div>
     </div>
-    <div class="terminal-content" id="panelBody">
-      Initializing J.A.R.V.I.S. neural link...
+
+    <div class="sim-container">
+      <!-- 3D Viewport (16:9 Broadcast Quality) -->
+      <div class="sim-viewport-wrapper" id="three-viewport">
+        <canvas id="three-canvas"></canvas>
+
+        <div class="viewport-hud">
+          <div class="hud-badge">
+            <span id="view-badge">FULL SYSTEM // TABLE CUTAWAY</span>
+          </div>
+        </div>
+
+        <div class="viewport-controls">
+          <div class="focus-pills">
+            <button id="btn-focus-all" class="focus-btn active" onclick="focusSubsystem('all')">
+              TABLE OVERVIEW
+            </button>
+            <button id="btn-focus-bottling" class="focus-btn" onclick="focusSubsystem('bottling')">
+              8-BOTTLE 3D CRATE
+            </button>
+            <button id="btn-focus-manifold" class="focus-btn" onclick="focusSubsystem('manifold')">
+              PERISTALTIC &amp; MANIFOLD
+            </button>
+            <button id="btn-focus-lift" class="focus-btn" onclick="focusSubsystem('lift')">
+              LIFT ELEVATOR
+            </button>
+            <button id="btn-focus-plc" class="focus-btn" onclick="focusSubsystem('plc')">
+              PLC &amp; SENSORS
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: User HMI Touchscreen & Controls -->
+      <div class="hmi-control-deck">
+        <!-- Touchscreen Ordering Panel (Liquid Glass Screen Interface) -->
+        <div class="hmi-screen-card" id="hmi-touchscreen-panel">
+          <!-- Glass Sheen & Scanlines -->
+          <div class="screen-glass-sheen"></div>
+          <div class="screen-scanlines"></div>
+
+          <!-- Top Hardware & Telemetry Bar -->
+          <div class="hmi-screen-top-bar">
+            <div class="screen-notch-group">
+              <span class="screen-camera-lens" title="Optical Gesture Camera"></span>
+              <span class="screen-ir-sensor" title="IR Proximity Sensor"></span>
+            </div>
+            <div class="screen-telemetry-badge">
+              <span>CAPACITIVE OLED // 120Hz</span>
+            </div>
+            <div class="screen-live-clock" id="screen-clock">00:00:00</div>
+          </div>
+
+          <!-- Section Header: USER INTERFACE -->
+          <div class="hmi-header">
+            <div class="hmi-title-group">
+              <span class="hmi-screen-tag">DISPENSING CONTROL SURFACE</span>
+              <h2 class="hmi-title">USER INTERFACE</h2>
+            </div>
+            <div class="hmi-mode-pill">
+              <span class="hmi-touch-pulse"></span>
+              <span class="hmi-mode-tag">TOUCHSCREEN ACTIVE</span>
+            </div>
+          </div>
+
+          <!-- 6 Preset Cocktail Cards (Liquid Glass Tiles) -->
+          <div class="hmi-drink-grid">
+            <button class="hmi-drink-btn active" onclick="selectRecipeHmi('Old Fashioned', [0, 7], 'a84200', this)">
+              <div class="drink-header-row">
+                <span class="drink-name">Old Fashioned</span>
+                <span class="drink-indicator-dot" style="--dot-color: #c75100;"></span>
+              </div>
+              <span class="drink-spec">Bourbon + Citrus Sour</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Cosmopolitan', [1, 4, 5, 7], 'd61a3c', this)">
+              <div class="drink-header-row">
+                <span class="drink-name">Cosmopolitan</span>
+                <span class="drink-indicator-dot" style="--dot-color: #e01642;"></span>
+              </div>
+              <span class="drink-spec">Vodka + Triple Sec + Cran</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Gin & Tonic', [2, 6, 7], '00f0ff', this)">
+              <div class="drink-header-row">
+                <span class="drink-name">Gin &amp; Tonic</span>
+                <span class="drink-indicator-dot" style="--dot-color: #00d4ff;"></span>
+              </div>
+              <span class="drink-spec">Gin + Tonic + Citrus</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Tequila Sunrise', [3, 4, 5, 7], 'ff5722', this)">
+              <div class="drink-header-row">
+                <span class="drink-name">Tequila Sunrise</span>
+                <span class="drink-indicator-dot" style="--dot-color: #ff5722;"></span>
+              </div>
+              <span class="drink-spec">Tequila + Citrus + Cran</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Cyber Long Island', [0, 1, 2, 3, 4, 7], 'ff9900', this)">
+              <div class="drink-header-row">
+                <span class="drink-name">Cyber Long Island</span>
+                <span class="drink-indicator-dot" style="--dot-color: #ff9900;"></span>
+              </div>
+              <span class="drink-spec">Vodka + Gin + Teq + Rum</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Kinetic Reserve', [0, 1, 2, 3, 4, 5, 6, 7], '8b24e3', this)">
+              <div class="drink-header-row">
+                <span class="drink-name">Kinetic Reserve</span>
+                <span class="drink-indicator-dot" style="--dot-color: #a34ee8;"></span>
+              </div>
+              <span class="drink-spec">All 8 Botanical Spirits</span>
+            </button>
+          </div>
+
+          <!-- Real-Time 8-Bottle Fill Gauges (Liquid Glass Ampoules) -->
+          <div class="inventory-section-header">
+            <div class="inventory-title-group">
+              <span class="inventory-title">RESERVOIR INVENTORY GAUGES</span>
+              <span class="inventory-subtitle">REAL-TIME OPTICAL DRAIN SENSORS</span>
+            </div>
+            <span class="inventory-live-chip">LIVE TELEMETRY</span>
+          </div>
+
+          <div class="bottle-levels-monitor">
+            <div class="bottle-gauge">
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-0" class="gauge-bar-fill liquid-bourbon" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
+              <span class="bottle-gauge-label">BOURBON</span>
+            </div>
+
+            <div class="bottle-gauge">
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-1" class="gauge-bar-fill liquid-vodka" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
+              <span class="bottle-gauge-label">VODKA</span>
+            </div>
+
+            <div class="bottle-gauge">
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-2" class="gauge-bar-fill liquid-gin" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
+              <span class="bottle-gauge-label">GIN</span>
+            </div>
+
+            <div class="bottle-gauge">
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-3" class="gauge-bar-fill liquid-tequila" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
+              <span class="bottle-gauge-label">TEQUILA</span>
+            </div>
+
+            <div class="bottle-gauge">
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-4" class="gauge-bar-fill liquid-triplesec" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
+              <span class="bottle-gauge-label">TRIPLE SEC</span>
+            </div>
+
+            <div class="bottle-gauge">
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-5" class="gauge-bar-fill liquid-cranberry" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
+              <span class="bottle-gauge-label">CRANBERRY</span>
+            </div>
+
+            <div class="bottle-gauge">
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-6" class="gauge-bar-fill liquid-tonic" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
+              <span class="bottle-gauge-label">TONIC</span>
+            </div>
+
+            <div class="bottle-gauge">
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-7" class="gauge-bar-fill liquid-citrus" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
+              <span class="bottle-gauge-label">CITRUS</span>
+            </div>
+          </div>
+
+          <!-- Tactile Action Buttons (Liquid Glass Styled) -->
+          <div class="hmi-actions-stack">
+            <button id="btn-place-cup" class="btn-place-cup-glass" onclick="placeDrinkCup()">
+              PLACE DRINK CUP
+            </button>
+
+            <button id="btn-dispense" class="btn-dispense-glass" disabled onclick="startDispenseCycle()">
+              START DISPENSE SEQUENCE
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Telemetry Terminal -->
+        <div class="hmi-screen-card" style="padding: 1.15rem;">
+          <div style="display: flex; justify-content: space-between; font-family: var(--font-body); font-weight: 700; font-size: 0.76rem; margin-bottom: 0.6rem;">
+            <span>TELEMETRY BUS</span>
+            <span style="color: var(--status-green);">ESP32 I2C // 400kHz</span>
+          </div>
+
+          <div id="telemetry-terminal" class="telemetry-terminal">
+            <div class="terminal-line">
+              <span class="time">[21:12:00.000]</span>
+              <span class="status-ok">[PLC]</span>
+              <span>Kinetic Pour OS initialized. Place cup to begin.</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Command Prompt -->
-  <div>
-    <div class="tactical-section-label">DIRECT OPERATOR INTERROGATION</div>
-    <div class="command-bar">
-      <div class="prompt-prefix">JARVIS://CMD&gt;</div>
-      <input type="text" class="command-input" id="customQuery" placeholder="Enter voice/text prompt (e.g. 'Calculate NEMA 17 stepper torque', 'Draft pitch outline')..." onkeypress="if(event.key==='Enter') sendCustom()">
-      <button class="command-btn" onclick="sendCustom()">EXECUTE</button>
+  <!-- ==========================================================================
+       3. PLC ALGORITHM & STATE MACHINE VISUALIZER
+       ========================================================================== -->
+  <section id="plc-algorithm" class="plc-section">
+    <div class="plc-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+            AUTOMATION FIRMWARE ARCHITECTURE
+          </span>
+          <h3 style="font-family: var(--font-title); font-size: 1.8rem; margin: 0.3rem 0;">
+            PLC &amp; Embedded State Machine
+          </h3>
+          <p style="color: var(--text-secondary); max-width: 700px; font-size: 0.95rem;">
+            Deterministic execution sequence running on the ESP32 / Arduino controller. Each step guarantees optical safety verification, zero fluid backflow, and precision volumetric dosing.
+          </p>
+        </div>
+
+        <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">
+          CYCLE CLOCK: <span style="color: var(--infrared);">10ms TICK</span>
+        </div>
+      </div>
+
+      <!-- Interactive 8-Step Node Chain -->
+      <div class="plc-step-chain">
+        <div class="plc-step-node active" data-step="1">
+          <div class="plc-step-num">01</div>
+          <div class="plc-step-title">IR VESSEL DETECT</div>
+          <div class="plc-step-desc">Photocell optical beam checks cup seated on coaster.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="2">
+          <div class="plc-step-num">02</div>
+          <div class="plc-step-title">SAFETY LATCH</div>
+          <div class="plc-step-desc">Latching relay enabled. Platform encoders re-zeroed.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="3">
+          <div class="plc-step-num">03</div>
+          <div class="plc-step-title">STEPPER DESCENT</div>
+          <div class="plc-step-desc">T8 lead screw lowers platform to bottom limit switch.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="4">
+          <div class="plc-step-num">04</div>
+          <div class="plc-step-title">CHECK-VALVE PRIME</div>
+          <div class="plc-step-desc">Inline non-return valves unseat under head pressure.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="5">
+          <div class="plc-step-num">05</div>
+          <div class="plc-step-title">PERISTALTIC DOSING</div>
+          <div class="plc-step-desc">24V PWM pulses calibrate active pump rollers by mL.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="6">
+          <div class="plc-step-num">06</div>
+          <div class="plc-step-title">ANTI-DRIP PURGE</div>
+          <div class="plc-step-desc">0.2s reverse pump pulse prevents nozzle droplet runoff.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="7">
+          <div class="plc-step-num">07</div>
+          <div class="plc-step-title">STEPPER ASCENT</div>
+          <div class="plc-step-desc">Lead screw elevates finished drink flush with tabletop.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="8">
+          <div class="plc-step-num">08</div>
+          <div class="plc-step-title">CYCLE COMPLETE</div>
+          <div class="plc-step-desc">Audible chime sounded. Telemetry bus released.</div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Bottom Telemetry Footer -->
-  <div class="hud-footer">
-    <div>NEURAL CORE: <span>GEMINI 3.1 FLASH</span> • LATENCY: <span>18ms</span></div>
-    <div>FLUIDICS MANIFOLD: <span>STANDBY</span> • ACTUATION: <span>CALIBRATED</span></div>
-    <div>AVENGERS DIRECTORY // UNIV OF CINCINNATI CEAS</div>
-  </div>
+  <!-- ==========================================================================
+       4. J.A.R.V.I.S. ONE-STOP AI ASSISTANT CONSOLE
+       ========================================================================== -->
+  <section id="jarvis-ai" class="jarvis-section">
+    <div class="section-header">
+      <div>
+        <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+          TEAM AI INTEGRATION // GEMINI POWERED
+        </span>
+        <h2 class="section-title">J.A.R.V.I.S. Capstone Intelligence</h2>
+        <p class="section-desc">
+          Your unified engineering hub. Ask J.A.R.V.I.S. about the 8-bottle fluidics, BOM procurement, Innovation Challenge grants, meeting minutes, and CAD deadlines with instant AI answers!
+        </p>
+      </div>
 
-</div>
+      <div style="font-family: var(--font-body); font-weight: 700; font-size: 0.82rem; color: var(--status-green);">
+        J.A.R.V.I.S. MARK VII // ONLINE
+      </div>
+    </div>
 
-<script>
-  // Live Clock
-  function updateClock() {
-    const now = new Date();
-    document.getElementById('liveClock').innerText = now.toLocaleTimeString();
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
+    <div class="jarvis-container">
+      <!-- Tactical Corner Brackets -->
+      <div class="hud-corner-bracket top-left"></div>
+      <div class="hud-corner-bracket top-right"></div>
+      <div class="hud-corner-bracket bottom-left"></div>
+      <div class="hud-corner-bracket bottom-right"></div>
 
-  const queries = {
-    tasks: "What are my current active tasks?",
-    meeting: "When is the next meeting and deadline?",
-    budget: "What is our budget and BOM breakdown?",
-    funding: "What funding opportunities and grants are available?",
-    mechanism: "Show me the mechanical design concepts and trade study",
-    drive: "Give me the link to our Google Drive folder"
-  };
+      <!-- Left Column: Holographic Chat Terminal -->
+      <div class="jarvis-chat-wrapper">
+        <!-- Comms Header -->
+        <div class="chat-top-header">
+          <div class="channel-tag">KINETIC POUR AI // PUBLIC INTERFACE</div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span>SURFACE TELEMETRY // VERIFIED</span>
+            <a href="https://rohendhar.github.io/jarvis-operator/" target="_blank" style="color: #00f0ff; text-decoration: none; border: 1px solid rgba(0,240,255,0.4); padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 700; background: rgba(0,240,255,0.08); transition: all 0.2s;">
+              🔒 OPERATOR PORTAL ↗
+            </a>
+          </div>
+        </div>
 
-  const titles = {
-    tasks: "OPERATOR DELIVERABLES // RO",
-    meeting: "TACTICAL EVENT // INNOVATION CHALLENGE",
-    budget: "FINANCIAL TELEMETRY // BOM ESTIMATE",
-    funding: "CAPITAL RECONNAISSANCE // GRANTS",
-    mechanism: "HARDWARE ARCHITECTURE // TRADE STUDY",
-    drive: "MAINFRAME // GOOGLE DRIVE REPOSITORY"
-  };
+        <div id="chat-history" class="chat-history">
+          <div class="chat-msg jarvis">
+            <span class="chat-sender">J.A.R.V.I.S. // PUBLIC INTELLIGENCE</span>
+            <div class="chat-bubble">
+              Welcome to the <strong>Kinetic Pour Automated Drink Table</strong> public interface. I am J.A.R.V.I.S., your technical project guide. Feel free to explore our 8-bottle fluidics, GROTHEN peristaltic dosing pumps, T8 elevator kinematics, completed project milestones, and upcoming engineering goals.<br><br>
+              <em>(Note: Project engineering leads requiring internal task checklists, CEAS grant finances, and presentation deadlines should access the dedicated <a href="https://rohendhar.github.io/jarvis-operator/" target="_blank" style="color: #00f0ff; font-weight: 600;">Operator Command Portal</a>.)</em>
+            </div>
+          </div>
+        </div>
 
-  function onUserChange() {
-    const user = document.getElementById('userSelect').value;
-    document.getElementById('taskSubtext').innerText = `Active deliverables for ${user.toUpperCase()}`;
-    titles['tasks'] = `OPERATOR DELIVERABLES // ${user.toUpperCase()}`;
-    selectOption('tasks', document.querySelector('.tactical-grid .tactical-card'));
-  }
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Query J.A.R.V.I.S. about CAD, fluidics, milestones, or project specs..." onkeydown="if(event.key==='Enter') sendJarvisMessage()">
+          <button class="btn-primary" onclick="sendJarvisMessage()" style="padding: 0.8rem 1.4rem; font-weight: 700;">TRANSMIT</button>
+        </div>
+      </div>
 
-  let currentKey = 'tasks';
-  let lastCustomQuery = '';
+      <!-- Right Column: Animated Arc Reactor Core & Rapid Inquiries -->
+      <div class="jarvis-reactor-deck">
+        <!-- Holographic Arc Reactor Core Card -->
+        <div class="jarvis-arc-reactor-card">
+          <div class="arc-reactor-visualizer">
+            <div class="arc-ring-outer"></div>
+            <div class="arc-ring-middle"></div>
+            <div class="arc-ring-inner"></div>
+            <div class="arc-core-glow"></div>
+          </div>
 
-  async function fetchWithRetry(url, options, maxRetries = 3) {
-    const panelBody = document.getElementById('panelBody');
-    for (let i = 0; i < maxRetries; i++) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 20000);
-        const fetchOptions = { ...options, signal: controller.signal };
-        const res = await fetch(url, fetchOptions);
-        clearTimeout(timeoutId);
-        if (res.ok) return await res.json();
-      } catch (err) {
-        if (i < maxRetries - 1) {
-          panelBody.innerHTML = `<em>J.A.R.V.I.S. neural telemetry synchronizing (Attempt ${i + 2}/${maxRetries})...</em>`;
-          await new Promise(r => setTimeout(r, 1200));
+          <div style="text-align: center;">
+            <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 0.95rem; color: #fff; letter-spacing: 0.04em;">
+              NEURAL CORE
+            </div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #00f0ff; margin-top: 2px;">
+              AUDIO &amp; REASONING MATRIX
+            </div>
+          </div>
+
+          <!-- Live Audio Frequency Equalizer Waveform -->
+          <div class="jarvis-voice-waveform" id="jarvis-waveform">
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+          </div>
+
+          <!-- Arc Specs Grid -->
+          <div class="arc-specs-grid">
+            <div><span>AI REASONING</span><strong>GEMINI FLASH</strong></div>
+            <div><span>CYCLE LATENCY</span><strong>10ms TICK</strong></div>
+            <div><span>FLUIDIC INDEX</span><strong>8-BOTTLE TWIN</strong></div>
+            <div><span>CAPSTONE GRANT</span><strong>$1,200.00 CEAS</strong></div>
+          </div>
+        </div>
+
+        <!-- Rapid Inquiry Presets -->
+        <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+          <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 0.74rem; color: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase;">
+            TACTICAL MISSION PRESETS
+          </span>
+
+          <div class="prompt-pills-stack" id="prompt-pills-stack">
+            <button class="prompt-pill" onclick="askPreset('What is Kinetic Pour and how does it work?')">
+              <span>▸ What is Kinetic Pour?</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00f0ff;">[ABOUT]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('What milestones have been achieved so far?')">
+              <span>▸ Milestones Achieved</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00e676;">[STATUS]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('What is the next upcoming milestone for Kinetic Pour?')">
+              <span>▸ Next Upcoming Milestone</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #ffd600;">[GOAL]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
+              <span>▸ 8-Bottle Fluidics &amp; Tubing</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00f0ff;">[SPEC]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('Explain the T8 lead screw elevator lift mechanism')">
+              <span>▸ T8 Lead Screw Elevator</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #ff3b14;">[CAD]</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-info">
+      <div style="font-weight: 700; color: #fff;">KINETIC POUR // AUTOMATED DRINK TABLE</div>
+      <div style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem;">
+        MECH5051 / EECE5001 &bull; <span class="uc">UNIVERSITY OF CINCINNATI</span> &bull; SENIOR DESIGN CAPSTONE
+      </div>
+    </div>
+
+    <div style="font-family: var(--font-body); font-weight: 600; color: var(--text-muted); font-size: 0.82rem;">
+      8-BOTTLE RESERVOIR &bull; 24V PERISTALTIC &bull; LEAD SCREW LIFT &bull; J.A.R.V.I.S. AI
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="static/js/simulation.js?v=vibrant_bottles_v3"></script>
+
+  <script>
+    /* ==========================================
+       J.A.R.V.I.S. AI CHAT CLIENT & WAVEFORM SURGE
+       ========================================== */
+    function surgeWaveform(active) {
+      const bars = document.querySelectorAll('.wave-bar');
+      bars.forEach(b => {
+        if (active) {
+          b.style.animationDuration = '0.35s';
+          b.style.background = 'linear-gradient(180deg, #ffffff 0%, #00f0ff 50%, #ff3b14 100%)';
+          b.style.boxShadow = '0 0 12px #00f0ff';
+        } else {
+          b.style.animationDuration = '1.3s';
+          b.style.background = 'linear-gradient(180deg, #00f0ff 0%, #ff3b14 100%)';
+          b.style.boxShadow = '0 0 6px rgba(0, 240, 255, 0.7)';
         }
+      });
+    }
+
+    /* ==========================================
+       J.A.R.V.I.S. PUBLIC USER INTELLIGENCE ENGINE
+       ========================================== */
+    async function sendJarvisMessage(text) {
+      const input = document.getElementById('chat-input');
+      const message = text || input.value.trim();
+      if (!message) return;
+
+      if (!text) input.value = '';
+
+      const history = document.getElementById('chat-history');
+
+      // User Message
+      const userDiv = document.createElement('div');
+      userDiv.className = 'chat-msg user';
+      userDiv.innerHTML = `
+        <span class="chat-sender" style="color: #ff5722;">VISITOR // INQUIRY</span>
+        <div class="chat-bubble">${escapeHtml(message)}</div>
+      `;
+      history.appendChild(userDiv);
+      history.scrollTop = history.scrollHeight;
+
+      // Pulse Arc Reactor & Audio Waveform
+      surgeWaveform(true);
+
+      // Loading Bubble
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'chat-msg jarvis';
+      loadingDiv.innerHTML = `
+        <span class="chat-sender" style="color: #00f0ff; display: flex; align-items: center; gap: 6px;">
+          <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#00f0ff; box-shadow:0 0 8px #00f0ff; animation: pulseGreen 1s infinite alternate;"></span>
+          J.A.R.V.I.S. // SYNTHESIZING
+        </span>
+        <div class="chat-bubble" style="color: #00f0ff; display: flex; align-items: center; gap: 8px;">
+          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#00f0ff; animation: pulseGreen 0.8s infinite alternate;"></span>
+          Computing telemetry &amp; project knowledge index...
+        </div>
+      `;
+      history.appendChild(loadingDiv);
+      history.scrollTop = history.scrollHeight;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            sender: 'Guest', 
+            operatorAuth: false,
+            message: message 
+          })
+        });
+        const data = await res.json();
+        surgeWaveform(false);
+        loadingDiv.innerHTML = `
+          <span class="chat-sender" style="color: #00f0ff; display: flex; align-items: center; gap: 6px;">
+            <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#00f0ff; box-shadow:0 0 8px #00f0ff;"></span>
+            J.A.R.V.I.S. // PUBLIC INTELLIGENCE
+          </span>
+          <div class="chat-bubble">${formatReply(data.reply || "No response received.")}</div>
+        `;
+      } catch (err) {
+        surgeWaveform(false);
+        // Intelligent Offline Knowledge Fallback (100% Client-Side for GitHub Pages)
+        const q = message.toLowerCase();
+        let fallbackText = "";
+
+        if (q.includes("deadline") || q.includes("date") || q.includes("schedule") || q.includes("when") || q.includes("due") || q.includes("milestone") || q.includes("gantt") || q.includes("submit")) {
+          fallbackText = "Here is the verified **Kinetic Pour Milestone Status**:\n\n" +
+            "✅ **Milestones Achieved:**\n" +
+            "• **3D Fluidics Simulation**: 8-bottle hydraulic layout & Three.js interactive simulation completed and validated.\n" +
+            "• **Modular Caddy & Manifold**: Engineered 2x4 bottle mounting chassis and 8-nozzle dispensing head in CAD.\n" +
+            "• **PLC Safety Sequencing**: Mapped 8-stage safety state machine with optical cup-presence interlocks.\n\n" +
+            "🎯 **Next Upcoming Milestone:**\n" +
+            "• **Team Design Proposal & CAD BOM Submission**: Finalizing structural drawings, vendor datasheets, and procurement quotes for hardware assembly.\n\n" +
+            "🔒 *Note: Internal course presentation dates and administrative deadlines are managed securely in the [Operator Portal](https://rohendhar.github.io/jarvis-operator/).*";
+        } else if (q.includes("fund") || q.includes("money") || q.includes("grant") || q.includes("budget") || q.includes("payout") || q.includes("cost") || q.includes("1200") || q.includes("600") || q.includes("challenge") || q.includes("stipend") || q.includes("price")) {
+          fallbackText = "**Kinetic Pour** is an undergraduate Senior Design capstone project developed at the University of Cincinnati, supported through collegiate engineering innovation grants.\n\n" +
+            "🔒 **Access Restricted**: Specific grant allocations, internal working capital distributions, and purchase requisitions are restricted to team members via the secure [Operator Portal](https://rohendhar.github.io/jarvis-operator/).";
+        } else if (q.includes("task") || q.includes("todo") || q.includes("action") || q.includes("what should i") || q.includes("deliverable") || q.includes("assignment")) {
+          fallbackText = "Team member task allocations and internal accountability checklists are restricted to authorized leads.\n\n" +
+            "Authorized team members should log in at the [Operator Command Portal](https://rohendhar.github.io/jarvis-operator/) to review active deliverables.";
+        } else if (q.includes("team") || q.includes("who") || q.includes("roles") || q.includes("members") || q.includes("roster")) {
+          fallbackText = "**Kinetic Pour Engineering Team:**\n\n" +
+            "• **Rohendhar** — Project Manager & Systems Integration Lead\n" +
+            "• **Aron Joseph** — Finance & Bottling Subsystem Lead\n" +
+            "• **Eli Radabaugh** — Electrical & Industrial Automation Lead\n" +
+            "• **Shyam Patel** — Mechanical Kinematics & Operations Lead\n\n" +
+            "🔒 *Detailed task checklists and deliverable tracking are hosted on the [Operator Portal](https://rohendhar.github.io/jarvis-operator/).*";
+        } else if (q.includes("bottle") || q.includes("fluid") || q.includes("tube") || q.includes("pump") || q.includes("dispens")) {
+          fallbackText = "Here are the engineering specifications for the **8-Bottle Fluidics Subsystem**:\n\n" +
+            "• **Reservoirs:** 8x 750ml Bordeaux-style modular bottles seated in a 2x4 3D-printed caddy.\n" +
+            "• **Check Valves:** 1/4\" inline one-way check valves to prevent backflow and keep lines primed.\n" +
+            "• **Dosing Pumps:** 8x GROTHEN 24V peristaltic pumps with 3-roller rotor heads for positive-displacement metering.\n" +
+            "• **Tubing:** High-temperature food-grade 3x5mm silicone tubing converging at the 3D-printed central manifold.\n" +
+            "• **Sanitation:** Fully purgeable liquid routing designed for clean-in-place CIP protocols.";
+        } else if (q.includes("lift") || q.includes("elevator") || q.includes("screw") || q.includes("stepper") || q.includes("motor") || q.includes("rail")) {
+          fallbackText = "Regarding the **T8 Linear Elevator Subsystem**:\n\n" +
+            "• **Mechanism:** NEMA 17 stepper motor driving a T8 stainless lead screw with dual precision guide rods.\n" +
+            "• **Stroke Travel:** 100 mm vertical stroke (lowers cup into dispensing bay, then lifts flush with tabletop).\n" +
+            "• **Sensors:** IR optical photocell cup-presence check and optical microswitch endstops.\n" +
+            "• **Status:** Kinematics calibrated to 10ms cycle clock.";
+        } else if (q.includes("ice") || q.includes("cool") || q.includes("thermal")) {
+          fallbackText = "Regarding the **Thermal Management Subsystem**:\n\n" +
+            "• **Architecture Decision:** Motorized compressors were ruled out due to bulk, plumbing, and power draw.\n" +
+            "• **Current Baseline:** Insulated cold bay utilizing **reusable food-grade 304 stainless steel whiskey stones** or compact 12V Peltier thermoelectric cold plates.\n" +
+            "• **Insulation:** Closed-cell neoprene barrier preventing condensation in the electrical compartment.";
+        } else {
+          fallbackText = "Hello! I am **J.A.R.V.I.S.**, systems intelligence for the **Kinetic Pour Automated Drink Table**.\n\n" +
+            "You are currently viewing the **Public Interface** (Surface Telemetry). I can assist with:\n" +
+            "• **Project Overview & Architecture**: Automated precision drink mixing table with 8 peristaltic pumps.\n" +
+            "• **Milestones Achieved**: Completed 3D fluidics simulation, CAD manifold, and PLC safety logic.\n" +
+            "• **Next Milestone**: Team Design Proposal & CAD BOM submission.\n" +
+            "• **Subsystems**: GROTHEN 24V pumps, T8 elevator lift, and capacitive touchscreen HMI.\n\n" +
+            "*(For internal team task lists, CEAS grant finances, and presentation deadlines, team operators should access the [Operator Portal](https://rohendhar.github.io/jarvis-operator/)).*";
+        }
+
+        loadingDiv.innerHTML = `
+          <span class="chat-sender">J.A.R.V.I.S. // PUBLIC INTELLIGENCE</span>
+          <div class="chat-bubble">${formatReply(fallbackText)}</div>
+        `;
+      }
+      history.scrollTop = history.scrollHeight;
+    }
+
+    function askPreset(question) {
+      sendJarvisMessage(question);
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function formatReply(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+    }
+
+    /* ==========================================
+       LIQUID GLASS TOUCHSCREEN INTERFACE LOGIC
+       ========================================== */
+    // 1. Live Capacitive Screen Clock
+    function updateScreenClock() {
+      const clockEl = document.getElementById('screen-clock');
+      if (clockEl) {
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+        clockEl.innerText = `${hrs}:${mins}:${secs}`;
       }
     }
-    throw new Error('Connection timeout');
-  }
+    setInterval(updateScreenClock, 1000);
+    updateScreenClock();
 
-  async function selectOption(key, cardEl) {
-    currentKey = key;
-    lastCustomQuery = '';
-    document.querySelectorAll('.tactical-card').forEach(c => c.classList.remove('active'));
-    if (cardEl) {
-      cardEl.classList.add('active');
-    } else {
-      const allCards = document.querySelectorAll('.tactical-card');
-      const idx = ['tasks', 'meeting', 'budget', 'funding', 'mechanism', 'drive'].indexOf(key);
-      if (idx >= 0 && allCards[idx]) allCards[idx].classList.add('active');
+    // 2. Interactive Liquid Ripple on Glass Touch
+    const hmiScreen = document.getElementById('hmi-touchscreen-panel');
+    if (hmiScreen) {
+      hmiScreen.addEventListener('pointerdown', function (e) {
+        const rect = hmiScreen.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const ripple = document.createElement('div');
+        ripple.className = 'screen-touch-ripple';
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        ripple.style.width = '30px';
+        ripple.style.height = '30px';
+
+        hmiScreen.appendChild(ripple);
+        setTimeout(() => {
+          if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+        }, 700);
+      });
     }
-
-    const title = titles[key] || "J.A.R.V.I.S. INTELLIGENCE";
-    document.getElementById('panelTitle').innerText = title;
-    
-    const panelBody = document.getElementById('panelBody');
-    panelBody.innerHTML = '<em>Accessing Avengers project telemetry...</em>';
-
-    const sender = document.getElementById('userSelect').value;
-    const promptText = queries[key] || key;
-
-    try {
-      const data = await fetchWithRetry('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sender: sender, message: promptText })
-      }, 3);
-      panelBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(data.reply) : data.reply;
-    } catch (e) {
-      panelBody.innerHTML = `
-        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:14px; border-radius:4px; margin-top:8px;">
-          <strong style="color:#f87171; font-size:14px;">⚠️ Connection Momentarily Interrupted</strong><br>
-          <span style="font-size:13px; color:#cbd5e1;">The server was waking from standby or deploying telemetry updates.</span><br><br>
-          <button onclick="selectOption('${key}')" style="background:#0284c7; color:#fff; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight:bold; letter-spacing:0.5px;">
-            ⟳ Reconnect & Refresh Telemetry
-          </button>
-        </div>`;
-    }
-  }
-
-  function resyncCurrentOption() {
-    if (lastCustomQuery) {
-      executeCustomQuery(lastCustomQuery);
-    } else {
-      selectOption(currentKey);
-    }
-  }
-
-  async function sendCustom() {
-    const input = document.getElementById('customQuery');
-    const text = input.value.trim();
-    if (!text) return;
-    lastCustomQuery = text;
-    input.value = '';
-    executeCustomQuery(text);
-  }
-
-  function retryCustom() {
-    if (lastCustomQuery) {
-      executeCustomQuery(lastCustomQuery);
-    } else {
-      resyncCurrentOption();
-    }
-  }
-
-  async function executeCustomQuery(text) {
-    document.querySelectorAll('.tactical-card').forEach(c => c.classList.remove('active'));
-    document.getElementById('panelTitle').innerText = `QUERY: "${text.toUpperCase()}"`;
-    const panelBody = document.getElementById('panelBody');
-    panelBody.innerHTML = '<em>J.A.R.V.I.S. is crunching neural telemetry...</em>';
-
-    const sender = document.getElementById('userSelect').value;
-    try {
-      const data = await fetchWithRetry('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sender: sender, message: text })
-      }, 3);
-      panelBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(data.reply) : data.reply;
-    } catch (e) {
-      panelBody.innerHTML = `
-        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:14px; border-radius:4px; margin-top:8px;">
-          <strong style="color:#f87171; font-size:14px;">⚠️ Connection Momentarily Interrupted</strong><br>
-          <span style="font-size:13px; color:#cbd5e1;">Neural response timed out or server is reconnecting.</span><br><br>
-          <button onclick="retryCustom()" style="background:#0284c7; color:#fff; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight:bold; letter-spacing:0.5px;">
-            ⟳ Retry Query
-          </button>
-        </div>`;
-    }
-  }
-
-  window.onload = () => {
-    selectOption('tasks', document.querySelector('.tactical-grid .tactical-card'));
-  };
-</script>
-
+  </script>
 </body>
 </html>
